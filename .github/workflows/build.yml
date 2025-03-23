@@ -3,11 +3,14 @@ name: Build
 on:
   push:
     branches:
-      - '*' # Trigger on all branches
+      - '*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout code
