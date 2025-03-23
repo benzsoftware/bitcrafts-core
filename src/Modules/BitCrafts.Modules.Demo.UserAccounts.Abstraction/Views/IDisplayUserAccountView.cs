@@ -8,6 +8,7 @@ public interface IDisplayUserAccountsView : IView
     void RefreshUsers(IEnumerable<User> users);
     void AppendUser(User user);
     event EventHandler CreateUser;
+    event EventHandler Refresh;
     event EventHandler<User> UpdateUser;
     event EventHandler<IEnumerable<User>> DeleteUser;
 }

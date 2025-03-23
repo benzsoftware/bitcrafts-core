@@ -15,7 +15,6 @@ public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccounts
     public DisplayUserAccountsView()
     {
         InitializeComponent();
-        Title = "Display User Accounts";
     }
 
     public void RefreshUsers(IEnumerable<User> users)
@@ -30,6 +29,7 @@ public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccounts
     }
 
     public event EventHandler CreateUser;
+    public event EventHandler Refresh;
     public event EventHandler<User> UpdateUser;
     public event EventHandler<IEnumerable<User>> DeleteUser;
 
@@ -59,6 +59,7 @@ public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccounts
     {
         if (e.Key == Key.Delete)
         {
+            DeleteSelectedUsers();
         }
     }
 
@@ -72,10 +73,6 @@ public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccounts
         }
     }
 
-    private void UpdateUserButton_OnClick(object sender, RoutedEventArgs e)
-    {
-    }
-
     private void DeleteUserButton_OnClick(object sender, RoutedEventArgs e)
     {
         DeleteSelectedUsers();
@@ -86,24 +83,17 @@ public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccounts
         if (UsersDataGrid.SelectedItems.Count > 0)
         {
             DeleteUserButton.IsVisible = true;
-            UpdateUserButton.IsVisible = true;
-        }
-        else if (UsersDataGrid.SelectedItems.Count > 1)
-        {
-            DeleteUserButton.IsVisible = true;
-            UpdateUserButton.IsVisible = false;
         }
         else
         {
             DeleteUserButton.IsVisible = false;
-            UpdateUserButton.IsVisible = false;
         }
 
         e.Handled = true;
     }
 
-    private void UsersDataGrid_OnLostFocus(object sender, RoutedEventArgs e)
+    private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
     {
-        UsersDataGrid.SelectedIndex = -1;
+        Refresh?.Invoke(this, EventArgs.Empty);
     }
 }
