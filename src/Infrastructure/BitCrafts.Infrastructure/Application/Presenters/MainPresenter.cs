@@ -53,8 +53,6 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
     private async Task InitModules()
     {
         foreach (var module in _modules) module.Initialize(ServiceProvider);
-
-        await Task.Delay(3000);
     }
 
     private void ViewOnMenuClickEvent(object sender, MenuClickEventArgs e)
