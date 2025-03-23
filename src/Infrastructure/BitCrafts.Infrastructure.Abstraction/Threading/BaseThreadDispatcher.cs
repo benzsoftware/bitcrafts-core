@@ -58,6 +58,7 @@ public abstract class BaseThreadDispatcher : IThreadDispatcher, IDisposable
         return tcs.Task;
     }
 
+
     public Task<T> Invoke<T>(Func<T> func)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, GetType());
@@ -87,7 +88,7 @@ public abstract class BaseThreadDispatcher : IThreadDispatcher, IDisposable
         ObjectDisposedException.ThrowIf(_isDisposed, GetType());
 
         var tcs = new TaskCompletionSource<T>();
-        _taskQueue.Add(async () =>
+        _taskQueue.Add(async void () =>
         {
             try
             {
@@ -108,7 +109,7 @@ public abstract class BaseThreadDispatcher : IThreadDispatcher, IDisposable
         ObjectDisposedException.ThrowIf(_isDisposed, GetType());
 
         var tcs = new TaskCompletionSource<Task>();
-        _taskQueue.Add(async () =>
+        _taskQueue.Add(async void () =>
         {
             try
             {

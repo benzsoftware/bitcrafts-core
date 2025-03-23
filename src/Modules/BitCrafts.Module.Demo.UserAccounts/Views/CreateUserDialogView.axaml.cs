@@ -25,12 +25,21 @@ public partial class CreateUserDialogView : BaseControl, ICreateUserDialogView
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
-        UserCreated?.Invoke(this, GetUserEntity());
+        if (AreFielsValid())
+            UserCreated?.Invoke(this, GetUserEntity());
     }
 
     private void ClearButton_OnClick(object sender, RoutedEventArgs e)
     {
         ClearFields();
+    }
+
+    private bool AreFielsValid()
+    {
+        return !string.IsNullOrWhiteSpace(FirstNameTextBox.Text.Trim()) &&
+               !string.IsNullOrWhiteSpace(LastNameTextBox.Text.Trim()) &&
+               !string.IsNullOrWhiteSpace(EmailTextBox.Text.Trim()) &&
+               !string.IsNullOrWhiteSpace(PasswordTextBox.Text.Trim());
     }
 
     private void ClearFields()
@@ -46,11 +55,11 @@ public partial class CreateUserDialogView : BaseControl, ICreateUserDialogView
     {
         var newUser = new User
         {
-            FirstName = FirstNameTextBox.Text,
-            LastName = LastNameTextBox.Text,
-            Email = EmailTextBox.Text,
-            Password = PasswordTextBox.Text,
-            IsActive = IsActiveCheckBox.IsChecked ?? false // Handle nullable bool
+            FirstName = FirstNameTextBox.Text.Trim(),
+            LastName = LastNameTextBox.Text.Trim(),
+            Email = EmailTextBox.Text.Trim(),
+            Password = PasswordTextBox.Text.Trim(),
+            IsActive = IsActiveCheckBox.IsChecked ?? false
         };
         return newUser;
     }
