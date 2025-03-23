@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>latestmajor</LangVersion>
+        <Title>BitCrafts Infrastructure Avalonia</Title>
+        <Authors>Younes BENMOUSSA</Authors>
+        <PackageProjectUrl>https://github.com/BitCrafts/bitcrafts-core</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/BitCrafts/bitcrafts-core</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <TargetFramework>net8.0</TargetFramework> 
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia" Version="25.1.1"/>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Bars.Mvvm" Version="25.1.1"/>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Pro" Version="25.1.1"/>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Themes.ColorPicker" Version="25.1.1"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.5"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BitCrafts.Infrastructure.Abstraction\BitCrafts.Infrastructure.Abstraction.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <UpToDateCheckInput Remove="Dialogs\DialogWindow.axaml"/>
+    </ItemGroup>
+
+</Project>

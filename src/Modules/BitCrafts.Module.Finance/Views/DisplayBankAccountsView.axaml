@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:data="clr-namespace:BitCrafts.Module.Finance.Abstraction.Data;assembly=BitCrafts.Module.Finance.Abstraction"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BitCrafts.Module.Finance.Views.DisplayBankAccountsView">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Spacing="4" Orientation="Horizontal" Margin="8">
+            <Button x:Name="CreateUserButton" Content="{avalonia:MaterialIconExt Kind=Add}"
+                    Click="CreateUserButton_OnClick">
+                <ToolTip.Tip>
+                    <TextBlock Text="Create new account" />
+                </ToolTip.Tip>
+            </Button>
+            <Button x:Name="UpdateUserButton" IsVisible="False" Content="{avalonia:MaterialIconExt Kind=Update}"
+                    Click="UpdateUserButton_OnClick">
+                <ToolTip.Tip>
+                    <TextBlock Text="Update selected account" />
+                </ToolTip.Tip>
+            </Button>
+            <Button x:Name="DeleteUserButton" IsVisible="False" Content="{avalonia:MaterialIconExt Kind=Delete}"
+                    Click="DeleteUserButton_OnClick">
+                <ToolTip.Tip>
+                    <TextBlock Text="Delete selected account" />
+                </ToolTip.Tip>
+            </Button>
+        </StackPanel>
+        <DataGrid Grid.Row="1" x:Name="BankAccountsDataGrid" AutoGenerateColumns="False"
+                  BorderBrush="DarkSlateGray" BorderThickness="1"
+                  KeyUp="BankAccountsDataGrid_OnKeyUp"
+                  IsReadOnly="True"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:DataType="data:BankAccount" Header="Account Name"
+                                    Binding="{Binding AccountName}" />
+                <DataGridTextColumn x:DataType="data:BankAccount" Header="Account Number"
+                                    Binding="{Binding AccountNumber}" />
+                <DataGridTextColumn x:DataType="data:BankAccount" Header="Balance"
+                                    Binding="{Binding Balance}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

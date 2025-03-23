@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>latestmajor</LangVersion>
+        <Title>BitCrafts Infrastructure</Title>
+        <Authors>Younes BENMOUSSA</Authors>
+        <PackageProjectUrl>https://github.com/BitCrafts/bitcrafts-core</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/BitCrafts/bitcrafts-core</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <TargetFramework>net8.0</TargetFramework> 
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia" Version="25.1.1"/>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Pro" Version="25.1.1"/>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Themes.ColorPicker" Version="25.1.1"/>
+        <PackageReference Include="ActiproSoftware.Controls.Avalonia.Themes.DataGrid" Version="25.1.1"/>
+        <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.2.5"/>
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.5"/>
+        <PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.1.5"/>
+        <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.5"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.5"/>
+        <PackageReference Include="Avalonia.Svg.Skia" Version="11.2.0.2"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.5"/>
+        <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.5"/>
+        <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.2.0.14"/>
+        <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.2.0.14"/>
+        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.2.0.14"/>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Material.Icons.Avalonia" Version="2.3.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.3"/>
+        <PackageReference Include="Serilog" Version="4.2.0"/>
+        <PackageReference Include="Serilog.Enrichers.AssemblyName" Version="2.0.0"/>
+        <PackageReference Include="Serilog.Enrichers.CallerInfo" Version="1.0.5"/>
+        <PackageReference Include="Serilog.Enrichers.Context" Version="4.6.5"/>
+        <PackageReference Include="Serilog.Enrichers.Demystifier" Version="1.0.3"/>
+        <PackageReference Include="Serilog.Enrichers.ExceptionData" Version="1.0.0"/>
+        <PackageReference Include="Serilog.Enrichers.GlobalLogContext" Version="3.0.0"/>
+        <PackageReference Include="Serilog.Enrichers.Memory" Version="1.0.4"/>
+        <PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0"/>
+        <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0"/>
+        <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0"/>
+        <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
+        <PackageReference Include="Serilog.Sinks.File" Version="6.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BitCrafts.Infrastructure.Abstraction\BitCrafts.Infrastructure.Abstraction.csproj"/>
+        <ProjectReference Include="..\BitCrafts.Infrastructure.Avalonia\BitCrafts.Infrastructure.Avalonia.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaXaml Remove="Assets\Resources\Colors.axaml"/>
+        <AvaloniaXaml Remove="Assets\Styles\Default.axaml"/>
+        <AvaloniaXaml Remove="Assets\Styles\DefaultStyles.axaml"/>
+        <AvaloniaXaml Remove="Assets\Styles\TabControlStyle.axaml"/>
+        <AvaloniaXaml Remove="Assets\Resources\DefaultResources.axaml"/>
+    </ItemGroup>
+
+</Project>

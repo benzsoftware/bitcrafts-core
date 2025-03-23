@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>latestmajor</LangVersion>
+        <Title>BitCrafts Infrastructure Abstraction</Title>
+        <Authors>Younes BENMOUSSA</Authors>
+        <PackageProjectUrl>https://github.com/BitCrafts/bitcrafts-core</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/BitCrafts/bitcrafts-core</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <TargetFramework>net8.0</TargetFramework> 
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3"/>
+    </ItemGroup>
+
+</Project>
