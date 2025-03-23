@@ -37,8 +37,13 @@ public sealed class ModuleRegistrer : IModuleRegistrer
     {
         if (!string.IsNullOrEmpty(path))
         {
-            string[] allFiles;
-            allFiles = Directory.GetFiles(path, "BitCrafts.Module.*.dll");
+            string[] allFiles = Directory.GetFiles(path, "*.Module.*.dll");
+            if (allFiles.Length <= 0)
+            {
+                _logger.Warning($"{path} has as no modules.");
+                return;
+            }
+
             //loading the modules contracts dll;
             foreach (var dll in allFiles.Where(x => x.Contains("Abstraction")))
             {
