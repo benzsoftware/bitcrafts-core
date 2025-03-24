@@ -62,4 +62,20 @@ public interface IUiManager : IDisposable
     /// <param name="presenterType">The Type of the presenter whose view should be shown in the tab control.</param>
     /// <param name="parameters">Optional parameters to pass to the presenter.</param>
     void ShowInTabControl(Type presenterType, Dictionary<string, object> parameters = null);
+
+    /// <summary>
+    /// Shows an error message dialog with a custom title and message.
+    /// </summary>
+    /// <param name="title">The title of the error dialog.</param>
+    /// <param name="message">The error message to display.</param>
+    /// <returns>A Task representing the asynchronous operation.  The task completes when the dialog is closed.</returns>
+    Task ShowErrorMessageAsync(string title, string message);
+
+    /// <summary>
+    /// Shows an error message dialog with a custom title and the details of an exception.  The exception's message and stack trace will be included in the dialog.
+    /// </summary>
+    /// <param name="title">The title of the error dialog.</param>
+    /// <param name="exception">The exception to display details for.</param>
+    /// <returns>A Task representing the asynchronous operation. The task completes when the dialog is closed.</returns>
+    Task ShowErrorMessageAsync(string title, Exception exception);
 }

@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
 using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
 using BitCrafts.Infrastructure.Abstraction.Threading;
+using BitCrafts.Infrastructure.Application.Dialogs;
 using BitCrafts.Infrastructure.Application.Presenters;
 using BitCrafts.Infrastructure.Application.Views;
 using BitCrafts.Infrastructure.Threading;
@@ -30,6 +31,20 @@ public sealed class AvaloniaUiManager : IUiManager
         _serviceProvider = serviceProvider;
         _backgroundThreadDispatcher =
             (BackgroundThreadDispatcher)_serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
+    }
+
+    public Task ShowErrorMessageAsync(string title, string message)
+    {
+        var dialog = new ErrorMessageDialog();
+        dialog.SetMessage(title, message);
+        return dialog.ShowDialog(_activeWindow);
+    }
+
+    public Task ShowErrorMessageAsync(string title, Exception exception)
+    {
+        var dialog = new ErrorMessageDialog();
+        dialog.SetMessage(title, exception.Message);
+        return dialog.ShowDialog(_activeWindow);
     }
 
     public void ShowInTabControl<TPresenter>(Dictionary<string, object> parameters) where TPresenter : class, IPresenter
