@@ -10,19 +10,19 @@ public interface IHashingService
     ///     Hashes a password using a secure hashing algorithm.
     /// </summary>
     /// <param name="password">The password to hash.</param>
+    /// <param name="salt">salt generated with <see cref="GenerateSalt"/>.</param>
     /// <returns>The hashed password.</returns>
-    string HashPassword(string password);
+    string HashPassword(string password, string salt);
 
     /// <summary>
     ///     Verifies a password against a stored hash.
     /// </summary>
     /// <param name="password">The password to verify.</param>
-    /// <param name="hashedPassword">The stored hash to compare against.</param>
-    /// <param name="salt">The salt used to hash the password.</param>
+    /// <param name="hashedPassword">The stored hash to compare against.</param> 
     /// <returns>
     ///     True if the password matches the hash; otherwise, false.
     /// </returns>
-    bool VerifyPassword(string password, string hashedPassword, string salt);
+    bool VerifyPassword(string password, string hashedPassword);
 
     /// <summary>
     ///     Generates a salt value for use in password hashing.
