@@ -9,7 +9,6 @@ using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Presenters;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.UseCases;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace BitCrafts.Module.Demo.UserAccounts.Presenters;
 

@@ -1,4 +1,6 @@
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
+using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
+using BitCrafts.Infrastructure.Abstraction.Application.Views;
 using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Infrastructure.Abstraction.Services;
 using BitCrafts.Infrastructure.Abstraction.Threading;
@@ -43,6 +45,8 @@ public static class ServiceCollectionExtension
         services.TryAddSingleton<IUiManager, AvaloniaUiManager>();
         services.TryAddTransient<IMainPresenter, MainPresenter>();
         services.TryAddTransient<IMainView, MainView>();
+        services.TryAddTransient<IAuthenticationView, AuthenticationView>();
+        services.TryAddTransient<IAuthenticationPresenter, AuthenticationPresenter>();
         CreateDirectory("Modules");
         CreateDirectory("Settings");
         CreateDirectory("Databases");

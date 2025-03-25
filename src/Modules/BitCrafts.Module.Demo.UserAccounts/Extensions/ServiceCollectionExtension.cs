@@ -1,3 +1,4 @@
+using BitCrafts.Infrastructure.Abstraction.UseCases;
 using BitCrafts.Module.Demo.UserAccounts.Data;
 using BitCrafts.Module.Demo.UserAccounts.Presenters;
 using BitCrafts.Module.Demo.UserAccounts.UseCases;
@@ -24,6 +25,7 @@ public static class ServiceCollectionExtension
         services.AddTransient<ICreateUserUseCase, CreateUserUseCase>();
         services.AddTransient<IDeleteUserUseCase, DeleteUserUseCase>();
         services.AddTransient<IUpdateUserUseCase, UpdateUserUseCase>();
+        // services.AddTransient<IAuthenticationUseCase, AuthenticationUseCase>();
 
         services.AddDbContext<UsersDbContext>((serviceProvider, options) =>
         {
