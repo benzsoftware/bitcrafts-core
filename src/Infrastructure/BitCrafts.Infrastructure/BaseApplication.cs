@@ -6,8 +6,11 @@ using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
 using Avalonia.Themes.Simple;
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
+using BitCrafts.Infrastructure.Abstraction.Threading;
+using BitCrafts.Infrastructure.Abstraction.UseCases;
 using BitCrafts.Infrastructure.Application.Managers;
 using BitCrafts.Infrastructure.Extensions;
+using BitCrafts.Infrastructure.Threading;
 using Material.Icons.Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +18,7 @@ namespace BitCrafts.Infrastructure;
 
 public abstract class BaseApplication : global::Avalonia.Application
 {
+    private BackgroundThreadDispatcher _backgroundThreadDispatcher;
     public static IServiceProvider ServiceProvider { get; private set; }
 
     public override void Initialize()
@@ -33,16 +37,28 @@ public abstract class BaseApplication : global::Avalonia.Application
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection();
-        services
-            .AddBitCraftsInfrastructure();
+        services.AddBitCraftsInfrastructure();
 
         ServiceProvider = services.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var uiManager = (AvaloniaUiManager)ServiceProvider.GetRequiredService<IUiManager>();
-            desktop.ShutdownMode = ShutdownMode.OnLastWindowClose;
-            uiManager.SetNativeApplication(desktop);
+            _backgroundThreadDispatcher =
+                (BackgroundThreadDispatcher)ServiceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
+            _backgroundThreadDispatcher.Start();
+            desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+            //verify if there is an implementation of IauthenticationUseCase
+            try
+            {
+                var authUseCase = ServiceProvider.GetRequiredService<IAuthenticationUseCase>();
+                uiManager.SetNativeApplication(desktop, true);
+            }
+            catch (Exception)
+            {
+                uiManager.SetNativeApplication(desktop, false);
+            }
         }
 
         base.OnFrameworkInitializationCompleted();

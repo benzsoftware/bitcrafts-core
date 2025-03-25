@@ -50,9 +50,10 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
         View.UnsetBusy();
     }
 
-    private async Task InitModules()
+    private Task InitModules()
     {
         foreach (var module in _modules) module.Initialize(ServiceProvider);
+        return Task.CompletedTask;
     }
 
     private void ViewOnMenuClickEvent(object sender, MenuClickEventArgs e)
@@ -69,10 +70,10 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
         _uiManager.CloseWindow<IMainPresenter>();
     }
 
-    protected override Task OnDisAppearedAsync()
+    protected override async Task OnDisAppearedAsync()
     {
         View.CloseEvent -= ViewOnCloseEvent;
         View.MenuClickEvent -= ViewOnMenuClickEvent;
-        return Task.CompletedTask;
+        await ServiceProvider.GetRequiredService<IUiManager>().ShutdownAsync();
     }
 }

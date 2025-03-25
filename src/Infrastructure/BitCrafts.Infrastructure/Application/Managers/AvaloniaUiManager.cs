@@ -14,7 +14,6 @@ namespace BitCrafts.Infrastructure.Application.Managers;
 
 public sealed class AvaloniaUiManager : IUiManager
 {
-    private readonly BackgroundThreadDispatcher _backgroundThreadDispatcher;
     private readonly ILogger<AvaloniaUiManager> _logger;
     private readonly Dictionary<IPresenter, DefaultTabItem> _presenterToTabItemMap = new();
     private readonly Dictionary<IPresenter, Window> _presenterToWindowMap = new();
@@ -24,13 +23,12 @@ public sealed class AvaloniaUiManager : IUiManager
     private IClassicDesktopStyleApplicationLifetime _applicationLifetime;
     private Window _rootWindow;
     private TabControl _tabControl;
+    private bool _useAuthentication;
 
     public AvaloniaUiManager(IServiceProvider serviceProvider)
     {
         _logger = serviceProvider.GetRequiredService<ILogger<AvaloniaUiManager>>();
         _serviceProvider = serviceProvider;
-        _backgroundThreadDispatcher =
-            (BackgroundThreadDispatcher)_serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
     }
 
     public Task ShowErrorMessageAsync(string title, string message)
@@ -85,6 +83,16 @@ public sealed class AvaloniaUiManager : IUiManager
     public Task ShutdownAsync()
     {
         _logger.LogInformation("Shutting down application...");
+        if (_activeWindow != null)
+        {
+            _activeWindow.Close();
+        }
+
+        if (_rootWindow != null)
+        {
+            _rootWindow.Close();
+        }
+
         return Task.CompletedTask;
     }
 
@@ -108,15 +116,18 @@ public sealed class AvaloniaUiManager : IUiManager
                 throw new InvalidOperationException("The view associated with the presenter is not a UserControl.");
             var window = CreateWindow(presenter, parameters);
             AddWindowToCollections(presenter, window);
-            _activeWindow = window;
+
             if (_rootWindow == null)
             {
                 _rootWindow = window;
+                _activeWindow = window;
+                _applicationLifetime.MainWindow = _rootWindow;
                 window.Show();
             }
             else
             {
-                window.Show(_activeWindow);
+                window.Show();
+                _activeWindow = window;
             }
         }
     }
@@ -124,7 +135,16 @@ public sealed class AvaloniaUiManager : IUiManager
     public void CloseWindow<TPresenter>() where TPresenter : class, IPresenter
     {
         var presenter = GetPresenterFromAnyWindow<TPresenter>();
-        if (presenter != null && _presenterToWindowMap.TryGetValue(presenter, out var window)) window.Close();
+        if (presenter != null && _presenterToWindowMap.TryGetValue(presenter, out var window))
+        {
+            if (_rootWindow == window && _activeWindow != window)
+            {
+                _rootWindow = _activeWindow;
+                _applicationLifetime.MainWindow = _rootWindow;
+            }
+
+            window.Close();
+        }
     }
 
     public async Task ShowDialogAsync<TPresenter>(Dictionary<string, object> parameters)
@@ -164,7 +184,9 @@ public sealed class AvaloniaUiManager : IUiManager
 
         _presenterToTabItemMap.Clear();
         _presenterToWindowMap.Clear();
-        _backgroundThreadDispatcher.Stop();
+        var backgroundDispatcher =
+            (BackgroundThreadDispatcher)_serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
+        backgroundDispatcher.Stop();
     }
 
     public void SetTabControl(TabControl tabControl)
@@ -184,17 +206,7 @@ public sealed class AvaloniaUiManager : IUiManager
         var window = new DefaultDialog();
         window.SetContent(userControl);
         window.Title = view.Title;
-        if (parameters != null)
-        {
-            if (parameters.TryGetValue("Width", out var width))
-                if (width is double windowWidth)
-                    window.Width = windowWidth;
-
-            if (parameters.TryGetValue("Height", out var height))
-                if (height is double windowHeight)
-                    window.Height = windowHeight;
-        }
-
+        SetWindowParameters(parameters, window);
         return window;
     }
 
@@ -205,26 +217,37 @@ public sealed class AvaloniaUiManager : IUiManager
         var window = new DefaultWindow();
         window.SetContent(userControl);
         window.Title = view.Title;
+        SetWindowParameters(parameters, window);
+
+        return window;
+    }
+
+    private void SetWindowParameters(Dictionary<string, object> parameters, Window window)
+    {
         if (parameters != null)
         {
+            if (parameters.TryGetValue("Width", out var width))
+                if (width is int windowWidth)
+                    window.Width = windowWidth;
+
+            if (parameters.TryGetValue("Height", out var height))
+                if (height is int windowHeight)
+                    window.Height = windowHeight;
+
             if (parameters.TryGetValue("WindowStartupLocation", out var startupLocation))
                 if (startupLocation is WindowStartupLocation location)
                     window.WindowStartupLocation = location;
 
             if (parameters.TryGetValue("WindowState", out var windowState))
                 if (windowState is WindowState state)
+                {
                     window.WindowState = state;
+                }
 
-            if (parameters.TryGetValue("Width", out var width))
-                if (width is double windowWidth)
-                    window.Width = windowWidth;
-
-            if (parameters.TryGetValue("Height", out var height))
-                if (height is double windowHeight)
-                    window.Height = windowHeight;
+            if (parameters.TryGetValue("SystemDecoration", out var decoration))
+                if (decoration is SystemDecorations windowDecoration)
+                    window.SystemDecorations = windowDecoration;
         }
-
-        return window;
     }
 
     private void AddWindowToCollections(IPresenter presenter, Window window)
@@ -282,8 +305,10 @@ public sealed class AvaloniaUiManager : IUiManager
         return null;
     }
 
-    public void SetNativeApplication(IClassicDesktopStyleApplicationLifetime applicationLifetime)
+    public void SetNativeApplication(IClassicDesktopStyleApplicationLifetime applicationLifetime,
+        bool useAuthentication)
     {
+        _useAuthentication = useAuthentication;
         _applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
         _applicationLifetime.ShutdownRequested += ApplicationLifetimeOnShutdownRequested;
         _applicationLifetime.Exit += ApplicationLifetimeOnExit;
@@ -294,12 +319,24 @@ public sealed class AvaloniaUiManager : IUiManager
     private void ApplicationLifetimeOnStartup(object sender, ControlledApplicationLifetimeStartupEventArgs e)
     {
         _logger.LogInformation("UIManager Startup");
-        _backgroundThreadDispatcher.Start();
-        ShowWindow<IMainPresenter>(new Dictionary<string, object>
+        if (_useAuthentication)
         {
-            { "WindowState", WindowState.Maximized },
-            { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
-        });
+            ShowWindow<IAuthenticationPresenter>(new Dictionary<string, object>()
+            {
+                { "Width", 500 },
+                { "Height", 300 },
+                { "SystemDecoration", SystemDecorations.None },
+                { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
+            });
+        }
+        else
+        {
+            ShowWindow<IMainPresenter>(new Dictionary<string, object>
+            {
+                { "WindowState", WindowState.Maximized },
+                { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
+            });
+        }
     }
 
     private void ApplicationLifetimeOnExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
