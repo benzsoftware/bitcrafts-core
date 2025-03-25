@@ -37,7 +37,7 @@ public sealed class ModuleRegistrer : IModuleRegistrer
     {
         if (!string.IsNullOrEmpty(path))
         {
-            string[] allFiles = Directory.GetFiles(path, "*.Module.*.dll");
+            var allFiles = Directory.GetFiles(path, "*.Module.*.dll");
             if (allFiles.Length <= 0)
             {
                 _logger.Warning($"{path} has as no modules.");

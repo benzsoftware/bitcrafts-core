@@ -83,15 +83,9 @@ public sealed class AvaloniaUiManager : IUiManager
     public Task ShutdownAsync()
     {
         _logger.LogInformation("Shutting down application...");
-        if (_activeWindow != null)
-        {
-            _activeWindow.Close();
-        }
+        if (_activeWindow != null) _activeWindow.Close();
 
-        if (_rootWindow != null)
-        {
-            _rootWindow.Close();
-        }
+        if (_rootWindow != null) _rootWindow.Close();
 
         return Task.CompletedTask;
     }
@@ -240,9 +234,7 @@ public sealed class AvaloniaUiManager : IUiManager
 
             if (parameters.TryGetValue("WindowState", out var windowState))
                 if (windowState is WindowState state)
-                {
                     window.WindowState = state;
-                }
 
             if (parameters.TryGetValue("SystemDecoration", out var decoration))
                 if (decoration is SystemDecorations windowDecoration)
@@ -320,7 +312,6 @@ public sealed class AvaloniaUiManager : IUiManager
     {
         _logger.LogInformation("UIManager Startup");
         if (_useAuthentication)
-        {
             ShowWindow<IAuthenticationPresenter>(new Dictionary<string, object>()
             {
                 { "Width", 500 },
@@ -328,15 +319,12 @@ public sealed class AvaloniaUiManager : IUiManager
                 { "SystemDecoration", SystemDecorations.None },
                 { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
             });
-        }
         else
-        {
             ShowWindow<IMainPresenter>(new Dictionary<string, object>
             {
                 { "WindowState", WindowState.Maximized },
                 { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
             });
-        }
     }
 
     private void ApplicationLifetimeOnExit(object sender, ControlledApplicationLifetimeExitEventArgs e)

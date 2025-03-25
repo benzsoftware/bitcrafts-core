@@ -25,7 +25,7 @@ public static class ServiceCollectionExtension
         services.AddTransient<ICreateUserUseCase, CreateUserUseCase>();
         services.AddTransient<IDeleteUserUseCase, DeleteUserUseCase>();
         services.AddTransient<IUpdateUserUseCase, UpdateUserUseCase>();
-       // services.AddTransient<IAuthenticationUseCase, AuthenticationUseCase>();
+        // services.AddTransient<IAuthenticationUseCase, AuthenticationUseCase>();
 
         services.AddDbContext<UsersDbContext>((serviceProvider, options) =>
         {

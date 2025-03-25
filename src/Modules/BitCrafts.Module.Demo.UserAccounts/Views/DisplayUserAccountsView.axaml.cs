@@ -57,10 +57,7 @@ public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccounts
 
     private void UsersDataGrid_OnKeyUp(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Delete)
-        {
-            DeleteSelectedUsers();
-        }
+        if (e.Key == Key.Delete) DeleteSelectedUsers();
     }
 
     private void DeleteSelectedUsers()
@@ -81,13 +78,9 @@ public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccounts
     private void UsersDataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (UsersDataGrid.SelectedItems.Count > 0)
-        {
             DeleteUserButton.IsVisible = true;
-        }
         else
-        {
             DeleteUserButton.IsVisible = false;
-        }
 
         e.Handled = true;
     }

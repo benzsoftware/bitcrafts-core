@@ -13,13 +13,14 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <TextBlock Text="Password:" Margin="10" Width="100" VerticalAlignment="Center" />
-                <TextBox x:Name="PasswordTextBox" Width="255" Margin="10" Grid.Row="1" PasswordChar="*"
+                <TextBox x:Name="PasswordTextBox" Width="255" Margin="10" PasswordChar="*"
                          HorizontalAlignment="Stretch" />
             </StackPanel>
-            <TextBlock Grid.Row="2" x:Name="ErrorMessgeTextBlox" Margin="130,12,0,0" Foreground="Orange" Text=""></TextBlock>
+            <TextBlock Grid.Row="2" x:Name="ErrorMessgeTextBlox" Margin="130,12,0,0" Foreground="Orange" Text="" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
                         Grid.Row="3">
-                <Button x:Name="AuthenticateButton" Content="Authenticate" Margin="5" Click="AuthenticateButton_OnClick" />
+                <Button x:Name="AuthenticateButton" Content="Authenticate" Margin="5"
+                        Click="AuthenticateButton_OnClick" />
                 <Button x:Name="CancelButton" Content="Cancel" Margin="5" Click="CancelButton_OnClick" />
             </StackPanel>
         </Grid>

@@ -10,7 +10,7 @@ public sealed class HashingService : IHashingService
             throw new ArgumentNullException(nameof(password));
         if (string.IsNullOrWhiteSpace(salt))
             throw new ArgumentNullException(nameof(salt));
-        
+
         return BCrypt.Net.BCrypt.HashPassword(password, salt);
     }
 
@@ -20,7 +20,7 @@ public sealed class HashingService : IHashingService
             throw new ArgumentNullException(nameof(password));
         if (string.IsNullOrWhiteSpace(hashedPassword))
             throw new ArgumentNullException(nameof(hashedPassword));
-        
+
         return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
     }
 
