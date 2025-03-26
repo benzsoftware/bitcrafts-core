@@ -47,6 +47,7 @@ public static class ServiceCollectionExtension
         services.TryAddTransient<IMainView, MainView>();
         services.TryAddTransient<IAuthenticationView, AuthenticationView>();
         services.TryAddTransient<IAuthenticationPresenter, AuthenticationPresenter>();
+        services.TryAddSingleton<IMenuManager, AvaloniaMenuManager>();
         CreateDirectory("Modules");
         CreateDirectory("Settings");
         CreateDirectory("Databases");
