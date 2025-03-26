@@ -9,7 +9,7 @@
     <Grid>
         <DockPanel x:Name="RootDockPanel" Margin="0" IsVisible="False">
             <Grid DockPanel.Dock="Top" RowDefinitions="*,Auto">
-                <Menu FontSize="14">
+                <Menu x:Name="MainMenu" FontSize="14">
                     <MenuItem Padding="12" Header="_File">
                         <MenuItem x:Name="QuitMenuItem" Header="_Quit..." Click="QuitMenuItem_OnClick">
                             <MenuItem.Icon>

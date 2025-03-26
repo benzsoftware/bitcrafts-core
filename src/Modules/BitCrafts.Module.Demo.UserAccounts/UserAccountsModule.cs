@@ -1,8 +1,11 @@
-﻿using BitCrafts.Infrastructure.Abstraction.Modules;
+﻿using Avalonia.Controls;
+using BitCrafts.Infrastructure.Abstraction.Application.Managers;
+using BitCrafts.Infrastructure.Abstraction.Modules;
 using BitCrafts.Module.Demo.UserAccounts.Data;
 using BitCrafts.Module.Demo.UserAccounts.Extensions;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Presenters;
+using Material.Icons;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +28,12 @@ public sealed class UserAccountsModule : IUserAccountsModule
 
     public void Initialize(IServiceProvider serviceProvider)
     {
+        var menuManager = serviceProvider.GetRequiredService<IMenuManager>();
+        var uiManager = serviceProvider.GetRequiredService<IUiManager>();
+
+
+        menuManager.AddMenuItemInSubItem("UserAccounts", "Test", MaterialIconKind.About,
+            () => { uiManager.ShowDialogAsync<IDisplayUserAccountsPresenter>(); });
         var dbContext = serviceProvider.GetRequiredService<UsersDbContext>();
         dbContext.Database.Migrate();
     }

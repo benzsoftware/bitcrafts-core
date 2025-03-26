@@ -48,6 +48,16 @@ public partial class MainView : BaseControl, IMainView
         }
     }
 
+    public Menu GetMenuControl()
+    {
+        return MainMenu;
+    }
+
+    public TabControl GetTabControl()
+    {
+        return MainTabControl;
+    }
+
     protected override void OnDisappeared()
     {
     }

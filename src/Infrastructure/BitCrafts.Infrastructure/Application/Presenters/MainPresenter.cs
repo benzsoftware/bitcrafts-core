@@ -27,19 +27,16 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
         View.Title = title;
     }
 
-    private void CreateMenuItems()
-    {
-        _modules = ServiceProvider.GetServices<IModule>().ToList().AsReadOnly();
-        View.SetupMenu(_modules);
-    }
-
     protected override async Task OnAppearedAsync()
     {
-        if (View is MainView mainView) _uiManager.SetTabControl(mainView.MainTabControl);
-
+        
         View.CloseEvent += ViewOnCloseEvent;
         View.MenuClickEvent += ViewOnMenuClickEvent;
-        CreateMenuItems();
+        var menuManager = (AvaloniaMenuManager)ServiceProvider.GetRequiredService<IMenuManager>();
+        menuManager.SetMenuControl(View.GetMenuControl());
+        _uiManager.SetTabControl(View.GetTabControl()); 
+        _modules = ServiceProvider.GetServices<IModule>().ToList().AsReadOnly();
+        View.SetupMenu(_modules);
         await InitializeModulesAsync();
     }
 
