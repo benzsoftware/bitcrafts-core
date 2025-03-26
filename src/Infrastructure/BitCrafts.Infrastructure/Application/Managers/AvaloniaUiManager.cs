@@ -1,5 +1,8 @@
+using System.Collections.Concurrent;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
+using BitCrafts.Infrastructure.Abstraction;
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
 using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
 using BitCrafts.Infrastructure.Abstraction.Threading;
@@ -15,10 +18,9 @@ namespace BitCrafts.Infrastructure.Application.Managers;
 public sealed class AvaloniaUiManager : IUiManager
 {
     private readonly ILogger<AvaloniaUiManager> _logger;
-    private readonly Dictionary<IPresenter, DefaultTabItem> _presenterToTabItemMap = new();
-    private readonly Dictionary<IPresenter, Window> _presenterToWindowMap = new();
+    private readonly ConcurrentDictionary<IPresenter, DefaultTabItem> _presenterToTabItemMap = new();
+    private readonly ConcurrentDictionary<IPresenter, Window> _presenterToWindowMap = new();
     private readonly IServiceProvider _serviceProvider;
-    private readonly Stack<Window> _windowStack = new();
     private Window _activeWindow;
     private IClassicDesktopStyleApplicationLifetime _applicationLifetime;
     private Window _rootWindow;
@@ -31,28 +33,50 @@ public sealed class AvaloniaUiManager : IUiManager
         _serviceProvider = serviceProvider;
     }
 
-    public Task ShowErrorMessageAsync(string title, string message)
+    public async Task ShowErrorMessageAsync(string title, string message)
     {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            await Dispatcher.UIThread.InvokeAsync(async void () =>
+                await ShowErrorMessageAsync(title, message));
+            return;
+        }
+
         var dialog = new ErrorMessageDialog();
         dialog.SetMessage(title, message);
-        return dialog.ShowDialog(_activeWindow);
+        await dialog.ShowDialog(_activeWindow);
     }
 
-    public Task ShowErrorMessageAsync(string title, Exception exception)
+    public async Task ShowErrorMessageAsync(string title, Exception exception)
     {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            await Dispatcher.UIThread.InvokeAsync(async void () =>
+                await ShowErrorMessageAsync(title, exception));
+            return;
+        }
+
         var dialog = new ErrorMessageDialog();
         dialog.SetMessage(title, exception.Message);
-        return dialog.ShowDialog(_activeWindow);
+        await dialog.ShowDialog(_activeWindow);
     }
 
-    public void ShowInTabControl<TPresenter>(Dictionary<string, object> parameters) where TPresenter : class, IPresenter
+    public async Task ShowInTabControlAsync<TPresenter>(Dictionary<string, object> parameters)
+        where TPresenter : class, IPresenter
     {
         var presenterType = typeof(TPresenter);
-        ShowInTabControl(presenterType, parameters);
+        await ShowInTabControlAsync(presenterType, parameters);
     }
 
-    public void ShowInTabControl(Type presenterType, Dictionary<string, object> parameters)
+    public async Task ShowInTabControlAsync(Type presenterType, Dictionary<string, object> parameters)
     {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            await Dispatcher.UIThread.InvokeAsync(async void () =>
+                await ShowInTabControlAsync(presenterType, parameters));
+            return;
+        }
+
         var existingTabItem = HasExistingPresenterInTabItems(presenterType);
         if (existingTabItem != null)
         {
@@ -71,11 +95,15 @@ public sealed class AvaloniaUiManager : IUiManager
         _tabControl.Items.Add(tabItem);
         _tabControl.SelectedItem = tabItem;
         tabItem.SetTitle(presenter.GetView().Title);
-        tabItem.Close += (_, _) =>
+
+        tabItem.Close += async void (_, _) =>
         {
-            _tabControl.Items.Remove(tabItem);
-            _presenterToTabItemMap.Remove(presenter);
-            presenter.Dispose();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _tabControl.Items.Remove(tabItem);
+                _presenterToTabItemMap.Remove(presenter, out _);
+                presenter.Dispose();
+            });
         };
         tabItem.SetContent(presenter.GetView() as UserControl);
     }
@@ -90,9 +118,16 @@ public sealed class AvaloniaUiManager : IUiManager
         return Task.CompletedTask;
     }
 
-    public void ShowWindow<TPresenter>(Dictionary<string, object> parameters) where TPresenter : class, IPresenter
+    public async Task ShowWindowAsync(Type presenterType, Dictionary<string, object> parameters = null)
     {
-        var presenterType = typeof(TPresenter);
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            await Dispatcher.UIThread
+                .InvokeAsync(async void () =>
+                    await ShowWindowAsync(presenterType, parameters));
+            return;
+        }
+
         if (HasExistingPresenterInWindow(presenterType)) return;
 
         var presenter = GetPresenterFromType(presenterType);
@@ -126,6 +161,13 @@ public sealed class AvaloniaUiManager : IUiManager
         }
     }
 
+    public async Task ShowWindowAsync<TPresenter>(Dictionary<string, object> parameters = null)
+        where TPresenter : class, IPresenter
+    {
+        var presenterType = typeof(TPresenter);
+        await ShowWindowAsync(presenterType, parameters);
+    }
+
     public void CloseWindow<TPresenter>() where TPresenter : class, IPresenter
     {
         var presenter = GetPresenterFromAnyWindow<TPresenter>();
@@ -156,28 +198,51 @@ public sealed class AvaloniaUiManager : IUiManager
 
         var dialog = CreateDialog(presenter, parameters);
         AddWindowToCollections(presenter, dialog);
-        _activeWindow = dialog;
-        await dialog.ShowDialog(_rootWindow);
+
+        await dialog.ShowDialog(_activeWindow);
     }
 
-    public void CloseDialog<TPresenter>() where TPresenter : class, IPresenter
+    public async Task CloseDialogAsync<TPresenter>() where TPresenter : class, IPresenter
     {
-        var presenter = GetPresenterFromAnyWindow<TPresenter>();
-        if (presenter != null && _presenterToWindowMap.TryGetValue(presenter, out var window)) window.Close();
+        var presenterType = typeof(TPresenter);
+        await CloseDialogAsync(presenterType);
+    }
+
+    public async Task CloseDialogAsync(Type presenterType)
+    {
+        var presenter = GetPresenterFromAnyWindow(presenterType);
+        if (presenter == null)
+        {
+            await ShowErrorMessageAsync("Error",
+                $"Could not create the required window component ({presenterType.Name}).");
+            return;
+        }
+
+        if (_presenterToWindowMap.TryGetValue(presenter, out var window))
+        {
+            window.Close();
+        }
     }
 
     public void Dispose()
     {
         _logger.LogInformation("UIManager Disposing ...");
-        while (_windowStack.TryPop(out var window)) window.Close(); // Dispose windows
         foreach (var current in _presenterToTabItemMap)
         {
             _tabControl.Items.Remove(current.Value);
             current.Key.Dispose();
         }
 
+        var windowsToClose = _presenterToWindowMap.Values.ToList();
+        foreach (var window in windowsToClose)
+        {
+            window?.Close();
+        }
+
         _presenterToTabItemMap.Clear();
         _presenterToWindowMap.Clear();
+
+
         var backgroundDispatcher =
             (BackgroundThreadDispatcher)_serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
         backgroundDispatcher.Stop();
@@ -190,10 +255,18 @@ public sealed class AvaloniaUiManager : IUiManager
 
     private IPresenter GetPresenterFromType(Type presenterType)
     {
-        return _serviceProvider.GetRequiredService(presenterType) as IPresenter;
+        var presenter = _serviceProvider.GetService(presenterType) as IPresenter;
+        if (presenter == null)
+        {
+            _logger.LogError("Presenter type {PresenterType} not registered or could not be resolved.",
+                presenterType.FullName);
+        }
+
+        return presenter;
     }
 
-    private Window CreateDialog(IPresenter presenter, Dictionary<string, object> parameters)
+
+    private Window CreateDialog(IPresenter presenter, Dictionary<string, object> parameters = null)
     {
         var view = presenter.GetView();
         var userControl = view as UserControl;
@@ -204,7 +277,7 @@ public sealed class AvaloniaUiManager : IUiManager
         return window;
     }
 
-    private Window CreateWindow(IPresenter presenter, Dictionary<string, object> parameters)
+    private Window CreateWindow(IPresenter presenter, Dictionary<string, object> parameters = null)
     {
         var view = presenter.GetView();
         var userControl = view as UserControl;
@@ -220,23 +293,23 @@ public sealed class AvaloniaUiManager : IUiManager
     {
         if (parameters != null)
         {
-            if (parameters.TryGetValue("Width", out var width))
+            if (parameters.TryGetValue(Constants.WindowWidthParameterName, out var width))
                 if (width is int windowWidth)
                     window.Width = windowWidth;
 
-            if (parameters.TryGetValue("Height", out var height))
+            if (parameters.TryGetValue(Constants.WindowHeightParameterName, out var height))
                 if (height is int windowHeight)
                     window.Height = windowHeight;
 
-            if (parameters.TryGetValue("WindowStartupLocation", out var startupLocation))
+            if (parameters.TryGetValue(Constants.WindowStartupLocationParameterName, out var startupLocation))
                 if (startupLocation is WindowStartupLocation location)
                     window.WindowStartupLocation = location;
 
-            if (parameters.TryGetValue("WindowState", out var windowState))
+            if (parameters.TryGetValue(Constants.WindowStateParameterName, out var windowState))
                 if (windowState is WindowState state)
                     window.WindowState = state;
 
-            if (parameters.TryGetValue("SystemDecoration", out var decoration))
+            if (parameters.TryGetValue(Constants.WindowSystemDecorationParameterName, out var decoration))
                 if (decoration is SystemDecorations windowDecoration)
                     window.SystemDecorations = windowDecoration;
         }
@@ -245,12 +318,10 @@ public sealed class AvaloniaUiManager : IUiManager
     private void AddWindowToCollections(IPresenter presenter, Window window)
     {
         _presenterToWindowMap[presenter] = window;
-        _windowStack.Push(window);
 
         window.Closed += (_, _) =>
         {
-            _windowStack.Pop();
-            _presenterToWindowMap.Remove(presenter);
+            _presenterToWindowMap.Remove(presenter, out _);
             presenter.Dispose();
         };
     }
@@ -270,32 +341,28 @@ public sealed class AvaloniaUiManager : IUiManager
 
     private TPresenter GetPresenterFromAnyWindow<TPresenter>() where TPresenter : IPresenter
     {
-        foreach (var presenter in _presenterToWindowMap.Keys)
-            if (presenter is TPresenter presenterToWindow)
-                return presenterToWindow;
+        var presenterType = typeof(TPresenter);
+        return (TPresenter)GetPresenterFromAnyWindow(presenterType);
+    }
 
-        return default;
+    private IPresenter GetPresenterFromAnyWindow(Type presenterType)
+    {
+        return _presenterToWindowMap.Keys
+            .FirstOrDefault(p => presenterType.IsAssignableFrom(p.GetType()));
     }
 
     private bool HasExistingPresenterInWindow(Type presenterType)
     {
-        foreach (var presenter in _presenterToWindowMap.Keys)
-            if (presenter.GetType() == presenterType)
-                return true;
-
-        return false;
+        return _presenterToWindowMap.Keys.Any(p => presenterType.IsAssignableFrom(p.GetType()));
     }
 
     private DefaultTabItem HasExistingPresenterInTabItems(Type presenterType)
     {
-        foreach (var map in _presenterToTabItemMap)
-        {
-            var interfaces = map.Key.GetType().GetInterfaces();
-            if (interfaces.Any(i => i == presenterType)) return map.Value;
-        }
-
-        return null;
+        return _presenterToTabItemMap
+            .FirstOrDefault(map => presenterType.IsAssignableFrom(map.Key.GetType()))
+            .Value;
     }
+
 
     public void SetNativeApplication(IClassicDesktopStyleApplicationLifetime applicationLifetime,
         bool useAuthentication)
@@ -308,23 +375,19 @@ public sealed class AvaloniaUiManager : IUiManager
     }
 
 
-    private void ApplicationLifetimeOnStartup(object sender, ControlledApplicationLifetimeStartupEventArgs e)
+    private async void ApplicationLifetimeOnStartup(object sender, ControlledApplicationLifetimeStartupEventArgs e)
     {
         _logger.LogInformation("UIManager Startup");
         if (_useAuthentication)
-            ShowWindow<IAuthenticationPresenter>(new Dictionary<string, object>()
+            await ShowWindowAsync<IAuthenticationPresenter>(new Dictionary<string, object>()
             {
-                { "Width", 500 },
-                { "Height", 300 },
-                { "SystemDecoration", SystemDecorations.None },
-                { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
+                { Constants.WindowWidthParameterName, 500 },
+                { Constants.WindowHeightParameterName, 300 },
+                { Constants.WindowSystemDecorationParameterName, SystemDecorations.None },
+                { Constants.WindowStateParameterName, WindowState.Normal }
             });
         else
-            ShowWindow<IMainPresenter>(new Dictionary<string, object>
-            {
-                { "WindowState", WindowState.Maximized },
-                { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
-            });
+            await ShowWindowAsync<IMainPresenter>();
     }
 
     private void ApplicationLifetimeOnExit(object sender, ControlledApplicationLifetimeExitEventArgs e)

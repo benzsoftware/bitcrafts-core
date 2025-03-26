@@ -5,9 +5,9 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BitCrafts.Infrastructure.Application.Views.DefaultDialog"
         CanResize="False"
-        WindowStartupLocation="CenterOwner"
-        MinWidth="400" MinHeight="200"
-        Title="DefaultDialog">
+        WindowStartupLocation="CenterScreen"
+        WindowState="Normal"
+        Title="UnTitled">
     <Panel>
         <ContentPresenter x:Name="DefaultContentPresenter" />
     </Panel>

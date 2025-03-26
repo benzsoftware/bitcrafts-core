@@ -29,7 +29,9 @@ public interface IUiManager : IDisposable
     ///     A dictionary containing parameters to pass to the presenter.
     ///     This can be used to provide initial data or configuration to the presenter.
     /// </param>
-    void ShowWindow<TPresenter>(Dictionary<string, object> parameters = null) where TPresenter : class, IPresenter;
+    Task ShowWindowAsync<TPresenter>(Dictionary<string, object> parameters = null) where TPresenter : class, IPresenter;
+
+    Task ShowWindowAsync(Type presenterType, Dictionary<string, object> parameters = null);
 
     /// <summary>
     ///     Shows a dialog window for a presenter asynchronously.
@@ -46,14 +48,16 @@ public interface IUiManager : IDisposable
     ///     Closes a dialog window associated with a presenter.
     /// </summary>
     /// <typeparam name="TPresenter">The type of the presenter whose dialog should be closed.</typeparam>
-    void CloseDialog<TPresenter>() where TPresenter : class, IPresenter;
+    Task CloseDialogAsync<TPresenter>() where TPresenter : class, IPresenter;
+
+    Task CloseDialogAsync(Type presenterType);
 
     /// <summary>
     ///     Shows a presenter's view within a tab control.
     /// </summary>
     /// <typeparam name="TPresenter">The type of the presenter whose view should be shown in the tab control.</typeparam>
     /// <param name="parameters">Optional parameters to pass to the presenter.</param>
-    void ShowInTabControl<TPresenter>(Dictionary<string, object> parameters = null)
+    Task ShowInTabControlAsync<TPresenter>(Dictionary<string, object> parameters = null)
         where TPresenter : class, IPresenter;
 
     /// <summary>
@@ -61,7 +65,7 @@ public interface IUiManager : IDisposable
     /// </summary>
     /// <param name="presenterType">The Type of the presenter whose view should be shown in the tab control.</param>
     /// <param name="parameters">Optional parameters to pass to the presenter.</param>
-    void ShowInTabControl(Type presenterType, Dictionary<string, object> parameters = null);
+    Task ShowInTabControlAsync(Type presenterType, Dictionary<string, object> parameters = null);
 
     /// <summary>
     /// Shows an error message dialog with a custom title and message.
