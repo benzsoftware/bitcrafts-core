@@ -49,7 +49,7 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
         foreach (var module in _modules) module.Initialize(ServiceProvider);
         return Task.CompletedTask;
     }
- 
+
     private void ViewOnCloseEvent(object sender, EventArgs e)
     {
         _uiManager.CloseWindow<IMainPresenter>();

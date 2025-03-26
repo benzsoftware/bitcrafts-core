@@ -30,7 +30,7 @@ public partial class MainView : BaseControl, IMainView
         LoadingText.Text = string.Empty;
         RootDockPanel.IsVisible = true;
     }
- 
+
 
     public Menu GetMenuControl()
     {
@@ -45,6 +45,7 @@ public partial class MainView : BaseControl, IMainView
     protected override void OnDisappeared()
     {
     }
+
     protected override void OnAppeared()
     {
     }

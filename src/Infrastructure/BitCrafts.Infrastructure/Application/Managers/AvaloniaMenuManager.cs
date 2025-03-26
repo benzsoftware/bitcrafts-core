@@ -67,10 +67,7 @@ public sealed class AvaloniaMenuManager : IMenuManager
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            if (_menu == null)
-            {
-                return;
-            }
+            if (_menu == null) return;
 
             _menu.Items.Add(new Separator());
         });
@@ -80,16 +77,10 @@ public sealed class AvaloniaMenuManager : IMenuManager
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            if (_menu == null)
-            {
-                return;
-            }
+            if (_menu == null) return;
 
             var parentMenuItem = FindMenuItemRecursively(_menu.Items, parentItem);
-            if (parentMenuItem == null)
-            {
-                return;
-            }
+            if (parentMenuItem == null) return;
 
             parentMenuItem.Items.Add(new Separator());
         });
@@ -99,7 +90,7 @@ public sealed class AvaloniaMenuManager : IMenuManager
     {
         var menuItem = new MenuItem()
         {
-            Header = title,
+            Header = title
         };
 
         menuItem.Icon = new MaterialIcon()
@@ -110,10 +101,7 @@ public sealed class AvaloniaMenuManager : IMenuManager
         };
 
 
-        if (action != null)
-        {
-            menuItem.Click += (sender, args) => action();
-        }
+        if (action != null) menuItem.Click += (sender, args) => action();
 
         return menuItem;
     }
@@ -127,16 +115,10 @@ public sealed class AvaloniaMenuManager : IMenuManager
         foreach (var menuItem in menuItems)
         {
             var title = menuItem.Header?.ToString();
-            if (title?.Contains(headerToFind) == true)
-            {
-                return menuItem;
-            }
+            if (title?.Contains(headerToFind) == true) return menuItem;
 
             var foundInChildren = FindMenuItemRecursively(menuItem.Items, headerToFind);
-            if (foundInChildren != null)
-            {
-                return foundInChildren;
-            }
+            if (foundInChildren != null) return foundInChildren;
         }
 
         return null;

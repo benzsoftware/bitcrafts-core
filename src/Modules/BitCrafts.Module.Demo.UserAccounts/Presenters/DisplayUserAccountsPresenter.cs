@@ -76,7 +76,7 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter<IDisplayUserAcc
         {
             { Constants.WindowWidthParameterName, 500 },
             { Constants.WindowHeightParameterName, 400 },
-            { Constants.WindowSystemDecorationParameterName, SystemDecorations.Full },
+            { Constants.WindowSystemDecorationParameterName, SystemDecorations.Full }
         });
     }
 

@@ -218,10 +218,7 @@ public sealed class AvaloniaUiManager : IUiManager
             return;
         }
 
-        if (_presenterToWindowMap.TryGetValue(presenter, out var window))
-        {
-            window.Close();
-        }
+        if (_presenterToWindowMap.TryGetValue(presenter, out var window)) window.Close();
     }
 
     public void Dispose()
@@ -234,10 +231,7 @@ public sealed class AvaloniaUiManager : IUiManager
         }
 
         var windowsToClose = _presenterToWindowMap.Values.ToList();
-        foreach (var window in windowsToClose)
-        {
-            window?.Close();
-        }
+        foreach (var window in windowsToClose) window?.Close();
 
         _presenterToTabItemMap.Clear();
         _presenterToWindowMap.Clear();
@@ -257,10 +251,8 @@ public sealed class AvaloniaUiManager : IUiManager
     {
         var presenter = _serviceProvider.GetService(presenterType) as IPresenter;
         if (presenter == null)
-        {
             _logger.LogError("Presenter type {PresenterType} not registered or could not be resolved.",
                 presenterType.FullName);
-        }
 
         return presenter;
     }
@@ -321,10 +313,7 @@ public sealed class AvaloniaUiManager : IUiManager
 
         window.Closed += (_, _) =>
         {
-            if (_activeWindow == window)
-            {
-                _activeWindow = _rootWindow;
-            }
+            if (_activeWindow == window) _activeWindow = _rootWindow;
 
             _presenterToWindowMap.Remove(presenter, out _);
             presenter.Dispose();
