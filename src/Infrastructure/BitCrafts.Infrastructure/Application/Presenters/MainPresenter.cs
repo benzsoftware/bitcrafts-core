@@ -29,14 +29,11 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
 
     protected override async Task OnAppearedAsync()
     {
-        
         View.CloseEvent += ViewOnCloseEvent;
-        View.MenuClickEvent += ViewOnMenuClickEvent;
         var menuManager = (AvaloniaMenuManager)ServiceProvider.GetRequiredService<IMenuManager>();
         menuManager.SetMenuControl(View.GetMenuControl());
-        _uiManager.SetTabControl(View.GetTabControl()); 
+        _uiManager.SetTabControl(View.GetTabControl());
         _modules = ServiceProvider.GetServices<IModule>().ToList().AsReadOnly();
-        View.SetupMenu(_modules);
         await InitializeModulesAsync();
     }
 
@@ -52,16 +49,7 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
         foreach (var module in _modules) module.Initialize(ServiceProvider);
         return Task.CompletedTask;
     }
-
-    private async void ViewOnMenuClickEvent(object sender, MenuClickEventArgs e)
-    {
-        if (_modules.Contains(e.Module))
-        {
-            var presenterType = e.Module.GetPresenterType();
-            await _uiManager.ShowInTabControlAsync(presenterType, null);
-        }
-    }
-
+ 
     private void ViewOnCloseEvent(object sender, EventArgs e)
     {
         _uiManager.CloseWindow<IMainPresenter>();
@@ -70,7 +58,6 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
     protected override async Task OnDisAppearedAsync()
     {
         View.CloseEvent -= ViewOnCloseEvent;
-        View.MenuClickEvent -= ViewOnMenuClickEvent;
         await ServiceProvider.GetRequiredService<IUiManager>().ShutdownAsync();
     }
 }

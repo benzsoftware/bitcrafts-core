@@ -8,8 +8,6 @@ namespace BitCrafts.Infrastructure.Application.Views;
 public interface IMainView : IView
 {
     event EventHandler CloseEvent;
-    event EventHandler<MenuClickEventArgs> MenuClickEvent;
-    void SetupMenu(IReadOnlyList<IModule> modules);
     Menu GetMenuControl();
     TabControl GetTabControl();
 }

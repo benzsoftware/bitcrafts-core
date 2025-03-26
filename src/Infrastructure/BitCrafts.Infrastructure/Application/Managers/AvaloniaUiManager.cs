@@ -321,6 +321,11 @@ public sealed class AvaloniaUiManager : IUiManager
 
         window.Closed += (_, _) =>
         {
+            if (_activeWindow == window)
+            {
+                _activeWindow = _rootWindow;
+            }
+
             _presenterToWindowMap.Remove(presenter, out _);
             presenter.Dispose();
         };

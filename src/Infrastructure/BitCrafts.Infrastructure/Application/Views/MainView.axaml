@@ -10,14 +10,11 @@
         <DockPanel x:Name="RootDockPanel" Margin="0" IsVisible="False">
             <Grid DockPanel.Dock="Top" RowDefinitions="*,Auto">
                 <Menu x:Name="MainMenu" FontSize="14">
-                    <MenuItem Padding="12" Header="_File">
-                        <MenuItem x:Name="QuitMenuItem" Header="_Quit..." Click="QuitMenuItem_OnClick">
-                            <MenuItem.Icon>
-                                <materialIcons:MaterialIcon Kind="ExitRun" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                    <MenuItem x:Name="QuitMenuItem" Header="Quit" Click="QuitMenuItem_OnClick">
+                        <MenuItem.Icon>
+                            <materialIcons:MaterialIcon Kind="ExitRun" />
+                        </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="ModuleMenuItem" Padding="8,0,8,0" Header="_Modules" />
                 </Menu>
                 <Separator Grid.Row="1" />
             </Grid>

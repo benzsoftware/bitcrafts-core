@@ -30,10 +30,12 @@ public sealed class UserAccountsModule : IUserAccountsModule
     {
         var menuManager = serviceProvider.GetRequiredService<IMenuManager>();
         var uiManager = serviceProvider.GetRequiredService<IUiManager>();
-
-
-        menuManager.AddMenuItemInSubItem("UserAccounts", "Test", MaterialIconKind.About,
-            () => { uiManager.ShowDialogAsync<IDisplayUserAccountsPresenter>(); });
+        menuManager.AddMenuItem("Views", MaterialIconKind.ViewArray);
+        menuManager.AddMenuItemInSubItem("Views", "Accounts", MaterialIconKind.About,
+            () => { uiManager.ShowInTabControlAsync<IDisplayUserAccountsPresenter>(); });
+        menuManager.AddSeparatorInSubItem("Views");
+        menuManager.AddMenuItemInSubItem("Views", "Create account", MaterialIconKind.About,
+            () => { uiManager.ShowWindowAsync<ICreateUserDialogPresenter>(); });
         var dbContext = serviceProvider.GetRequiredService<UsersDbContext>();
         dbContext.Database.Migrate();
     }
