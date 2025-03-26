@@ -1,3 +1,5 @@
+using Avalonia.Controls;
+using BitCrafts.Infrastructure.Abstraction;
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
 using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
 using BitCrafts.Infrastructure.Abstraction.Events;
@@ -70,7 +72,12 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter<IDisplayUserAcc
 
     private async void ViewOnCreateUser(object sender, EventArgs e)
     {
-        await _uiManager.ShowDialogAsync<ICreateUserDialogPresenter>();
+        await _uiManager.ShowDialogAsync<ICreateUserDialogPresenter>(new Dictionary<string, object>()
+        {
+            { Constants.WindowWidthParameterName, 500 },
+            { Constants.WindowHeightParameterName, 400 },
+            { Constants.WindowSystemDecorationParameterName, SystemDecorations.Full },
+        });
     }
 
     protected override Task OnDisAppearedAsync()

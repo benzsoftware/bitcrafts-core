@@ -49,15 +49,6 @@ public abstract class BasePresenter<TView> : IPresenter
     protected ILogger<BasePresenter<TView>> Logger { get; }
 
     /// <summary>
-    ///     Disposes of any resources used by the presenter.
-    /// </summary>
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
     ///     Gets the view associated with the presenter.
     /// </summary>
     /// <returns>The view instance.</returns>
@@ -120,6 +111,7 @@ public abstract class BasePresenter<TView> : IPresenter
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
+        if (_disposed) return;
         if (disposing)
         {
             View.AppearedEvent -= ViewOnAppearedEvent;
@@ -127,5 +119,18 @@ public abstract class BasePresenter<TView> : IPresenter
             View.Dispose();
             Logger.LogInformation($"{GetType().Name} Disposed.");
         }
+
+        _disposed = true;
     }
+
+    /// <summary>
+    ///     Disposes of any resources used by the presenter.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private bool _disposed = false;
 }

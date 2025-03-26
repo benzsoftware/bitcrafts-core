@@ -56,12 +56,12 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
         return Task.CompletedTask;
     }
 
-    private void ViewOnMenuClickEvent(object sender, MenuClickEventArgs e)
+    private async void ViewOnMenuClickEvent(object sender, MenuClickEventArgs e)
     {
         if (_modules.Contains(e.Module))
         {
             var presenterType = e.Module.GetPresenterType();
-            _uiManager.ShowInTabControl(presenterType, null);
+            await _uiManager.ShowInTabControlAsync(presenterType, null);
         }
     }
 

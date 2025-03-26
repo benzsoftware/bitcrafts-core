@@ -25,7 +25,7 @@ public static class ServiceCollectionExtension
         services.AddTransient<ICreateUserUseCase, CreateUserUseCase>();
         services.AddTransient<IDeleteUserUseCase, DeleteUserUseCase>();
         services.AddTransient<IUpdateUserUseCase, UpdateUserUseCase>();
-        // services.AddTransient<IAuthenticationUseCase, AuthenticationUseCase>();
+        services.AddTransient<IAuthenticationUseCase, AuthenticationUseCase>();
 
         services.AddDbContext<UsersDbContext>((serviceProvider, options) =>
         {
@@ -39,10 +39,6 @@ public static class ServiceCollectionExtension
             {
                 case "sqlite":
                     options.UseSqlite(configuration.GetConnectionString(defaultDatabaseConnectionString));
-                    break;
-                case "mariadb":
-                    /*options.UseMySql(
-                        new MariaDbServerVersion(configuration.GetConnectionString(defaultDatabaseConnectionString)));*/
                     break;
             }
         });

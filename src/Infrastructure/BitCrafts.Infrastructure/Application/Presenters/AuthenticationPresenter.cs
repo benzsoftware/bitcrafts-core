@@ -32,15 +32,16 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
         var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>().ExecuteAsync(e);
         if (isAunthenticated)
         {
-            ServiceProvider.GetRequiredService<IUiManager>().ShowWindow<IMainPresenter>(new Dictionary<string, object>()
-            {
-                { "WindowState", WindowState.Maximized },
-                { "Width", 1600 },
-                { "Height", 900 },
+            await ServiceProvider.GetRequiredService<IUiManager>().ShowWindowAsync<IMainPresenter>(
+                new Dictionary<string, object>()
                 {
-                    "WindowStartupLocation", WindowStartupLocation.CenterScreen
-                }
-            });
+                    { "WindowState", WindowState.Normal },
+                    { "Width", 1600 },
+                    { "Height", 900 },
+                    {
+                        "WindowStartupLocation", WindowStartupLocation.CenterScreen
+                    }
+                });
             ServiceProvider.GetRequiredService<IUiManager>().CloseWindow<IAuthenticationPresenter>();
         }
 
