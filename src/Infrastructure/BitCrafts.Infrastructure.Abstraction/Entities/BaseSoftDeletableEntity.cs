@@ -1,24 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BitCrafts.Infrastructure.Abstraction.Entities;
-
-/// <summary>
-///     Provides an abstract base class for soft-deletable entities with an integer ID.
-///     This class implements the ISoftDeletableEntity interface and provides default soft deletion properties.
-/// </summary>
-public abstract class BaseSoftDeletableEntity<T> : BaseEntity<T>, ISoftDeletableEntity
-{
-    /// <inheritdoc />
-
-    public bool IsDeleted { get; set; }
-
-    /// <inheritdoc />
-    public DateTimeOffset? DeletedAt { get; set; }
-
-    /// <inheritdoc />
-    public string DeletedBy { get; set; }
-
-    /// <inheritdoc />
-    public string DeletedReason { get; set; }
-}
 
 /// <summary>
 ///     Provides an abstract base class for soft-deletable entities with a generic ID.
@@ -31,9 +13,11 @@ public abstract class BaseSoftDeletableEntity : BaseEntity, ISoftDeletableEntity
     public bool IsDeleted { get; set; }
 
     /// <inheritdoc />
-    public DateTimeOffset? DeletedAt { get; set; }
+    [Required(ErrorMessage = "DeletedAt property is required.")]
+    public DateTimeOffset DeletedAt { get; set; }
 
     /// <inheritdoc />
+    [Required(ErrorMessage = "DeletedBy property is required.")]
     public string DeletedBy { get; set; }
 
     /// <inheritdoc />

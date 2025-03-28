@@ -47,4 +47,17 @@ public partial class AuthenticationView : BaseControl, IAuthenticationView
     {
         Cancel?.Invoke(this, EventArgs.Empty);
     }
+
+    public void DisplayProgressBar()
+    {
+        AuthenticatingProgressBar.IsVisible = true;
+        AuthenticateButton.IsEnabled = false;
+        CancelButton.IsEnabled = false;
+    }
+    public void HideProgressBar()
+    {
+        AuthenticatingProgressBar.IsVisible = false;
+        AuthenticateButton.IsEnabled = true;
+        CancelButton.IsEnabled = true;
+    }
 }

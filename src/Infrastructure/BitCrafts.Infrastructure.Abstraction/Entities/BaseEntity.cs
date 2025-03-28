@@ -3,18 +3,6 @@ using System.ComponentModel.DataAnnotations;
 namespace BitCrafts.Infrastructure.Abstraction.Entities;
 
 /// <summary>
-///     Provides an abstract base class for entities with an integer ID.
-///     This class implements the IEntity interface and provides a default ID property.
-/// </summary>
-public abstract class BaseEntity<T> : IEntity<T>
-{
-    /// <inheritdoc />
-
-    [Key]
-    public T Id { get; set; }
-}
-
-/// <summary>
 ///     Provides an abstract base class for entities with a generic ID.
 ///     This class implements the IEntity&lt;T&gt; interface and provides a default ID property.
 /// </summary>

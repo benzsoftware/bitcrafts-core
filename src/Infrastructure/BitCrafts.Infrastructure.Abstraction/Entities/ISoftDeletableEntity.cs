@@ -15,7 +15,7 @@ public interface ISoftDeletableEntity
     /// <summary>
     ///     Gets or sets the timestamp of when the entity was deleted.
     /// </summary>
-    DateTimeOffset? DeletedAt { get; set; }
+    DateTimeOffset DeletedAt { get; set; }
 
     /// <summary>
     ///     Gets or sets the user who deleted the entity.

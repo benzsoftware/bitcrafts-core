@@ -1,12 +1,14 @@
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
 using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
 using BitCrafts.Infrastructure.Abstraction.Application.Views;
+using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Infrastructure.Abstraction.Services;
 using BitCrafts.Infrastructure.Abstraction.Threading;
 using BitCrafts.Infrastructure.Application.Managers;
 using BitCrafts.Infrastructure.Application.Presenters;
 using BitCrafts.Infrastructure.Application.Views;
+using BitCrafts.Infrastructure.Data;
 using BitCrafts.Infrastructure.Events;
 using BitCrafts.Infrastructure.Modules;
 using BitCrafts.Infrastructure.Services;
@@ -43,11 +45,12 @@ public static class ServiceCollectionExtension
         services.TryAddSingleton<IEventAggregator, EventAggregator>();
         services.TryAddSingleton<IHashingService, HashingService>();
         services.TryAddSingleton<IUiManager, AvaloniaUiManager>();
+        services.TryAddSingleton<IMenuManager, AvaloniaMenuManager>();
+        services.TryAddSingleton<IDataValidator, DataValidator>();
         services.TryAddTransient<IMainPresenter, MainPresenter>();
         services.TryAddTransient<IMainView, MainView>();
         services.TryAddTransient<IAuthenticationView, AuthenticationView>();
         services.TryAddTransient<IAuthenticationPresenter, AuthenticationPresenter>();
-        services.TryAddSingleton<IMenuManager, AvaloniaMenuManager>();
         CreateDirectory("Modules");
         CreateDirectory("Settings");
         CreateDirectory("Databases");
