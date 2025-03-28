@@ -10,9 +10,12 @@ namespace BitCrafts.Infrastructure.Application.Presenters;
 
 public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuthenticationPresenter
 {
+    private readonly IUiManager _uimanager;
+
     public AuthenticationPresenter(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         View.Title = "Authentication";
+        _uimanager = serviceProvider.GetService<IUiManager>();
     }
 
     protected override Task OnAppearedAsync()
@@ -24,30 +27,42 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
 
     private void ViewOnCancel(object sender, EventArgs e)
     {
-        ServiceProvider.GetRequiredService<IUiManager>().CloseWindow<IAuthenticationPresenter>();
+        _uimanager.CloseWindow<IAuthenticationPresenter>();
     }
 
     private async void ViewOnAuthenticate(object sender, Authentication e)
     {
-        var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>().ExecuteAsync(e);
-        if (isAunthenticated)
+        try
         {
-            await ServiceProvider.GetRequiredService<IUiManager>().ShowWindowAsync<IMainPresenter>(
-                new Dictionary<string, object>()
-                {
-                    { "WindowState", WindowState.Normal },
-                    { "Width", 1600 },
-                    { "Height", 900 },
+            View.DisplayProgressBar();
+            var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>().ExecuteAsync(e);
+            if (isAunthenticated)
+            {
+                await _uimanager.ShowWindowAsync<IMainPresenter>(
+                    new Dictionary<string, object>()
                     {
-                        "WindowStartupLocation", WindowStartupLocation.CenterScreen
-                    }
-                });
-            ServiceProvider.GetRequiredService<IUiManager>().CloseWindow<IAuthenticationPresenter>();
-        }
+                        { "WindowState", WindowState.Normal },
+                        { "Width", 1600 },
+                        { "Height", 900 },
+                        {
+                            "WindowStartupLocation", WindowStartupLocation.CenterScreen
+                        }
+                    });
+                _uimanager.CloseWindow<IAuthenticationPresenter>();
+            }
 
-        else
+            else
+            {
+                View.SetAuthenticationError("Login or password is incorrect.");
+            }
+        }
+        catch (Exception exception)
         {
-            View.SetAuthenticationError("Login or password is incorrect.");
+            View.SetAuthenticationError(exception.Message);
+        }
+        finally
+        {
+            View.HideProgressBar();
         }
     }
 

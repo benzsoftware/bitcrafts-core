@@ -6,7 +6,7 @@
              Width="500" Height="300"
              x:Class="BitCrafts.Infrastructure.Application.Views.AuthenticationView">
     <Border BorderThickness="2" BorderBrush="DarkSlateGray">
-        <Grid RowDefinitions="Auto, Auto,Auto, *" Margin="12">
+        <Grid RowDefinitions="Auto, Auto,Auto,Auto, *" Margin="12">
             <StackPanel Grid.Row="0" Margin="0,24,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <TextBlock Text="Login:" Margin="10" Width="100" VerticalAlignment="Center" />
                 <TextBox x:Name="LoginTextBox" Width="255" Margin="10" HorizontalAlignment="Stretch" />
@@ -17,8 +17,12 @@
                          HorizontalAlignment="Stretch" />
             </StackPanel>
             <TextBlock Grid.Row="2" x:Name="ErrorMessgeTextBlox" Margin="130,12,0,0" Foreground="Orange" Text="" />
+            <ProgressBar Grid.Row="3" x:Name="AuthenticatingProgressBar" IsIndeterminate="True" Foreground="DarkOrange"
+                         IsVisible="False"
+                         Height="15">
+            </ProgressBar>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
-                        Grid.Row="3">
+                        Grid.Row="4">
                 <Button x:Name="AuthenticateButton" Content="Authenticate" Margin="5"
                         Click="AuthenticateButton_OnClick" />
                 <Button x:Name="CancelButton" Content="Cancel" Margin="5" Click="CancelButton_OnClick" />
