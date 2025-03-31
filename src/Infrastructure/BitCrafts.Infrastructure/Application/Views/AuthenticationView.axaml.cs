@@ -54,6 +54,7 @@ public partial class AuthenticationView : BaseControl, IAuthenticationView
         AuthenticateButton.IsEnabled = false;
         CancelButton.IsEnabled = false;
     }
+
     public void HideProgressBar()
     {
         AuthenticatingProgressBar.IsVisible = false;

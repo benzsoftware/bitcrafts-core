@@ -35,4 +35,6 @@ public interface IModule
     /// </summary>
     /// <param name="serviceProvider">The service provider used to resolve dependencies.</param>
     void Initialize(IServiceProvider serviceProvider);
+
+    void InitializeMenus(IServiceProvider serviceProvider);
 }

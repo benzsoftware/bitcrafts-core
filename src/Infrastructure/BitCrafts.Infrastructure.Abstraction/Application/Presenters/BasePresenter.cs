@@ -1,4 +1,6 @@
-﻿using BitCrafts.Infrastructure.Abstraction.Application.Views;
+﻿using BitCrafts.Infrastructure.Abstraction.Application.Managers;
+using BitCrafts.Infrastructure.Abstraction.Application.Views;
+using BitCrafts.Infrastructure.Abstraction.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -13,6 +15,10 @@ namespace BitCrafts.Infrastructure.Abstraction.Application.Presenters;
 public abstract class BasePresenter<TView> : IPresenter
     where TView : IView
 {
+    protected IBackgroundThreadDispatcher BackgroundThreadDispatcher { get; }
+
+    protected IUiManager UiManager { get; }
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="BasePresenter{TView}" /> class.
     /// </summary>
@@ -20,6 +26,8 @@ public abstract class BasePresenter<TView> : IPresenter
     public BasePresenter(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
+        BackgroundThreadDispatcher = serviceProvider.GetService<IBackgroundThreadDispatcher>();
+        UiManager = serviceProvider.GetService<IUiManager>();
         Logger = ServiceProvider.GetRequiredService<ILogger<BasePresenter<TView>>>();
         View = ServiceProvider.GetRequiredService<TView>();
         View.AppearedEvent += ViewOnAppearedEvent;

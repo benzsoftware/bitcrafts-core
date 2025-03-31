@@ -47,11 +47,6 @@ public static class ServiceCollectionExtension
                 case "sqlite":
                     options.UseSqlite(configuration.GetConnectionString(defaultDatabaseConnectionString));
                     break;
-
-                case "mariadb":
-                    /*  options.UseMySql(
-                          ServerVersion.AutoDetect(configuration.GetConnectionString(defaultDatabaseConnectionString)));*/
-                    break;
             }
         });
 

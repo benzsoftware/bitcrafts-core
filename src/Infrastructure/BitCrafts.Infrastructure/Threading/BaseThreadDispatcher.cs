@@ -1,7 +1,8 @@
 using System.Collections.Concurrent;
+using BitCrafts.Infrastructure.Abstraction.Threading;
 using Microsoft.Extensions.Logging;
 
-namespace BitCrafts.Infrastructure.Abstraction.Threading;
+namespace BitCrafts.Infrastructure.Threading;
 
 public abstract class BaseThreadDispatcher : IThreadDispatcher, IDisposable
 {
@@ -59,7 +60,7 @@ public abstract class BaseThreadDispatcher : IThreadDispatcher, IDisposable
     }
 
 
-    public Task<T> Invoke<T>(Func<T> func)
+    public Task<T> InvokeAsync<T>(Func<T> func)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, GetType());
 

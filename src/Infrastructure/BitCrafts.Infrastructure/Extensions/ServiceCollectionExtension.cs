@@ -40,17 +40,8 @@ public static class ServiceCollectionExtension
             loggingBuilder.AddSerilog(dispose: true)
         );
 
-        services.TryAddSingleton<IBackgroundThreadDispatcher, BackgroundThreadDispatcher>();
-        services.TryAddSingleton<IParallelism, Parallelism>();
-        services.TryAddSingleton<IEventAggregator, EventAggregator>();
-        services.TryAddSingleton<IHashingService, HashingService>();
-        services.TryAddSingleton<IUiManager, AvaloniaUiManager>();
-        services.TryAddSingleton<IMenuManager, AvaloniaMenuManager>();
-        services.TryAddSingleton<IDataValidator, DataValidator>();
-        services.TryAddTransient<IMainPresenter, MainPresenter>();
-        services.TryAddTransient<IMainView, MainView>();
-        services.TryAddTransient<IAuthenticationView, AuthenticationView>();
-        services.TryAddTransient<IAuthenticationPresenter, AuthenticationPresenter>();
+        services.AddManagers().AddPresenters().AddViews();
+
         CreateDirectory("Modules");
         CreateDirectory("Settings");
         CreateDirectory("Databases");
@@ -58,6 +49,31 @@ public static class ServiceCollectionExtension
         CreateDirectory("Temporary");
         var moduleRegistrer = new ModuleRegistrer(Log.Logger);
         moduleRegistrer.RegisterModules(services);
+        return services;
+    }
+
+    private static IServiceCollection AddPresenters(this IServiceCollection services)
+    {
+        services.TryAddTransient<IMainPresenter, MainPresenter>();
+        services.TryAddTransient<IAuthenticationPresenter, AuthenticationPresenter>();
+        return services;
+    }
+
+    private static IServiceCollection AddViews(this IServiceCollection services)
+    {
+        services.TryAddTransient<IMainView, MainView>();
+        services.TryAddTransient<IAuthenticationView, AuthenticationView>();
+        return services;
+    }
+
+    private static IServiceCollection AddManagers(this IServiceCollection services)
+    {
+        services.TryAddSingleton<IBackgroundThreadDispatcher, BackgroundThreadDispatcher>();
+        services.TryAddSingleton<IEventAggregator, EventAggregator>();
+        services.TryAddSingleton<IHashingService, HashingService>();
+        services.TryAddSingleton<IUiManager, AvaloniaUiManager>();
+        services.TryAddSingleton<IMenuManager, AvaloniaMenuManager>();
+        services.TryAddSingleton<IDataValidator, DataValidator>();
         return services;
     }
 
