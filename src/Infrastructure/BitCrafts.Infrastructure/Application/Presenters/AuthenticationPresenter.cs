@@ -11,12 +11,10 @@ namespace BitCrafts.Infrastructure.Application.Presenters;
 
 public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuthenticationPresenter
 {
-    private readonly IUiManager _uimanager;
-
+    
     public AuthenticationPresenter(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         View.Title = "Authentication";
-        _uimanager = serviceProvider.GetService<IUiManager>();
     }
 
     protected override Task OnAppearedAsync()
@@ -28,7 +26,7 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
 
     private void ViewOnCancel(object sender, EventArgs e)
     {
-        _uimanager.CloseWindow<IAuthenticationPresenter>();
+        UiManager.CloseWindow<IAuthenticationPresenter>();
     }
 
     private async void ViewOnAuthenticate(object sender, Authentication e)
@@ -39,7 +37,7 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
             var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>().ExecuteAsync(e);
             if (isAunthenticated)
             {
-                await _uimanager.ShowWindowAsync<IMainPresenter>(
+                await UiManager.ShowWindowAsync<IMainPresenter>(
                     new Dictionary<string, object>()
                     {
                         { Constants.WindowStateParameterName, WindowState.Normal },
@@ -49,7 +47,7 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
                             Constants.WindowStartupLocationParameterName, WindowStartupLocation.CenterScreen
                         }
                     });
-                _uimanager.CloseWindow<IAuthenticationPresenter>();
+                UiManager.CloseWindow<IAuthenticationPresenter>();
             }
 
             else
@@ -69,6 +67,9 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
 
     protected override Task OnDisAppearedAsync()
     {
+        View.Authenticate -= ViewOnAuthenticate;
+        View.Cancel -= ViewOnCancel;
+
         return Task.CompletedTask;
     }
 }

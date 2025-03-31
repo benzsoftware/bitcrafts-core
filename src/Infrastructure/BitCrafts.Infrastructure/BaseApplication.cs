@@ -24,13 +24,12 @@ public abstract class BaseApplication : global::Avalonia.Application
     public override void Initialize()
     {
         RequestedThemeVariant = ThemeVariant.Dark;
-        Styles.Add(new SimpleTheme());
         Styles.Add(new FluentTheme());
         Styles.Add(new ModernTheme());
-        Styles.Add(new StyleInclude(new Uri("avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"))
+        Styles.Add(new StyleInclude(new Uri("avares://BitCrafts.Infrastructure/"))
         {
             Source = new Uri("avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml")
-        });
+        }); 
         Styles.Add(new MaterialIconStyles(null));
     }
 

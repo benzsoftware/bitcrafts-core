@@ -35,7 +35,7 @@ public sealed class ModuleRegistrer : IModuleRegistrer
 
     private void LoadModulesFromPath(string path, IServiceCollection services)
     {
-        if (!string.IsNullOrEmpty(path))
+        if (!string.IsNullOrEmpty(path) || !Directory.Exists(path))
         {
             var allFiles = Directory.GetFiles(path, "*.Module.*.dll");
             if (allFiles.Length <= 0)
