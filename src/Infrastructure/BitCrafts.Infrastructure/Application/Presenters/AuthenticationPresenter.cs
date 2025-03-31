@@ -35,7 +35,6 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
         try
         {
             View.DisplayProgressBar();
-            await Task.Delay(25000);
             var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>().ExecuteAsync(e);
             if (isAunthenticated)
             {
