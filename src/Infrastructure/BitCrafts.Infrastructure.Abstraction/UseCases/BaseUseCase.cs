@@ -17,7 +17,7 @@ public abstract class BaseUseCase<TInput, TOutput> : IUseCase<TInput, TOutput>
     protected BaseUseCase(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
-        BackgroundThreadDispatcher = serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
+        BackgroundThreadDispatcher = ServiceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
     }
 
     protected IServiceProvider ServiceProvider { get; }
@@ -25,7 +25,10 @@ public abstract class BaseUseCase<TInput, TOutput> : IUseCase<TInput, TOutput>
     /// <inheritdoc />
     public async Task<TOutput> ExecuteAsync(TInput input)
     {
-        return await ExecuteCoreAsync(input).ConfigureAwait(false);
+        return await BackgroundThreadDispatcher.InvokeTaskAsync(async () =>
+        {
+            return await ExecuteCoreAsync(input).ConfigureAwait(false);
+        }).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -65,9 +68,12 @@ public abstract class BaseUseCase<TInput, TOutput> : IUseCase<TInput, TOutput>
 /// <typeparam name="TInput">The type of the input for the use case.</typeparam>
 public abstract class BaseUseCase<TInput> : IUseCase<TInput>
 {
+    public IBackgroundThreadDispatcher BackgroundThreadDispatcher { get; set; }
+
     protected BaseUseCase(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
+        BackgroundThreadDispatcher = ServiceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
     }
 
     protected IServiceProvider ServiceProvider { get; }
@@ -79,7 +85,7 @@ public abstract class BaseUseCase<TInput> : IUseCase<TInput>
     /// <returns>A Task that represents the asynchronous operation.</returns>
     public async Task ExecuteAsync(TInput input)
     {
-        await ExecuteCoreAsync(input).ConfigureAwait(false);
+        await BackgroundThreadDispatcher.InvokeAsync(() => ExecuteCoreAsync(input).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -120,14 +126,18 @@ public abstract class BaseUseCase : IUseCase
     protected BaseUseCase(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
+        BackgroundThreadDispatcher = ServiceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
     }
+
+    protected IBackgroundThreadDispatcher BackgroundThreadDispatcher { get; set; }
 
     protected IServiceProvider ServiceProvider { get; }
 
     /// <inheritdoc />
     public async Task ExecuteAsync()
     {
-        await ExecuteCoreAsync().ConfigureAwait(false);
+        await BackgroundThreadDispatcher.InvokeAsync(() => ExecuteCoreAsync().ConfigureAwait(false))
+            .ConfigureAwait(false);
     }
 
     /// <summary>
@@ -169,7 +179,10 @@ public abstract class BaseUseCaseWithResult<TResult> : IUseCaseWithResult<TResul
     protected BaseUseCaseWithResult(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
+        BackgroundThreadDispatcher = ServiceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
     }
+
+    protected IBackgroundThreadDispatcher BackgroundThreadDispatcher { get; set; }
 
     protected IServiceProvider ServiceProvider { get; }
 
@@ -188,7 +201,8 @@ public abstract class BaseUseCaseWithResult<TResult> : IUseCaseWithResult<TResul
     /// <returns>A Task that represents the asynchronous operation and yields the result.</returns>
     public async Task<TResult> ExecuteAsync()
     {
-        return await ExecuteCoreAsync().ConfigureAwait(false);
+        return await BackgroundThreadDispatcher.InvokeTaskAsync(() => { return ExecuteCoreAsync(); })
+            .ConfigureAwait(false);
     }
 
     /// <summary>
