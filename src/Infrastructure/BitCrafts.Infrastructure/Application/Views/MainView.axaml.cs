@@ -1,7 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BitCrafts.Infrastructure.Abstraction.Modules;
-using BitCrafts.Infrastructure.Application.Events;
 using BitCrafts.Infrastructure.Avalonia.Views;
 
 namespace BitCrafts.Infrastructure.Application.Views;

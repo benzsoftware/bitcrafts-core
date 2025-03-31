@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BitCrafts.Infrastructure.Abstraction.Modules;
+namespace BitCrafts.Infrastructure.Modules;
 
 /// <summary>
 ///     Defines an interface for module registrars.

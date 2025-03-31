@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
 using Material.Icons;

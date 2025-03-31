@@ -1,4 +1,7 @@
-﻿namespace BitCrafts.Infrastructure.Abstraction.UseCases;
+﻿using BitCrafts.Infrastructure.Abstraction.Threading;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace BitCrafts.Infrastructure.Abstraction.UseCases;
 
 /// <summary>
 ///     Provides an abstract base class for use cases that take an input and produce an output.
@@ -9,9 +12,12 @@
 /// <typeparam name="TOutput">The type of the output from the use case.</typeparam>
 public abstract class BaseUseCase<TInput, TOutput> : IUseCase<TInput, TOutput>
 {
+    protected IBackgroundThreadDispatcher BackgroundThreadDispatcher { get; }
+
     protected BaseUseCase(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
+        BackgroundThreadDispatcher = serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
     }
 
     protected IServiceProvider ServiceProvider { get; }

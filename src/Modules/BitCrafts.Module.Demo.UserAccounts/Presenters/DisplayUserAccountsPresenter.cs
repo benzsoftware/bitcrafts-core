@@ -20,10 +20,9 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter<IDisplayUserAcc
     private readonly IDeleteUserUseCase _deleteUserUseCase;
     private readonly IDisplayUsersUseCase _displayUsersUseCase;
     private readonly IEventAggregator _eventAggregator;
-    private readonly IUiManager _uiManager;
     private readonly IUpdateUserUseCase _updateUserUseCase;
     private readonly UsersDbContext _usersDbContext;
-    private readonly IBackgroundThreadDispatcher _backgroundThreadDispatcher;
+    private Guid _createUserEventId;
 
     public DisplayUserAccountsPresenter(IServiceProvider serviceProvider)
         : base(serviceProvider)
@@ -31,10 +30,8 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter<IDisplayUserAcc
         _usersDbContext = serviceProvider.GetRequiredService<UsersDbContext>();
         _displayUsersUseCase = serviceProvider.GetRequiredService<IDisplayUsersUseCase>();
         _updateUserUseCase = serviceProvider.GetRequiredService<IUpdateUserUseCase>();
-        _uiManager = serviceProvider.GetRequiredService<IUiManager>();
         _deleteUserUseCase = serviceProvider.GetRequiredService<IDeleteUserUseCase>();
         _eventAggregator = serviceProvider.GetRequiredService<IEventAggregator>();
-        _backgroundThreadDispatcher = serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
         View.Title = "User Accounts";
     }
 
@@ -44,14 +41,14 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter<IDisplayUserAcc
         View.UpdateUser += ViewOnUpdateUser;
         View.DeleteUser += ViewOnDeleteUser;
         View.Refresh += ViewOnRefresh;
-        _eventAggregator.Subscribe<CreateUserEvent>(OnCreateUser);
+        _createUserEventId = _eventAggregator.Subscribe<CreateUserEvent>(OnCreateUser);
         var result = await _displayUsersUseCase.ExecuteAsync();
         View.RefreshUsers(result);
     }
 
     private async void ViewOnRefresh(object sender, EventArgs e)
     {
-        var result = await _backgroundThreadDispatcher.InvokeTaskAsync(_displayUsersUseCase.ExecuteAsync);
+        var result = await BackgroundThreadDispatcher.InvokeTaskAsync(_displayUsersUseCase.ExecuteAsync);
         View.RefreshUsers(result);
     }
 
@@ -62,17 +59,17 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter<IDisplayUserAcc
 
     private async void ViewOnDeleteUser(object sender, IEnumerable<User> e)
     {
-        await _backgroundThreadDispatcher.InvokeTaskAsync(async () => await _deleteUserUseCase.ExecuteAsync(e));
+        await BackgroundThreadDispatcher.InvokeTaskAsync(async () => await _deleteUserUseCase.ExecuteAsync(e));
     }
 
     private async void ViewOnUpdateUser(object sender, User e)
     {
-        await _backgroundThreadDispatcher.InvokeTaskAsync(async () => await _updateUserUseCase.ExecuteAsync(e));
+        await BackgroundThreadDispatcher.InvokeTaskAsync(async () => await _updateUserUseCase.ExecuteAsync(e));
     }
 
     private async void ViewOnCreateUser(object sender, EventArgs e)
     {
-        await _uiManager.ShowDialogAsync<ICreateUserDialogPresenter>(new Dictionary<string, object>()
+        await UiManager.ShowDialogAsync<ICreateUserDialogPresenter>(new Dictionary<string, object>()
         {
             { Constants.WindowWidthParameterName, 500 },
             { Constants.WindowHeightParameterName, 400 },
@@ -85,7 +82,7 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter<IDisplayUserAcc
         View.UpdateUser -= ViewOnUpdateUser;
         View.DeleteUser -= ViewOnDeleteUser;
         View.CreateUser -= ViewOnCreateUser;
-        _eventAggregator.Unsubscribe<CreateUserEvent>(OnCreateUser);
+        _eventAggregator.Unsubscribe<CreateUserEvent>(_createUserEventId);
         return Task.CompletedTask;
     }
 }

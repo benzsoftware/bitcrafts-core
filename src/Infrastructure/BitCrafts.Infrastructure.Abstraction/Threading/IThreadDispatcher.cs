@@ -26,7 +26,7 @@ public interface IThreadDispatcher
     /// <typeparam name="T">The type of the return value.</typeparam>
     /// <param name="func">The function to execute.</param>
     /// <returns>A Task that represents the asynchronous operation and yields the result.</returns>
-    Task<T> Invoke<T>(Func<T> func);
+    Task<T> InvokeAsync<T>(Func<T> func);
 
     /// <summary>
     ///     Invokes an asynchronous function on the dispatcher's thread and returns the result.

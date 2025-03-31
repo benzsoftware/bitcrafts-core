@@ -15,14 +15,14 @@ public sealed class DataValidator : IDataValidator
             return false;
         }
 
-        var validationContext = new ValidationContext(entity, serviceProvider: null, items: null);
+        var validationContext = new ValidationContext(entity, null, null);
         validationResults = new List<ValidationResult>();
 
-        bool isValid = Validator.TryValidateObject(
-            instance: entity,
-            validationContext: validationContext,
-            validationResults: validationResults,
-            validateAllProperties: validateAllProperties
+        var isValid = Validator.TryValidateObject(
+            entity,
+            validationContext,
+            validationResults,
+            validateAllProperties
         );
 
         return isValid;

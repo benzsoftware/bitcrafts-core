@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using BitCrafts.Infrastructure.Abstraction.Application.Managers;
+﻿using BitCrafts.Infrastructure.Abstraction.Application.Managers;
 using BitCrafts.Infrastructure.Abstraction.Modules;
 using BitCrafts.Module.Demo.UserAccounts.Data;
 using BitCrafts.Module.Demo.UserAccounts.Extensions;
@@ -28,6 +27,12 @@ public sealed class UserAccountsModule : IUserAccountsModule
 
     public void Initialize(IServiceProvider serviceProvider)
     {
+        var dbContext = serviceProvider.GetRequiredService<UsersDbContext>();
+        dbContext.Database.Migrate();
+    }
+
+    public void InitializeMenus(IServiceProvider serviceProvider)
+    {
         var menuManager = serviceProvider.GetRequiredService<IMenuManager>();
         var uiManager = serviceProvider.GetRequiredService<IUiManager>();
         menuManager.AddMenuItem("Views", MaterialIconKind.ViewArray);
@@ -36,7 +41,5 @@ public sealed class UserAccountsModule : IUserAccountsModule
         menuManager.AddSeparatorInSubItem("Views");
         menuManager.AddMenuItemInSubItem("Views", "Create account", MaterialIconKind.About,
             () => { uiManager.ShowWindowAsync<ICreateUserDialogPresenter>(); });
-        var dbContext = serviceProvider.GetRequiredService<UsersDbContext>();
-        dbContext.Database.Migrate();
     }
 }

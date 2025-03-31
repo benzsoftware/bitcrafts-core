@@ -28,4 +28,8 @@ public sealed class FinanceModule : IFinanceModule
         var dbContext = serviceProvider.GetRequiredService<FinanceDbContext>();
         dbContext.Database.Migrate();
     }
+
+    public void InitializeMenus(IServiceProvider serviceProvider)
+    {
+    }
 }

@@ -19,8 +19,7 @@
             <TextBlock Grid.Row="2" x:Name="ErrorMessgeTextBlox" Margin="130,12,0,0" Foreground="Orange" Text="" />
             <ProgressBar Grid.Row="3" x:Name="AuthenticatingProgressBar" IsIndeterminate="True" Foreground="DarkOrange"
                          IsVisible="False"
-                         Height="15">
-            </ProgressBar>
+                         Height="15" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
                         Grid.Row="4">
                 <Button x:Name="AuthenticateButton" Content="Authenticate" Margin="5"

@@ -2,7 +2,6 @@
 using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
 using BitCrafts.Infrastructure.Abstraction.Modules;
 using BitCrafts.Infrastructure.Abstraction.Threading;
-using BitCrafts.Infrastructure.Application.Events;
 using BitCrafts.Infrastructure.Application.Managers;
 using BitCrafts.Infrastructure.Application.Views;
 using Microsoft.Extensions.Configuration;
@@ -34,20 +33,21 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
         menuManager.SetMenuControl(View.GetMenuControl());
         _uiManager.SetTabControl(View.GetTabControl());
         _modules = ServiceProvider.GetServices<IModule>().ToList().AsReadOnly();
+        foreach (var module in _modules) module.InitializeMenus(ServiceProvider); // should be run on ui thread
+
         await InitializeModulesAsync();
     }
 
     private async Task InitializeModulesAsync()
     {
-        View.SetBusy("Initializing Modules ...");
-        await _backgroundThreadDispatcher.InvokeTaskAsync(InitModules);
+        View.SetBusy("Initializing Modules in background.");
+        await _backgroundThreadDispatcher.InvokeAsync(InitModules);
         View.UnsetBusy();
     }
 
-    private Task InitModules()
+    private void InitModules()
     {
         foreach (var module in _modules) module.Initialize(ServiceProvider);
-        return Task.CompletedTask;
     }
 
     private void ViewOnCloseEvent(object sender, EventArgs e)
