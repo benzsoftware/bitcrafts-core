@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using BitCrafts.Infrastructure.Abstraction;
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
 using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
 using BitCrafts.Infrastructure.Abstraction.Application.Views;
@@ -41,11 +42,11 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
                 await _uimanager.ShowWindowAsync<IMainPresenter>(
                     new Dictionary<string, object>()
                     {
-                        { "WindowState", WindowState.Normal },
-                        { "Width", 1600 },
-                        { "Height", 900 },
+                        { Constants.WindowStateParameterName, WindowState.Normal },
+                        { Constants.WindowWidthParameterName, 1600 },
+                        { Constants.WindowHeightParameterName, 900 },
                         {
-                            "WindowStartupLocation", WindowStartupLocation.CenterScreen
+                            Constants.WindowStartupLocationParameterName, WindowStartupLocation.CenterScreen
                         }
                     });
                 _uimanager.CloseWindow<IAuthenticationPresenter>();
