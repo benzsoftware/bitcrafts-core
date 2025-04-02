@@ -35,11 +35,11 @@ public sealed class UserAccountsModule : IUserAccountsModule
     {
         var menuManager = serviceProvider.GetRequiredService<IMenuManager>();
         var uiManager = serviceProvider.GetRequiredService<IUiManager>();
-        menuManager.AddMenuItem("Views", MaterialIconKind.ViewArray);
-        menuManager.AddMenuItemInSubItem("Views", "Accounts", MaterialIconKind.About,
+        menuManager.AddMenuItem("Views");
+        menuManager.AddMenuItemInSubItem("Views", "Accounts",
             () => { uiManager.ShowInTabControlAsync<IDisplayUserAccountsPresenter>(); });
         menuManager.AddSeparatorInSubItem("Views");
-        menuManager.AddMenuItemInSubItem("Views", "Create account", MaterialIconKind.About,
+        menuManager.AddMenuItemInSubItem("Views", "Create account",
             () => { uiManager.ShowWindowAsync<ICreateUserDialogPresenter>(); });
     }
 }

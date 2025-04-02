@@ -24,7 +24,7 @@ public sealed class AvaloniaMenuManager : IMenuManager
         _menu = menu ?? throw new ArgumentNullException(nameof(menu));
     }
 
-    public void AddMenuItem(string title, MaterialIconKind iconKind, Action action = null)
+    public void AddMenuItem(string title, Action action = null)
     {
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -34,12 +34,12 @@ public sealed class AvaloniaMenuManager : IMenuManager
                 return;
             }
 
-            var menuItem = CreateMenuItem(title, iconKind, action);
+            var menuItem = CreateMenuItem(title, action);
             _menu.Items.Add(menuItem);
         });
     }
 
-    public void AddMenuItemInSubItem(string parentItem, string title, MaterialIconKind iconKind, Action action = null)
+    public void AddMenuItemInSubItem(string parentItem, string title, Action action = null)
     {
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -57,7 +57,7 @@ public sealed class AvaloniaMenuManager : IMenuManager
                 return;
             }
 
-            var newMenuItem = CreateMenuItem(title, iconKind, action);
+            var newMenuItem = CreateMenuItem(title, action);
             parentMenuItem.Items.Add(newMenuItem);
         });
     }
@@ -85,20 +85,12 @@ public sealed class AvaloniaMenuManager : IMenuManager
         });
     }
 
-    private MenuItem CreateMenuItem(string title, MaterialIconKind iconKind, Action action = null)
+    private MenuItem CreateMenuItem(string title, Action action = null)
     {
         var menuItem = new MenuItem()
         {
             Header = title
         };
-
-        menuItem.Icon = new MaterialIcon()
-        {
-            Kind = iconKind,
-            Width = DefaultIconWidth,
-            Height = DefaultIconHeight
-        };
-
 
         if (action != null) menuItem.Click += (sender, args) => action();
 

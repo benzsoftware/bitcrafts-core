@@ -9,12 +9,12 @@ public class Authentication
     public string Login { get; set; }
 
     [Required]
-    [MaxLength(256)]
+    [MaxLength(24)]
     [MinLength(8)]
     public string Password { get; set; }
 
     [Required]
-    [MaxLength(256)]
+    [MaxLength(24)]
     [MinLength(8)]
     public string PasswordConfirmation { get; set; }
 }

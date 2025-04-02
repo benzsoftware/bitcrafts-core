@@ -6,7 +6,7 @@
              Margin="0"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="BitCrafts.Infrastructure.Application.Views.MainView">
-    <Grid>
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <DockPanel x:Name="RootDockPanel" Margin="0" IsVisible="False">
             <Grid DockPanel.Dock="Top" RowDefinitions="*,Auto">
                 <Menu x:Name="MainMenu" FontSize="14">
