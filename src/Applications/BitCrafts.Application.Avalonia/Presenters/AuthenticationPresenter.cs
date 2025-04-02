@@ -10,7 +10,6 @@ namespace BitCrafts.Application.Avalonia.Presenters;
 
 public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuthenticationPresenter
 {
-    
     public AuthenticationPresenter(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         View.Title = "Authentication";

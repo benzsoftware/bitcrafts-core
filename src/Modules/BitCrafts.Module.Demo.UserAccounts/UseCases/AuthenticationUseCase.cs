@@ -9,7 +9,7 @@ public sealed class AuthenticationUseCase : BaseUseCase<Authentication, bool>, I
     {
     }
 
-    protected override  async Task<bool> ExecuteCoreAsync(Authentication input)
+    protected override async Task<bool> ExecuteCoreAsync(Authentication input)
     {
         await Task.Delay(3000);
         return await Task.FromResult(true);

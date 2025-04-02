@@ -5,7 +5,7 @@ using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
 using BitCrafts.Application.Abstraction.Application.Managers;
 using BitCrafts.Application.Avalonia.Extensions;
-using BitCrafts.Application.Avalonia.Managers; 
+using BitCrafts.Application.Avalonia.Managers;
 using BitCrafts.Infrastructure.Abstraction.Threading;
 using BitCrafts.Infrastructure.Abstraction.UseCases;
 using BitCrafts.Infrastructure.Extensions;

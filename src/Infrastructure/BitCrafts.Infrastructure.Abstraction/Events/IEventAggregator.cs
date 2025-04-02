@@ -1,6 +1,5 @@
 namespace BitCrafts.Infrastructure.Abstraction.Events;
 
-
 public interface IEventAggregator
 {
     Guid Subscribe<TEvent>(Action<TEvent> handler) where TEvent : IEvent;

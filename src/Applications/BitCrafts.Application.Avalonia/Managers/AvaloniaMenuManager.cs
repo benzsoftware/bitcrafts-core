@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BitCrafts.Application.Abstraction.Application.Managers; 
+using BitCrafts.Application.Abstraction.Application.Managers;
 using Microsoft.Extensions.Logging;
 
 namespace BitCrafts.Application.Avalonia.Managers;
@@ -9,7 +9,7 @@ public sealed class AvaloniaMenuManager : IMenuManager
 {
     private readonly ILogger<AvaloniaMenuManager> _logger;
     private Menu _menu;
-     
+
     public AvaloniaMenuManager(ILogger<AvaloniaMenuManager> logger)
     {
         _logger = logger;
@@ -56,7 +56,7 @@ public sealed class AvaloniaMenuManager : IMenuManager
             var newMenuItem = CreateMenuItem(title, action);
             parentMenuItem.Items.Add(newMenuItem);
         });
-    } 
+    }
 
     public void AddSeparatorInSubItem(string parentItem)
     {

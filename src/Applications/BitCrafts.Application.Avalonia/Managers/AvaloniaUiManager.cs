@@ -108,10 +108,10 @@ public sealed class AvaloniaUiManager : IUiManager
             HorizontalAlignment = HorizontalAlignment.Stretch,
             Margin = new Thickness(2)
         };
- 
+
         headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
- 
+
         var titleTextBox = new TextBlock
         {
             Name = "TitleTextBox",

@@ -1,5 +1,5 @@
 using BitCrafts.Application.Abstraction.Application.Managers;
-using BitCrafts.Application.Abstraction.Application.Presenters; 
+using BitCrafts.Application.Abstraction.Application.Presenters;
 using BitCrafts.Module.Finance.Abstraction.Presenters;
 using BitCrafts.Module.Finance.Abstraction.UseCases;
 using BitCrafts.Module.Finance.Abstraction.Views;

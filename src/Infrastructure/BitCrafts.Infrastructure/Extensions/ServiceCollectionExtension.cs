@@ -1,7 +1,7 @@
 using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Infrastructure.Abstraction.Services;
-using BitCrafts.Infrastructure.Abstraction.Threading; 
+using BitCrafts.Infrastructure.Abstraction.Threading;
 using BitCrafts.Infrastructure.Data;
 using BitCrafts.Infrastructure.Events;
 using BitCrafts.Infrastructure.Modules;
@@ -44,13 +44,13 @@ public static class ServiceCollectionExtension
         var moduleRegistrer = new ModuleRegistrer(Log.Logger);
         moduleRegistrer.RegisterModules(services);
         return services;
-    } 
+    }
 
     private static IServiceCollection AddManagers(this IServiceCollection services)
     {
         services.TryAddSingleton<IBackgroundThreadDispatcher, BackgroundThreadDispatcher>();
         services.TryAddSingleton<IEventAggregator, EventAggregator>();
-        services.TryAddSingleton<IHashingService, HashingService>(); 
+        services.TryAddSingleton<IHashingService, HashingService>();
         services.TryAddSingleton<IDataValidator, DataValidator>();
         return services;
     }

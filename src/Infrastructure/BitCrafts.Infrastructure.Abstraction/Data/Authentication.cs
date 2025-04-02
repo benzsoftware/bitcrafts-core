@@ -4,9 +4,7 @@ namespace BitCrafts.Infrastructure.Abstraction.Data;
 
 public class Authentication
 {
-    [Required]
-    [MaxLength(100)]
-    public string Login { get; set; }
+    [Required] [MaxLength(100)] public string Login { get; set; }
 
     [Required]
     [MaxLength(24)]

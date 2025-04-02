@@ -155,7 +155,6 @@ public abstract class BaseThreadDispatcher : IThreadDispatcher, IDisposable
         try
         {
             while (!_cancellationTokenSource.Token.IsCancellationRequested)
-            {
                 try
                 {
                     if (_taskQueue.TryTake(out var task, Timeout.Infinite, _cancellationTokenSource.Token))
@@ -165,7 +164,6 @@ public abstract class BaseThreadDispatcher : IThreadDispatcher, IDisposable
                 {
                     _logger.LogError(ex, "Unhandled exception.");
                 }
-            }
         }
         catch (OperationCanceledException)
         {
