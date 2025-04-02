@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Applications\BitCrafts.Application.Avalonia.Controls\BitCrafts.Application.Avalonia.Controls.csproj"/>
         <ProjectReference Include="..\..\Infrastructure\BitCrafts.Infrastructure\BitCrafts.Infrastructure.csproj"/>
         <ProjectReference Include="..\BitCrafts.Module.Finance.Abstraction\BitCrafts.Module.Finance.Abstraction.csproj"/>
     </ItemGroup>

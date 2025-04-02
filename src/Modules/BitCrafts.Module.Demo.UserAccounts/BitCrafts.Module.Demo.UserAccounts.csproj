@@ -24,8 +24,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Applications\BitCrafts.Application.Avalonia.Controls\BitCrafts.Application.Avalonia.Controls.csproj"/>
         <ProjectReference Include="..\..\Infrastructure\BitCrafts.Infrastructure.Abstraction\BitCrafts.Infrastructure.Abstraction.csproj"/>
-        <ProjectReference Include="..\..\Infrastructure\BitCrafts.Infrastructure.Avalonia\BitCrafts.Infrastructure.Avalonia.csproj"/>
         <ProjectReference Include="..\BitCrafts.Modules.Demo.UserAccounts.Abstraction\BitCrafts.Modules.Demo.UserAccounts.Abstraction.csproj"/>
     </ItemGroup>
 

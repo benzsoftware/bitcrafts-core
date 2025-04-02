@@ -36,8 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Infrastructure\BitCrafts.Infrastructure.Avalonia\BitCrafts.Infrastructure.Avalonia.csproj"/>
-        <ProjectReference Include="..\..\Infrastructure\BitCrafts.Infrastructure.Abstraction\BitCrafts.Infrastructure.Abstraction.csproj"/>
+        <ProjectReference Include="..\..\Applications\BitCrafts.Application.Avalonia\BitCrafts.Application.Avalonia.csproj"/>
         <ProjectReference Include="..\..\Infrastructure\BitCrafts.Infrastructure\BitCrafts.Infrastructure.csproj"/>
         <ProjectReference Include="..\..\Modules\BitCrafts.Module.Finance.Abstraction\BitCrafts.Module.Finance.Abstraction.csproj"/>
         <ProjectReference Include="..\..\Modules\BitCrafts.Module.Finance\BitCrafts.Module.Finance.csproj"/>

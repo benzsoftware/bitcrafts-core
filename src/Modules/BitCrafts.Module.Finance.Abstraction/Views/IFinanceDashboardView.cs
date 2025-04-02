@@ -1,4 +1,4 @@
-using BitCrafts.Infrastructure.Abstraction.Application.Views;
+using BitCrafts.Application.Abstraction.Application.Views; 
 
 namespace BitCrafts.Module.Finance.Abstraction.Views;
 

@@ -1,9 +1,7 @@
 using Avalonia.Controls;
-using BitCrafts.Infrastructure.Abstraction;
-using BitCrafts.Infrastructure.Abstraction.Application.Managers;
-using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
+using BitCrafts.Application.Abstraction;
+using BitCrafts.Application.Abstraction.Application.Presenters;
 using BitCrafts.Infrastructure.Abstraction.Events;
-using BitCrafts.Infrastructure.Abstraction.Threading;
 using BitCrafts.Module.Demo.UserAccounts.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Events;

@@ -1,4 +1,4 @@
-using BitCrafts.Infrastructure.Avalonia.Views;
+using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Module.Finance.Abstraction.Views;
 
 namespace BitCrafts.Module.Finance.Views;

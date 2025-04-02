@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using BitCrafts.Infrastructure.Avalonia.Views;
+using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
 

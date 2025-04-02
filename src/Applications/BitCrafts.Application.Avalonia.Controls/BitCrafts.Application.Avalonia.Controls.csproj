@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>latestmajor</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.2.6"/>
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.6"/>
+        <PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.1.5"/>
+        <PackageReference Include="Avalonia.Controls.PanAndZoom" Version="11.2.0"/>
+        <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.6"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BitCrafts.Application.Abstraction\BitCrafts.Application.Abstraction.csproj"/>
+    </ItemGroup>
+
+</Project>

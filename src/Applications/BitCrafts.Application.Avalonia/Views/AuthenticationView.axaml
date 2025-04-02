@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
+             Width="500" Height="300"
+             x:Class="BitCrafts.Application.Avalonia.Views.AuthenticationView">
+    <Border BorderThickness="2" BorderBrush="DarkSlateGray">
+        <Grid RowDefinitions="Auto, Auto,Auto,Auto, *" Margin="12">
+            <StackPanel Grid.Row="0" Margin="0,24,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <TextBlock Text="Login:" Margin="10" Width="100" VerticalAlignment="Center" />
+                <TextBox x:Name="LoginTextBox" Width="255" Margin="10" HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <TextBlock Text="Password:" Margin="10" Width="100" VerticalAlignment="Center" />
+                <TextBox x:Name="PasswordTextBox" Width="255" Margin="10" PasswordChar="*"
+                         HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <TextBlock Grid.Row="2" x:Name="ErrorMessgeTextBlox" Margin="130,12,0,0" Foreground="Orange" Text="" />
+            <ProgressBar Grid.Row="3" x:Name="AuthenticatingProgressBar" IsIndeterminate="True" Foreground="DarkOrange"
+                         IsVisible="False"
+                         Height="15" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
+                        Grid.Row="4">
+                <Button x:Name="AuthenticateButton" Content="Authenticate" Margin="5"
+                        Click="AuthenticateButton_OnClick" />
+                <Button x:Name="CancelButton" Content="Cancel" Margin="5" Click="CancelButton_OnClick" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
