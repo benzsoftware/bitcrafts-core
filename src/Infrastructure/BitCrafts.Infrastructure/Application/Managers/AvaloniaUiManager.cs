@@ -1,6 +1,9 @@
 using System.Collections.Concurrent;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 using BitCrafts.Infrastructure.Abstraction;
 using BitCrafts.Infrastructure.Abstraction.Application.Managers;
@@ -18,7 +21,7 @@ namespace BitCrafts.Infrastructure.Application.Managers;
 public sealed class AvaloniaUiManager : IUiManager
 {
     private readonly ILogger<AvaloniaUiManager> _logger;
-    private readonly ConcurrentDictionary<IPresenter, DefaultTabItem> _presenterToTabItemMap = new();
+    private readonly ConcurrentDictionary<IPresenter, TabItem> _presenterToTabItemMap = new();
     private readonly ConcurrentDictionary<IPresenter, Window> _presenterToWindowMap = new();
     private readonly IServiceProvider _serviceProvider;
     private Window _activeWindow;
@@ -86,17 +89,50 @@ public sealed class AvaloniaUiManager : IUiManager
 
         var presenter = GetPresenterFromType(presenterType);
         presenter.SetParameters(parameters);
-
         var view = presenter.GetView();
         if (view is not UserControl)
             throw new InvalidOperationException("The view associated with the presenter is not a UserControl.");
-        var tabItem = new DefaultTabItem();
+        var tabItem = CreateTabItem(presenter);
         _presenterToTabItemMap[presenter] = tabItem;
         _tabControl.Items.Add(tabItem);
-        _tabControl.SelectedItem = tabItem;
-        tabItem.SetTitle(presenter.GetView().Title);
+    }
 
-        tabItem.Close += async void (_, _) =>
+    private TabItem CreateTabItem(IPresenter presenter)
+    {
+        var tabItem = new TabItem();
+        var headerGrid = new Grid
+        {
+            MinWidth = 150,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            Margin = new Thickness(2)
+        };
+
+        // Configuration des colonnes du Grid
+        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        // Création du TextBlock
+        var titleTextBox = new TextBlock
+        {
+            Name = "TitleTextBox",
+            Text = "Title",
+            FontSize = 12,
+            FontWeight = FontWeight.Bold,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        Grid.SetColumn(titleTextBox, 0);
+        headerGrid.Children.Add(titleTextBox);
+
+        var closeButton = new Button
+        {
+            Content = "x",
+            BorderThickness = new Thickness(0),
+            BorderBrush = new SolidColorBrush(Colors.DarkSlateGray),
+            CornerRadius = new CornerRadius(0),
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Right
+        };
+        closeButton.Click += async void (_, _) =>
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -105,7 +141,13 @@ public sealed class AvaloniaUiManager : IUiManager
                 presenter.Dispose();
             });
         };
-        tabItem.SetContent(presenter.GetView() as UserControl);
+        Grid.SetColumn(closeButton, 1);
+        headerGrid.Children.Add(closeButton);
+
+        tabItem.Header = headerGrid;
+        var userControl = presenter.GetView() as UserControl;
+        tabItem.Content = userControl;
+        return tabItem;
     }
 
     public Task ShutdownAsync()
@@ -328,7 +370,7 @@ public sealed class AvaloniaUiManager : IUiManager
             window.Show();
     }
 
-    private void HandleExistingTabItem(DefaultTabItem tabItem)
+    private void HandleExistingTabItem(TabItem tabItem)
     {
         _tabControl.SelectedItem = tabItem;
     }
@@ -350,7 +392,7 @@ public sealed class AvaloniaUiManager : IUiManager
         return _presenterToWindowMap.Keys.Any(p => presenterType.IsAssignableFrom(p.GetType()));
     }
 
-    private DefaultTabItem HasExistingPresenterInTabItems(Type presenterType)
+    private TabItem HasExistingPresenterInTabItems(Type presenterType)
     {
         return _presenterToTabItemMap
             .FirstOrDefault(map => presenterType.IsAssignableFrom(map.Key.GetType()))

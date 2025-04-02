@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         Title="UnTitled">
-    <Panel>
+    <Panel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <ContentPresenter x:Name="DefaultContentPresenter" />
     </Panel>
 </Window>
