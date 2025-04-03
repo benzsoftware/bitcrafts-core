@@ -6,8 +6,8 @@
         <LangVersion>latestmajor</LangVersion>
         <Title>BitCrafts Infrastructure</Title>
         <Authors>Younes BENMOUSSA</Authors>
-        <PackageProjectUrl>https://github.com/BitCrafts/bitcrafts-core</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/BitCrafts/bitcrafts-core</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/benzsoftware/bitcrafts-core</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/benzsoftware/bitcrafts-core</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>

@@ -1,10 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>latestmajor</LangVersion>
+        <Title>BitCrafts Application Avalonia</Title>
+        <Authors>Younes BENMOUSSA</Authors>
+        <PackageProjectUrl>https://github.com/benzsoftware/bitcrafts-core</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/benzsoftware/bitcrafts-core</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>

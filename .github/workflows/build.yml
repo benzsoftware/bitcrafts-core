@@ -29,4 +29,4 @@ jobs:
         run: dotnet build BitCrafts.Core.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test BitCrafts.Core.sln --no-restore --verbosity normal
+        run: dotnet test BitCrafts.Core.sln --no-restore --verbosity normal --settings code-coverage.runsettings --collect "XPlat Code Coverage;Format=cobertura" 

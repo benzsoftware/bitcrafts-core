@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Infrastructure.Abstraction.Services;
@@ -14,6 +15,7 @@ using Serilog;
 
 namespace BitCrafts.Infrastructure.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddBitCraftsInfrastructure(this IServiceCollection services)
