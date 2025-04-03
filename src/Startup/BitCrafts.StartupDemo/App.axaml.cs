@@ -1,5 +1,5 @@
 using Avalonia.Markup.Xaml;
-using BitCrafts.Infrastructure;
+using BitCrafts.Application.Avalonia;
 
 namespace BitCrafts.StartupDemo;
 

@@ -49,12 +49,8 @@ public static class StringExtension
     {
         var result = new StringBuilder();
         foreach (var ch in input)
-        {
             if (char.IsDigit(ch))
-            {
                 result.Append(ch);
-            }
-        }
 
         return result.ToString();
     }
@@ -67,10 +63,9 @@ public static class StringExtension
             ? result
             : defaultValue;
     }
-    
+
     public static bool IsNullOrWhiteSpace(this string input)
     {
         return string.IsNullOrWhiteSpace(input);
     }
-
 }

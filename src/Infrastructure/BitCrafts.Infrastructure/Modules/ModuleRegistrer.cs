@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.Loader;
 using BitCrafts.Infrastructure.Abstraction.Modules;
@@ -6,6 +7,7 @@ using Serilog;
 
 namespace BitCrafts.Infrastructure.Modules;
 
+[ExcludeFromCodeCoverage]
 public sealed class ModuleRegistrer : IModuleRegistrer
 {
     private readonly ILogger _logger;

@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using BitCrafts.Infrastructure.Avalonia.Views;
+using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Module.Finance.Abstraction.Data;
 using BitCrafts.Module.Finance.Abstraction.Views;
 

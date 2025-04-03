@@ -61,10 +61,7 @@ public sealed class EventAggregator : IEventAggregator
             return;
         }
 
-        if (!_handlers.TryGetValue(typeof(TEvent), out var handlers) || handlers.IsEmpty)
-        {
-            return;
-        }
+        if (!_handlers.TryGetValue(typeof(TEvent), out var handlers) || handlers.IsEmpty) return;
 
         var currentHandlers = handlers.ToArray();
 

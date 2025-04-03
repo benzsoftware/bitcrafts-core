@@ -1,13 +1,8 @@
-using BitCrafts.Infrastructure.Abstraction.Application.Managers;
-using BitCrafts.Infrastructure.Abstraction.Application.Presenters;
-using BitCrafts.Infrastructure.Abstraction.Application.Views;
+using System.Diagnostics.CodeAnalysis;
 using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Infrastructure.Abstraction.Services;
 using BitCrafts.Infrastructure.Abstraction.Threading;
-using BitCrafts.Infrastructure.Application.Managers;
-using BitCrafts.Infrastructure.Application.Presenters;
-using BitCrafts.Infrastructure.Application.Views;
 using BitCrafts.Infrastructure.Data;
 using BitCrafts.Infrastructure.Events;
 using BitCrafts.Infrastructure.Modules;
@@ -20,6 +15,7 @@ using Serilog;
 
 namespace BitCrafts.Infrastructure.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddBitCraftsInfrastructure(this IServiceCollection services)
@@ -40,7 +36,7 @@ public static class ServiceCollectionExtension
             loggingBuilder.AddSerilog(dispose: true)
         );
 
-        services.AddManagers().AddPresenters().AddViews();
+        services.AddManagers();
 
         CreateDirectory("Modules");
         CreateDirectory("Settings");
@@ -52,27 +48,11 @@ public static class ServiceCollectionExtension
         return services;
     }
 
-    private static IServiceCollection AddPresenters(this IServiceCollection services)
-    {
-        services.TryAddTransient<IMainPresenter, MainPresenter>();
-        services.TryAddTransient<IAuthenticationPresenter, AuthenticationPresenter>();
-        return services;
-    }
-
-    private static IServiceCollection AddViews(this IServiceCollection services)
-    {
-        services.TryAddTransient<IMainView, MainView>();
-        services.TryAddTransient<IAuthenticationView, AuthenticationView>();
-        return services;
-    }
-
     private static IServiceCollection AddManagers(this IServiceCollection services)
     {
         services.TryAddSingleton<IBackgroundThreadDispatcher, BackgroundThreadDispatcher>();
         services.TryAddSingleton<IEventAggregator, EventAggregator>();
         services.TryAddSingleton<IHashingService, HashingService>();
-        services.TryAddSingleton<IUiManager, AvaloniaUiManager>();
-        services.TryAddSingleton<IMenuManager, AvaloniaMenuManager>();
         services.TryAddSingleton<IDataValidator, DataValidator>();
         return services;
     }

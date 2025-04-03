@@ -38,15 +38,21 @@ jobs:
         id: extract_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Pack NuGet package 1
+      - name: Pack NuGet package BitCrafts.Infrastructure
         run: dotnet pack src/Infrastructure/BitCrafts.Infrastructure/BitCrafts.Infrastructure.csproj --configuration Release --no-restore --output . /p:AssemblyVersion=${{ steps.extract_version.outputs.VERSION }} /p:FileVersion=${{ steps.extract_version.outputs.VERSION }} /p:Version=${{ steps.extract_version.outputs.VERSION }}
 
-      - name: Pack NuGet package 2
-        run: dotnet pack src/Infrastructure/BitCrafts.Infrastructure.Avalonia/BitCrafts.Infrastructure.Avalonia.csproj --configuration Release --no-restore --output . /p:AssemblyVersion=${{ steps.extract_version.outputs.VERSION }} /p:FileVersion=${{ steps.extract_version.outputs.VERSION }} /p:Version=${{ steps.extract_version.outputs.VERSION }}
-
-      - name: Pack NuGet package 3
+      - name: Pack NuGet package BitCrafts.Infrastructure.Abstraction
         run: dotnet pack src/Infrastructure/BitCrafts.Infrastructure.Abstraction/BitCrafts.Infrastructure.Abstraction.csproj --configuration Release --no-restore --output . /p:AssemblyVersion=${{ steps.extract_version.outputs.VERSION }} /p:FileVersion=${{ steps.extract_version.outputs.VERSION }} /p:Version=${{ steps.extract_version.outputs.VERSION }}
 
+      - name: Pack NuGet package BitCrafts.Application.Abstraction
+        run: dotnet pack src/Applications/BitCrafts.Application.Abstraction/BitCrafts.Application.Abstraction.csproj --configuration Release --no-restore --output . /p:AssemblyVersion=${{ steps.extract_version.outputs.VERSION }} /p:FileVersion=${{ steps.extract_version.outputs.VERSION }} /p:Version=${{ steps.extract_version.outputs.VERSION }}
+        
+      - name: Pack NuGet package BitCrafts.Application.Avalonia
+        run: dotnet pack src/Applications/BitCrafts.Application.Avalonia/BitCrafts.Application.Avalonia.csproj --configuration Release --no-restore --output . /p:AssemblyVersion=${{ steps.extract_version.outputs.VERSION }} /p:FileVersion=${{ steps.extract_version.outputs.VERSION }} /p:Version=${{ steps.extract_version.outputs.VERSION }}
+        
+      - name: Pack NuGet package BitCrafts.Application.Avalonia.Controls
+        run: dotnet pack src/Applications/BitCrafts.Application.Avalonia.Controls/BitCrafts.Application.Avalonia.Controls.csproj --configuration Release --no-restore --output . /p:AssemblyVersion=${{ steps.extract_version.outputs.VERSION }} /p:FileVersion=${{ steps.extract_version.outputs.VERSION }} /p:Version=${{ steps.extract_version.outputs.VERSION }}
+        
       - name: Publish NuGet package to GitHub Packages
         run: dotnet nuget push *.nupkg -k ${GITHUB_TOKEN} -s https://nuget.pkg.github.com/$GITHUB_REPOSITORY_OWNER/index.json --skip-duplicate --no-symbols
         env:
