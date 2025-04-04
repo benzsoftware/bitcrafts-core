@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Headless" Version="11.2.6"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.6"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
+        <PackageReference Include="MSTest.TestAdapter" Version="3.0.4"/>
+        <PackageReference Include="MSTest.TestFramework" Version="3.0.4"/>
+        <PackageReference Include="coverlet.collector" Version="6.0.0"/>
+        <PackageReference Include="NSubstitute" Version="5.3.0"/>
+        <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.17">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Applications\BitCrafts.Application.Avalonia\BitCrafts.Application.Avalonia.csproj"/>
+        <ProjectReference Include="..\..\src\Infrastructure\BitCrafts.Infrastructure\BitCrafts.Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\src\Modules\BitCrafts.Module.Demo.UserAccounts\BitCrafts.Module.Demo.UserAccounts.csproj"/>
+        <ProjectReference Include="..\..\src\Modules\BitCrafts.Modules.Demo.UserAccounts.Abstraction\BitCrafts.Modules.Demo.UserAccounts.Abstraction.csproj"/>
+    </ItemGroup>
+
+</Project>
