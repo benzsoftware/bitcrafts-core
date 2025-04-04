@@ -177,7 +177,58 @@ public class EventAggregatorTests
             Arg.Any<Func<object, Exception, string>>());
     }
 
+    [TestMethod]
+    public void BaseEvent_ShouldHaveDefaultTimestamp()
+    {
+        // Arrange & Act
+        var testEvent = new TestEvent();
+
+        // Assert
+        Assert.IsTrue((DateTimeOffset.Now - testEvent.Timestamp).TotalSeconds < 1);
+        // Vérifie que le timestamp a été défini dans la dernière seconde
+    }
+
+    [TestMethod]
+    public void BaseEvent_WithCustomTimestamp_ShouldUseProvidedTimestamp()
+    {
+        // Arrange
+        var customTimestamp = DateTimeOffset.Now.AddDays(-1);
+
+        // Act
+        var testEvent = new TestEventWithCustomTimestamp(customTimestamp);
+
+        // Assert
+        Assert.AreEqual(customTimestamp, testEvent.Timestamp);
+    }
+
+    [TestMethod]
+    public void Publish_ShouldPreserveEventTimestamp()
+    {
+        // Arrange
+        var customTimestamp = DateTimeOffset.Now.AddHours(-2);
+        var testEvent = new TestEventWithCustomTimestamp(customTimestamp);
+        var receivedTimestamp = DateTimeOffset.MinValue;
+
+        Action<TestEventWithCustomTimestamp> handler = evt => { receivedTimestamp = evt.Timestamp; };
+
+        _eventAggregator.Subscribe(handler);
+
+        // Act
+        _eventAggregator.Publish(testEvent);
+
+        // Assert
+        Assert.AreEqual(customTimestamp, receivedTimestamp);
+    }
+
     private class TestEvent : BaseEvent
     {
+    }
+
+    private class TestEventWithCustomTimestamp : BaseEvent
+    {
+        public TestEventWithCustomTimestamp(DateTimeOffset timestamp)
+        {
+            Timestamp = timestamp;
+        }
     }
 }

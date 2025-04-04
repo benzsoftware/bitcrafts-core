@@ -5,7 +5,7 @@ namespace BitCrafts.Infrastructure.Abstraction.Extensions;
 
 public static class StringExtension
 {
-    public static int ParseOrGetDefault(
+    public static int ParseIntOrGetDefault(
         this string input,
         int defaultValue = 0,
         NumberStyles numberStyle = NumberStyles.Integer,
@@ -15,7 +15,7 @@ public static class StringExtension
         return int.TryParse(input, numberStyle, culture, out var result) ? result : defaultValue;
     }
 
-    public static double ParseOrGetDefault(
+    public static double ParseDoubleOrGetDefault(
         this string input,
         double defaultValue = 0.0,
         NumberStyles numberStyle = NumberStyles.Float | NumberStyles.AllowThousands,
@@ -25,7 +25,7 @@ public static class StringExtension
         return double.TryParse(input, numberStyle, culture, out var result) ? result : defaultValue;
     }
 
-    public static decimal ParseOrGetDefault(
+    public static decimal ParseDecimalOrGetDefault(
         this string input,
         decimal defaultValue = 0.0m,
         NumberStyles numberStyle = NumberStyles.Number,
