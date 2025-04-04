@@ -1,4 +1,4 @@
-namespace BitCrafts.Application.Abstraction.Application.Views;
+namespace BitCrafts.Application.Abstraction.Views;
 
 /// <summary>
 ///     Defines an interface for views.

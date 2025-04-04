@@ -1,6 +1,6 @@
-using BitCrafts.Application.Abstraction.Application.Managers;
-using BitCrafts.Application.Abstraction.Application.Presenters;
-using BitCrafts.Application.Abstraction.Application.Views;
+using BitCrafts.Application.Abstraction.Managers;
+using BitCrafts.Application.Abstraction.Presenters;
+using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Application.Avalonia.Managers;
 using BitCrafts.Application.Avalonia.Presenters;
 using BitCrafts.Application.Avalonia.Views;

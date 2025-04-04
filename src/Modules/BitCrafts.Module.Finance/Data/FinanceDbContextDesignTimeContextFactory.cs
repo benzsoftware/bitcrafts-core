@@ -13,8 +13,17 @@ public class FinanceDbContextDesignTimeContextFactory : IDesignTimeDbContextFact
             .Build();
 
         var builder = new DbContextOptionsBuilder<FinanceDbContext>();
-        var connectionString = configuration.GetConnectionString("InternalDb");
-        builder.UseSqlite(connectionString);
+
+        var dbProviderName = configuration["ApplicationSettings:DbProviderName"]?.ToLowerInvariant();
+        switch (dbProviderName)
+        {
+            case "sqlite":
+                builder.UseSqlite(configuration.GetConnectionString(dbProviderName));
+                break;
+            case "postgresql":
+                builder.UseNpgsql(configuration.GetConnectionString(dbProviderName));
+                break;
+        }
 
         return new FinanceDbContext(builder.Options);
     }

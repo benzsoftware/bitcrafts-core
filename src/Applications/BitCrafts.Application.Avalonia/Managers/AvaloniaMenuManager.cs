@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BitCrafts.Application.Abstraction.Application.Managers;
+using BitCrafts.Application.Abstraction.Managers;
 using Microsoft.Extensions.Logging;
 
 namespace BitCrafts.Application.Avalonia.Managers;

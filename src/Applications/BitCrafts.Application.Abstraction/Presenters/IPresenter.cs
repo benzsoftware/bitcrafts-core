@@ -1,6 +1,6 @@
-﻿using BitCrafts.Application.Abstraction.Application.Views;
+﻿using BitCrafts.Application.Abstraction.Views;
 
-namespace BitCrafts.Application.Abstraction.Application.Presenters;
+namespace BitCrafts.Application.Abstraction.Presenters;
 
 /// <summary>
 ///     Defines an interface for presenters.

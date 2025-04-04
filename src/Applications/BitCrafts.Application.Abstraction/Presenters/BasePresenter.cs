@@ -1,10 +1,10 @@
-﻿using BitCrafts.Application.Abstraction.Application.Managers;
-using BitCrafts.Application.Abstraction.Application.Views;
+﻿using BitCrafts.Application.Abstraction.Managers;
+using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Infrastructure.Abstraction.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace BitCrafts.Application.Abstraction.Application.Presenters;
+namespace BitCrafts.Application.Abstraction.Presenters;
 
 /// <summary>
 ///     Provides an abstract base class for presenters.

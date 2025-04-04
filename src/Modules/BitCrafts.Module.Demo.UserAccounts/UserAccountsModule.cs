@@ -1,4 +1,4 @@
-﻿using BitCrafts.Application.Abstraction.Application.Managers;
+﻿using BitCrafts.Application.Abstraction.Managers;
 using BitCrafts.Infrastructure.Abstraction.Modules;
 using BitCrafts.Module.Demo.UserAccounts.Data;
 using BitCrafts.Module.Demo.UserAccounts.Extensions;
