@@ -1,6 +1,6 @@
-using BitCrafts.Application.Abstraction.Application.Presenters;
+using BitCrafts.Application.Abstraction.Presenters;
 
-namespace BitCrafts.Application.Abstraction.Application.Managers;
+namespace BitCrafts.Application.Abstraction.Managers;
 
 /// <summary>
 ///     Defines an interface for UI managers.

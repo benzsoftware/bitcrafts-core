@@ -1,6 +1,6 @@
 using BitCrafts.Infrastructure.Abstraction.Data;
 
-namespace BitCrafts.Application.Abstraction.Application.Views;
+namespace BitCrafts.Application.Abstraction.Views;
 
 public interface IAuthenticationView : IView
 {

@@ -1,5 +1,5 @@
 using Avalonia.Controls;
-using BitCrafts.Application.Abstraction.Application.Views;
+using BitCrafts.Application.Abstraction.Views;
 
 namespace BitCrafts.Application.Avalonia.Views;
 

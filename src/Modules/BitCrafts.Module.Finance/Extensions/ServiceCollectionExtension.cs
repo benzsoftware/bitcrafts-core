@@ -47,6 +47,9 @@ public static class ServiceCollectionExtension
                 case "sqlite":
                     options.UseSqlite(configuration.GetConnectionString(defaultDatabaseConnectionString));
                     break;
+                case "postgresql":
+                    options.UseNpgsql(configuration.GetConnectionString(defaultDatabaseConnectionString));
+                    break;
             }
         });
 

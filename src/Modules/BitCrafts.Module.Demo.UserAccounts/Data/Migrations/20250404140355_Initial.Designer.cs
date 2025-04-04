@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BitCrafts.Module.Demo.UserAccounts.Data.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20250322144625_Initial")]
+    [Migration("20250404140355_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

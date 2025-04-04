@@ -1,5 +1,5 @@
 using Avalonia.Interactivity;
-using BitCrafts.Application.Abstraction.Application.Views;
+using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Infrastructure.Abstraction.Data;
 

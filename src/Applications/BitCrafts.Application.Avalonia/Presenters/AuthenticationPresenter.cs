@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using BitCrafts.Application.Abstraction;
-using BitCrafts.Application.Abstraction.Application.Presenters;
-using BitCrafts.Application.Abstraction.Application.Views;
+using BitCrafts.Application.Abstraction.Presenters;
+using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.UseCases;
 using Microsoft.Extensions.DependencyInjection;

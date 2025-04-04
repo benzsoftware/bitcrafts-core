@@ -1,4 +1,4 @@
-namespace BitCrafts.Application.Abstraction.Application.Managers;
+namespace BitCrafts.Application.Abstraction.Managers;
 
 public interface IMenuManager
 {

@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
-using BitCrafts.Application.Abstraction.Application.Managers;
+using BitCrafts.Application.Abstraction.Managers;
 using BitCrafts.Application.Avalonia.Extensions;
 using BitCrafts.Application.Avalonia.Managers;
 using BitCrafts.Infrastructure.Abstraction.Threading;
@@ -18,8 +18,9 @@ namespace BitCrafts.Application.Avalonia;
 
 public abstract class BaseApplication : global::Avalonia.Application
 {
-    private BackgroundThreadDispatcher _backgroundThreadDispatcher;
-    private IServiceProvider ServiceProvider { get; set; }
+    protected BackgroundThreadDispatcher BackgroundThreadDispatcher { get; private set; }
+    protected IServiceProvider ServiceProvider { get; private set; }
+    protected AvaloniaUiManager UiManager { get; private set; }
 
     public override void Initialize()
     {
@@ -53,20 +54,20 @@ public abstract class BaseApplication : global::Avalonia.Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
-            var uiManager = (AvaloniaUiManager)ServiceProvider.GetRequiredService<IUiManager>();
-            _backgroundThreadDispatcher =
+            UiManager = (AvaloniaUiManager)ServiceProvider.GetRequiredService<IUiManager>();
+            BackgroundThreadDispatcher =
                 (BackgroundThreadDispatcher)ServiceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
-            _backgroundThreadDispatcher.Start();
+            BackgroundThreadDispatcher.Start();
 
             try
             {
                 //verify if there is an implementation of IauthenticationUseCase
                 ServiceProvider.GetRequiredService<IAuthenticationUseCase>();
-                uiManager.SetNativeApplication(desktop, true);
+                UiManager.SetNativeApplication(desktop, true);
             }
             catch (Exception)
             {
-                uiManager.SetNativeApplication(desktop, false);
+                UiManager.SetNativeApplication(desktop, false);
             }
         }
 

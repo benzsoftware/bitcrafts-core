@@ -6,20 +6,66 @@ namespace BitCrafts.Infrastructure.Abstraction.Entities;
 ///     Provides an abstract base class for soft-deletable entities with a generic ID.
 ///     This class implements the ISoftDeletableEntity interface and provides default soft deletion properties.
 /// </summary>
-/// <typeparam name="T">The type of the entity's unique identifier.</typeparam>
 public abstract class BaseSoftDeletableEntity : BaseEntity, ISoftDeletableEntity
 {
-    /// <inheritdoc />
-    public bool IsDeleted { get; set; }
+    private bool _isDeleted;
+    private DateTimeOffset _deletedAt;
+    private string _deletedBy = string.Empty;
+    private string _deletedReason = string.Empty;
 
     /// <inheritdoc />
-    [Required(ErrorMessage = "DeletedAt property is required.")]
-    public DateTimeOffset DeletedAt { get; set; }
+    public bool IsDeleted 
+    { 
+        get => _isDeleted;
+        set
+        {
+            _isDeleted = value;
+            
+            // Si on marque comme non supprimé, on réinitialise les propriétés
+            if (!value)
+            {
+                _deletedAt = default;
+                _deletedBy = string.Empty;
+                _deletedReason = string.Empty;
+            }
+            else if (_deletedAt == default)
+            {
+                // Si on marque comme supprimé et que la date n'est pas définie, on la définit
+                _deletedAt = DateTimeOffset.UtcNow;
+            }
+        }
+    }
 
     /// <inheritdoc />
-    [Required(ErrorMessage = "DeletedBy property is required.")]
-    public string DeletedBy { get; set; }
+    public DateTimeOffset DeletedAt 
+    { 
+        get => _deletedAt;
+        set => _deletedAt = value;
+    }
 
     /// <inheritdoc />
-    public string DeletedReason { get; set; }
+    public string DeletedBy 
+    { 
+        get => _deletedBy;
+        set => _deletedBy = value ?? string.Empty;
+    }
+
+    /// <inheritdoc />
+    public string DeletedReason 
+    { 
+        get => _deletedReason;
+        set => _deletedReason = value ?? string.Empty;
+    }
+    
+    /// <summary>
+    /// Valide que les propriétés de suppression sont correctement définies
+    /// </summary>
+    /// <returns>True si l'entité est valide, sinon false</returns>
+    public virtual bool ValidateDeletionProperties()
+    {
+        if (!IsDeleted)
+            return true;
+            
+        return DeletedAt != default && !string.IsNullOrEmpty(DeletedBy);
+    }
 }

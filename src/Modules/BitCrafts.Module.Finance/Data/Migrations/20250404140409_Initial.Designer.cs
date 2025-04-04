@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BitCrafts.Module.Finance.Data.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    [Migration("20250322144609_Initial")]
+    [Migration("20250404140409_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

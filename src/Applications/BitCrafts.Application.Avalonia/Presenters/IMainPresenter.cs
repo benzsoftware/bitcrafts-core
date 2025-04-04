@@ -1,4 +1,4 @@
-﻿using BitCrafts.Application.Abstraction.Application.Presenters;
+﻿using BitCrafts.Application.Abstraction.Presenters;
 
 namespace BitCrafts.Application.Avalonia.Presenters;
 
