@@ -21,12 +21,12 @@ public sealed class ModuleRegistrer : IModuleRegistrer
 
     public void RegisterModules(IServiceCollection services)
     {
-        var currentPath = Directory.GetCurrentDirectory();
-        var tempPath = Path.Combine(currentPath, "Modules");
-        var modulesPath = Path.IsPathRooted(tempPath) ? tempPath : Path.GetFullPath(tempPath);
+        var basePath = Environment.GetEnvironmentVariable("SNAP_USER_DATA")
+                       ?? AppContext.BaseDirectory;
 
-        LoadModulesFromPath(modulesPath, services);
-        LoadModulesFromPath(currentPath, services);
+        var basePathModules = Path.Combine(basePath, "Modules");
+        LoadModulesFromPath(Path.GetFullPath(basePathModules), services);
+        LoadModulesFromPath(Path.GetFullPath(basePath), services);
     }
 
     public void Dispose()
