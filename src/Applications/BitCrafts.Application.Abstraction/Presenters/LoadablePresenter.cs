@@ -13,11 +13,27 @@ public abstract class LoadablePresenter<TView, TModel> : BasePresenter<TView>
         Model = new TModel();
     }
 
-    protected TModel Model { get; set; }
+    protected TModel Model { get; private set; }
 
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
     protected bool IsLoading { get; private set; }
 
+    protected void UpdateModel(TModel updatedModel)
+    {
+        if (updatedModel is null)
+            throw new ArgumentNullException(nameof(updatedModel));
+
+        Model = updatedModel;
+        if (Model is BaseViewModel baseModel)
+            baseModel.ResetDirtyState();
+
+        View.DisplayData(Model);
+    }
+
+    protected override Task OnAppearedAsync()
+    {
+        return LoadDataAsync();
+    }
 
     protected async Task LoadDataAsync()
     {

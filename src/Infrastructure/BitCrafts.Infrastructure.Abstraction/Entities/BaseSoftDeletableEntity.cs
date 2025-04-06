@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace BitCrafts.Infrastructure.Abstraction.Entities;
 
 /// <summary>

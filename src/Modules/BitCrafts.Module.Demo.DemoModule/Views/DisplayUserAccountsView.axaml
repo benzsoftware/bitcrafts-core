@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:entities="clr-namespace:BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;assembly=BitCrafts.Modules.Demo.UserAccounts.Abstraction"
+             xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BitCrafts.Module.Demo.DemoModule.Views.DisplayUserAccountsView">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="4" Orientation="Horizontal" Margin="8">
+            <!-- 
+            <Button x:Name="RefreshButton" IsVisible="True" Content="{icons:MaterialIconExt Kind=Refresh}"
+                    Click="RefreshButton_OnClick">
+                <ToolTip.Tip>
+                    <TextBlock Text="Refresh" />
+                </ToolTip.Tip>
+            </Button>
+            <Button x:Name="CreateUserButton" Content="{icons:MaterialIconExt Kind=Add}"
+                    Click="CreateUserButton_OnClick">
+                <ToolTip.Tip>
+                    <TextBlock Text="Create new user" />
+                </ToolTip.Tip>
+            </Button>
+            <Button x:Name="DeleteUserButton" IsVisible="False" Content="{icons:MaterialIconExt Kind=Delete}"
+                    Click="DeleteUserButton_OnClick">
+                <ToolTip.Tip>
+                    <TextBlock Text="Delete selected users" />
+                </ToolTip.Tip>
+            </Button>-->
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" x:Name="UsersDataGrid" AutoGenerateColumns="False"
+
+                  BorderBrush="DarkSlateGray" BorderThickness="1" 
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:DataType="entities:User" Header="Prénom" Binding="{Binding FirstName}"
+                                    Width="*" />
+                <DataGridTextColumn x:DataType="entities:User" Header="Nom" Binding="{Binding LastName}" Width="*" />
+                <DataGridTextColumn x:DataType="entities:User" Header="Email" Binding="{Binding Email}" Width="*" />
+                <DataGridTextColumn x:DataType="entities:User" Header="Password" Binding="{Binding Password}" Width="*" />
+                <DataGridCheckBoxColumn x:DataType="entities:User" Header="IsActive" Binding="{Binding IsActive}"
+                                        Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="0" Grid.RowSpan="2" x:Name="LoadingControl" IsVisible="False">
+            <Border Background="Black" Opacity="0.7" IsVisible="True" x:Name="LoadingOverlay">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                    <ProgressBar IsIndeterminate="True" Width="200" Height="10" Foreground="Orange" />
+                    <TextBlock x:Name="LoadingMessageTextBox" Text="Loading, please wait..." Foreground="White"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

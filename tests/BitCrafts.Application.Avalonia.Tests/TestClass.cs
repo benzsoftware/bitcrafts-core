@@ -1,5 +1,3 @@
-using Avalonia.Controls;
-
 namespace BitCrafts.Application.Avalonia.Tests;
 
 [TestClass]

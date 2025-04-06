@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
 using Microsoft.Extensions.Logging;
@@ -8,6 +10,8 @@ public abstract class EditablePresenter<TView, TModel> : LoadablePresenter<TView
     where TView : class, IEditableView<TModel>
     where TModel : class, IViewModel, new()
 {
+    private CancellationTokenSource _cts = new();
+
     protected EditablePresenter(IServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
@@ -26,23 +30,45 @@ public abstract class EditablePresenter<TView, TModel> : LoadablePresenter<TView
         await Task.CompletedTask;
     }
 
-    private async void OnSaveRequested(object sender, TModel model)
+    private void OnSaveRequested(object sender, TModel model)
     {
+        _ = HandleSaveRequestAsync(model);
+    }
+
+    private async Task HandleSaveRequestAsync(TModel model)
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        var cancellationToken = _cts.Token;
+
         try
         {
-            View.ShowLoading("Saving in progress ...");
-            var success = await SaveDataCoreAsync(model);
-
-            if (success)
+            if (DataValidator.TryValidate(model, false, out var list))
             {
-                Model = model;
-                if (model is BaseViewModel baseModel) baseModel.ResetDirtyState();
+                View.ShowLoading("Saving in progress ...");
+                var success = await SaveDataCoreAsync(model, cancellationToken);
+
+                if (success)
+                    UpdateModel(model);
+                else
+                    View.ShowError("Error while saving data.");
             }
             else
             {
-                View.ShowError("Error while saving data.");
+                var sb = new StringBuilder();
+                foreach (var validationResult in list)
+                    sb.AppendLine(validationResult.ErrorMessage);
+                await UiManager.ShowErrorMessageAsync("Validation Error", $"Modell is not valid: \n {sb}");
+                sb.Clear();
             }
         }
+        catch (OperationCanceledException)
+        {
+            Logger.LogInformation($"{GetType().Name} save canceled.");
+            View.ShowError("Operation was canceled by user.");
+        }
+
         catch (Exception ex)
         {
             Logger.LogError(ex, "error while saving data.");
@@ -59,5 +85,5 @@ public abstract class EditablePresenter<TView, TModel> : LoadablePresenter<TView
         if (Model != null) View.DisplayData(Model);
     }
 
-    protected abstract Task<bool> SaveDataCoreAsync(TModel model);
+    protected abstract Task<bool> SaveDataCoreAsync(TModel model, CancellationToken cancellationToken = default);
 }

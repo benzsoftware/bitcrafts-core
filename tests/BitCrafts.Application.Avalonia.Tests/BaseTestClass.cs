@@ -1,4 +1,3 @@
-using Avalonia.Controls;
 using Avalonia.Headless;
 
 namespace BitCrafts.Application.Avalonia.Tests;

@@ -1,8 +1,4 @@
 using BitCrafts.Infrastructure.Abstraction.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
 
 namespace BitCrafts.Infrastructure.Tests.UseCase;
 

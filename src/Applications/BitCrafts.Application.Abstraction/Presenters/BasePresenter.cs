@@ -1,5 +1,6 @@
 ﻿using BitCrafts.Application.Abstraction.Managers;
 using BitCrafts.Application.Abstraction.Views;
+using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ public abstract class BasePresenter<TView> : IPresenter
     protected IBackgroundThreadDispatcher BackgroundThreadDispatcher { get; }
 
     protected IUiManager UiManager { get; }
+    protected IDataValidator DataValidator { get; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="BasePresenter{TView}" /> class.
@@ -30,6 +32,7 @@ public abstract class BasePresenter<TView> : IPresenter
         UiManager = serviceProvider.GetService<IUiManager>();
         Logger = ServiceProvider.GetRequiredService<ILogger<BasePresenter<TView>>>();
         View = ServiceProvider.GetRequiredService<TView>();
+        DataValidator = serviceProvider.GetRequiredService<IDataValidator>();
         View.AppearedEvent += ViewOnAppearedEvent;
         View.DisappearedEvent += ViewOnDisappearedEvent;
     }
@@ -65,7 +68,7 @@ public abstract class BasePresenter<TView> : IPresenter
     {
         return View;
     }
- 
+
     /// <summary>
     ///     Sets the parameters for the presenter.
     ///     Parameters can be used to pass data to the presenter when it is created.
@@ -103,14 +106,20 @@ public abstract class BasePresenter<TView> : IPresenter
     ///     Derived classes must implement this method to perform any necessary initialization.
     /// </summary>
     /// <returns>A Task that represents the asynchronous operation.</returns>
-    protected abstract Task OnAppearedAsync();
+    protected virtual Task OnAppearedAsync()
+    {
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     ///     Called when the view has disappeared.
     ///     Derived classes must implement this method to perform any necessary cleanup.
     /// </summary>
     /// <returns>A Task that represents the asynchronous operation.</returns>
-    protected abstract Task OnDisappearedAsync();
+    protected virtual Task OnDisappearedAsync()
+    {
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     ///     Releases unmanaged resources used by the presenter.
@@ -120,7 +129,6 @@ public abstract class BasePresenter<TView> : IPresenter
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposed) return;
         if (disposing)
         {
             View.AppearedEvent -= ViewOnAppearedEvent;
@@ -128,8 +136,6 @@ public abstract class BasePresenter<TView> : IPresenter
             View.Dispose();
             Logger.LogInformation($"{GetType().Name} Disposed.");
         }
-
-        _disposed = true;
     }
 
     /// <summary>
@@ -137,8 +143,11 @@ public abstract class BasePresenter<TView> : IPresenter
     /// </summary>
     public void Dispose()
     {
+        if (_disposed)
+            return;
         Dispose(true);
         GC.SuppressFinalize(this);
+        _disposed = true;
     }
 
     private bool _disposed;

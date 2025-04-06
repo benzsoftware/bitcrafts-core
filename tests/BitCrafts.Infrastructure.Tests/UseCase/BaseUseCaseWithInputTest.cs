@@ -1,5 +1,4 @@
 using BitCrafts.Infrastructure.Abstraction.Threading;
-using BitCrafts.Infrastructure.Abstraction.UseCases;
 
 namespace BitCrafts.Infrastructure.Tests.UseCase;
 

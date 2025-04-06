@@ -1,7 +1,5 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using BitCrafts.Infrastructure.Abstraction.Entities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BitCrafts.Infrastructure.Tests.Entities;
 
