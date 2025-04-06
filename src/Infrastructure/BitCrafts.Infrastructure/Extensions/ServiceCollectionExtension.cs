@@ -59,7 +59,10 @@ public static class ServiceCollectionExtension
 
     private static void CreateDirectory(string directory)
     {
-        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), directory);
+        var basePath = Environment.GetEnvironmentVariable("SNAP_USER_DATA")
+                       ?? AppContext.BaseDirectory;
+
+        var directoryPath = Path.Combine(basePath, directory);
         if (!Directory.Exists(directoryPath))
             Directory.CreateDirectory(Path.GetFullPath(directoryPath));
     }
