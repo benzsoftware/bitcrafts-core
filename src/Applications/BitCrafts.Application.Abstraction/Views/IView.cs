@@ -20,4 +20,6 @@ public interface IView : IDisposable
     ///     Occurs when the view has appeared (e.g., when a window is shown or a control is loaded).
     /// </summary>
     event EventHandler AppearedEvent;
+
+    void ShowError(string message);
 }

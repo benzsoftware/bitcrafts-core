@@ -8,7 +8,7 @@ using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 
 namespace BitCrafts.Module.Finance.Views;
 
-public partial class CreateBankAccountView : BaseControl, ICreateBankAccountView
+public partial class CreateBankAccountView : BaseView, ICreateBankAccountView
 {
     public CreateBankAccountView()
     {
@@ -68,6 +68,10 @@ public partial class CreateBankAccountView : BaseControl, ICreateBankAccountView
         return !string.IsNullOrWhiteSpace(AccountNameTextBox.Text.Trim()) &&
                !string.IsNullOrWhiteSpace(AccountNumberTextBox.Text.Trim()) &&
                decimal.TryParse(AccountInitialBalanceTextBox.Text.Trim(), out _);
+    }
+
+    public override void ShowError(string message)
+    {
     }
 
     protected override void OnAppeared()

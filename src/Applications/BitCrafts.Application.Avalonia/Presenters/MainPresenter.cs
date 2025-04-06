@@ -55,7 +55,7 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
         _uiManager.CloseWindow<IMainPresenter>();
     }
 
-    protected override async Task OnDisAppearedAsync()
+    protected override async Task OnDisappearedAsync()
     {
         View.CloseEvent -= ViewOnCloseEvent;
         await ServiceProvider.GetRequiredService<IUiManager>().ShutdownAsync();

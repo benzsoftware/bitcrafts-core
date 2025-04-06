@@ -8,7 +8,7 @@ using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
 
 namespace BitCrafts.Module.Demo.UserAccounts.Views;
 
-public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccountsView
+public partial class DisplayUserAccountsView : BaseView, IDisplayUserAccountsView
 {
     private readonly ObservableCollection<User> _users = new();
 
@@ -32,6 +32,10 @@ public partial class DisplayUserAccountsView : BaseControl, IDisplayUserAccounts
     public event EventHandler Refresh;
     public event EventHandler<User> UpdateUser;
     public event EventHandler<IEnumerable<User>> DeleteUser;
+
+    public override void ShowError(string message)
+    {
+    }
 
     protected override void OnAppeared()
     {

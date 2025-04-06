@@ -34,11 +34,11 @@ public class DataValidatorTests
     {
         // Arrange
         var auth = new Authentication
-        {
-            Login = "testuser",
-            Password = "Password123",
-            PasswordConfirmation = "Password123"
-        };
+        (
+            "testuser",
+            "Password123",
+            "Password123"
+        );
 
         // Act
         var result = _dataValidator.TryValidate(auth, true, out var validationResults);
@@ -72,11 +72,11 @@ public class DataValidatorTests
     {
         // Arrange
         var auth = new Authentication
-        {
-            Login = "testuser",
-            Password = "short", // Moins de 8 caractères
-            PasswordConfirmation = "short"
-        };
+        (
+            "testuser",
+            "short", // Moins de 8 caractères
+            "short"
+        );
 
         // Act
         var result = _dataValidator.TryValidate(auth, true, out var validationResults);
@@ -92,12 +92,11 @@ public class DataValidatorTests
     public void TryValidate_WhenPasswordTooLong_ReturnsFalse()
     {
         // Arrange
-        var auth = new Authentication
-        {
-            Login = "testuser",
-            Password = "ThisPasswordIsMuchTooLongForTheValidation", // Plus de 24 caractères
-            PasswordConfirmation = "ThisPasswordIsMuchTooLongForTheValidation"
-        };
+        var auth = new Authentication(
+            "testuser",
+            "ThisPasswordIsMuchTooLongForTheValidation", // Plus de 24 caractères
+            "ThisPasswordIsMuchTooLongForTheValidation"
+        );
 
         // Act
         var result = _dataValidator.TryValidate(auth, true, out var validationResults);
@@ -114,12 +113,11 @@ public class DataValidatorTests
     {
         // Arrange
         var loginTooLong = new string('a', 101); // 101 caractères, max est 100
-        var auth = new Authentication
-        {
-            Login = loginTooLong,
-            Password = "Password123",
-            PasswordConfirmation = "Password123"
-        };
+        var auth = new Authentication(
+            loginTooLong,
+            "Password123",
+            "Password123"
+        );
 
         // Act
         var result = _dataValidator.TryValidate(auth, true, out var validationResults);
@@ -133,12 +131,10 @@ public class DataValidatorTests
     public void TryValidate_WithValidateAllPropertiesFalse_ValidatesOnlyRequiredProperties()
     {
         // Arrange
-        var auth = new Authentication
-        {
-            Login = "testuser",
-            Password = "short", // Ne respecte pas MinLength mais n'est pas vérifié si validateAllProperties est false
-            PasswordConfirmation = "short"
-        };
+        var auth = new Authentication("testuser",
+            "short", // Ne respecte pas MinLength mais n'est pas vérifié si validateAllProperties est false
+            "short"
+        );
 
         // Act - Valider uniquement les propriétés requises (Required)
         var result = _dataValidator.TryValidate(auth, false, out var validationResults);

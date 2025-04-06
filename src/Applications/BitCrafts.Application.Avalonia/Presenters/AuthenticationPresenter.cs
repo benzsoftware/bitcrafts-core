@@ -63,7 +63,7 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
         }
     }
 
-    protected override Task OnDisAppearedAsync()
+    protected override Task OnDisappearedAsync()
     {
         View.Authenticate -= ViewOnAuthenticate;
         View.Cancel -= ViewOnCancel;

@@ -33,7 +33,7 @@ public sealed class DisplayBankAccountsPresenter : BasePresenter<IDisplayBankAcc
         await _deleteBankAccountUseCase.ExecuteAsync(new List<BankAccount> { e });
     }
 
-    protected override Task OnDisAppearedAsync()
+    protected override Task OnDisappearedAsync()
     {
         View.DeleteBankAccount -= ViewOnDeleteBankAccount;
         return Task.CompletedTask;

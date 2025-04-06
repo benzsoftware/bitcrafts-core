@@ -35,7 +35,7 @@ public sealed class CreateUserDialogPresenter : BasePresenter<ICreateUserDialogV
         _eventAggregator.Publish(new CreateUserEvent(e));
     }
 
-    protected override Task OnDisAppearedAsync()
+    protected override Task OnDisappearedAsync()
     {
         View.UserCreated -= ViewOnUserCreated;
         return Task.CompletedTask;

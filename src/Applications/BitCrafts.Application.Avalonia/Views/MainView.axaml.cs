@@ -4,7 +4,7 @@ using BitCrafts.Application.Avalonia.Controls.Views;
 
 namespace BitCrafts.Application.Avalonia.Views;
 
-public partial class MainView : BaseControl, IMainView
+public partial class MainView : BaseView, IMainView
 {
     public MainView()
     {
@@ -40,6 +40,11 @@ public partial class MainView : BaseControl, IMainView
 
     protected override void OnDisappeared()
     {
+    }
+
+    public override void ShowError(string message)
+    {
+        ErrorTextBox.Text = message;
     }
 
     protected override void OnAppeared()

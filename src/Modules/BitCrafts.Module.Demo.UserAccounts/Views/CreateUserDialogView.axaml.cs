@@ -5,7 +5,7 @@ using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
 
 namespace BitCrafts.Module.Demo.UserAccounts.Views;
 
-public partial class CreateUserDialogView : BaseControl, ICreateUserDialogView
+public partial class CreateUserDialogView : BaseView, ICreateUserDialogView
 {
     public CreateUserDialogView()
     {
@@ -14,6 +14,11 @@ public partial class CreateUserDialogView : BaseControl, ICreateUserDialogView
 
     public event EventHandler<User> UserCreated;
 
+
+    public override void ShowError(string message)
+    {
+        throw new NotImplementedException();
+    }
 
     protected override void OnAppeared()
     {

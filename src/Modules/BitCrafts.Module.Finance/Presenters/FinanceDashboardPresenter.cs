@@ -39,7 +39,7 @@ public sealed class FinanceDashboardPresenter : BasePresenter<IFinanceDashboardV
     }
 
 
-    protected override Task OnDisAppearedAsync()
+    protected override Task OnDisappearedAsync()
     {
         return Task.CompletedTask;
     }

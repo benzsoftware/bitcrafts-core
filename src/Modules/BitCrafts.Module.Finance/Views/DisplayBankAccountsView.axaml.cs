@@ -7,7 +7,7 @@ using BitCrafts.Module.Finance.Abstraction.Views;
 
 namespace BitCrafts.Module.Finance.Views;
 
-public partial class DisplayBankAccountsView : BaseControl, IDisplayBankAccountsView
+public partial class DisplayBankAccountsView : BaseView, IDisplayBankAccountsView
 {
     public DisplayBankAccountsView()
     {
@@ -26,6 +26,10 @@ public partial class DisplayBankAccountsView : BaseControl, IDisplayBankAccounts
     private void BankAccountsDataGrid_OnKeyUp(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Delete) DeleteBankAccount?.Invoke(this, BankAccountsDataGrid.SelectedItem as BankAccount);
+    }
+
+    public override void ShowError(string message)
+    {
     }
 
     protected override void OnAppeared()

@@ -5,13 +5,18 @@ using BitCrafts.Infrastructure.Abstraction.Data;
 
 namespace BitCrafts.Application.Avalonia.Views;
 
-public partial class AuthenticationView : BaseControl, IAuthenticationView
+public partial class AuthenticationView : BaseView, IAuthenticationView
 {
     public AuthenticationView()
     {
         InitializeComponent();
     }
 
+
+    public override void ShowError(string message)
+    {
+        ErrorMessgeTextBlox.Text = message;
+    }
 
     protected override void OnAppeared()
     {
@@ -23,11 +28,11 @@ public partial class AuthenticationView : BaseControl, IAuthenticationView
 
     private Authentication GetAuthentication()
     {
-        return new Authentication()
-        {
-            Login = LoginTextBox.Text?.Trim(),
-            Password = PasswordTextBox.Text?.Trim()
-        };
+        return new Authentication(
+            LoginTextBox.Text?.Trim(),
+            PasswordTextBox.Text?.Trim(),
+            PasswordTextBox.Text?.Trim()
+        );
     }
 
     public event EventHandler Cancel;

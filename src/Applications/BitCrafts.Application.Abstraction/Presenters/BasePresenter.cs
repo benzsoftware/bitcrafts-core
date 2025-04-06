@@ -39,6 +39,7 @@ public abstract class BasePresenter<TView> : IPresenter
     /// <summary>
     ///     Gets the parameters passed to the presenter.
     /// </summary>
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     protected IReadOnlyDictionary<string, object> Parameters { get; private set; }
 
     /// <summary>
@@ -64,7 +65,7 @@ public abstract class BasePresenter<TView> : IPresenter
     {
         return View;
     }
-
+ 
     /// <summary>
     ///     Sets the parameters for the presenter.
     ///     Parameters can be used to pass data to the presenter when it is created.
@@ -83,7 +84,7 @@ public abstract class BasePresenter<TView> : IPresenter
     private async void ViewOnDisappearedEvent(object sender, EventArgs e)
     {
         Logger.LogInformation($"{GetType().Name} Disappeared");
-        await OnDisAppearedAsync();
+        await OnDisappearedAsync();
     }
 
     /// <summary>
@@ -109,7 +110,7 @@ public abstract class BasePresenter<TView> : IPresenter
     ///     Derived classes must implement this method to perform any necessary cleanup.
     /// </summary>
     /// <returns>A Task that represents the asynchronous operation.</returns>
-    protected abstract Task OnDisAppearedAsync();
+    protected abstract Task OnDisappearedAsync();
 
     /// <summary>
     ///     Releases unmanaged resources used by the presenter.
@@ -140,5 +141,5 @@ public abstract class BasePresenter<TView> : IPresenter
         GC.SuppressFinalize(this);
     }
 
-    private bool _disposed = false;
+    private bool _disposed;
 }

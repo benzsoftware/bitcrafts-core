@@ -34,7 +34,7 @@ public sealed class CreateBankAccountPresenter : BasePresenter<ICreateBankAccoun
         //_regionManager.ClosePresenterInRegion<ICreateBankAccountPresenter>();
     }
 
-    protected override Task OnDisAppearedAsync()
+    protected override Task OnDisappearedAsync()
     {
         View.CreateBankAccount -= ViewOnCreateBankAccount;
         View.CloseView -= ViewOnCloseView;

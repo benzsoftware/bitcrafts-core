@@ -75,7 +75,7 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter<IDisplayUserAcc
         });
     }
 
-    protected override Task OnDisAppearedAsync()
+    protected override Task OnDisappearedAsync()
     {
         View.UpdateUser -= ViewOnUpdateUser;
         View.DeleteUser -= ViewOnDeleteUser;

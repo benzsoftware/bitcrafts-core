@@ -4,14 +4,17 @@ using BitCrafts.Application.Abstraction.Views;
 
 namespace BitCrafts.Application.Avalonia.Controls.Views;
 
-public abstract class BaseControl : UserControl, IView
+public abstract class BaseView : UserControl, IView
 {
     private bool _isDisposed;
     public string Title { get; set; }
     public event EventHandler DisappearedEvent;
     public event EventHandler AppearedEvent;
 
-    protected BaseControl()
+    public abstract void ShowError(string message);
+
+
+    protected BaseView()
     {
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
