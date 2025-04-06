@@ -4,7 +4,7 @@ namespace BitCrafts.Application.Abstraction.Views;
 ///     Defines an interface for views.
 ///     Views are responsible for displaying data to the user and handling user input.
 /// </summary>
-public interface IView : IDisposable
+public interface IView : IViewEventAware, IDisposable
 {
     /// <summary>
     ///     Gets or sets the title of the view.
@@ -20,6 +20,4 @@ public interface IView : IDisposable
     ///     Occurs when the view has appeared (e.g., when a window is shown or a control is loaded).
     /// </summary>
     event EventHandler AppearedEvent;
-
-    void ShowError(string message);
 }

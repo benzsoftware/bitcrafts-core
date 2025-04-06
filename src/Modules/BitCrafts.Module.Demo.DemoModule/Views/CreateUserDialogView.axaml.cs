@@ -15,7 +15,7 @@ public partial class CreateUserDialogView : BaseView, ICreateUserDialogView
     public event EventHandler<User> UserCreated;
 
 
-    public override void ShowError(string message)
+    public void ShowError(string message)
     {
         throw new NotImplementedException();
     }

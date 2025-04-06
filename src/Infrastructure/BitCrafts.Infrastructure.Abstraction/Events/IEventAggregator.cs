@@ -2,9 +2,8 @@ namespace BitCrafts.Infrastructure.Abstraction.Events;
 
 public interface IEventAggregator
 {
-    Guid Subscribe<TEvent>(Action<TEvent> handler) where TEvent : IEvent;
-
-    bool Unsubscribe<TEvent>(Guid handlerId) where TEvent : IEvent;
-
-    void Publish<TEvent>(TEvent eventItem) where TEvent : IEvent;
+    IDisposable Subscribe(string eventKey, Action handler);
+    IDisposable Subscribe<TPayload>(string eventKey, Action<TPayload> handler);
+    void Publish(string eventKey);
+    void Publish<TPayload>(string eventKey, TPayload payload);
 }

@@ -30,9 +30,10 @@ public abstract class LoadablePresenter<TView, TModel> : BasePresenter<TView>
         View.DisplayData(Model);
     }
 
-    protected override Task OnAppearedAsync()
+    protected override async Task OnAppearedAsync()
     {
-        return LoadDataAsync();
+        await LoadDataAsync();
+        View.DisplayData(Model);
     }
 
     protected async Task LoadDataAsync()
@@ -41,7 +42,6 @@ public abstract class LoadablePresenter<TView, TModel> : BasePresenter<TView>
         {
             IsLoading = true;
             View.ShowLoading();
-
             Model = await FetchDataAsync();
             if (Model != null) View.DisplayData(Model);
         }

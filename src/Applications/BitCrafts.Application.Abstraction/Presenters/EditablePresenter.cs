@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
@@ -66,13 +65,11 @@ public abstract class EditablePresenter<TView, TModel> : LoadablePresenter<TView
         catch (OperationCanceledException)
         {
             Logger.LogInformation($"{GetType().Name} save canceled.");
-            View.ShowError("Operation was canceled by user.");
         }
 
         catch (Exception ex)
         {
             Logger.LogError(ex, "error while saving data.");
-            View.ShowError(ex.Message);
         }
         finally
         {

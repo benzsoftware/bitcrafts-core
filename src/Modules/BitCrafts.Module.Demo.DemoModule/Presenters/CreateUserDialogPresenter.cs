@@ -1,7 +1,6 @@
 using BitCrafts.Application.Abstraction.Presenters;
 using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
-using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Events;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Presenters;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.UseCases;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
@@ -32,7 +31,7 @@ public sealed class CreateUserDialogPresenter : BasePresenter<ICreateUserDialogV
     private async void ViewOnUserCreated(object sender, User e)
     {
         await _createUserUseCase.ExecuteAsync(e);
-        _eventAggregator.Publish(new CreateUserEvent(e));
+        //_eventAggregator.Publish(new CreateUserEvent(e));
     }
 
     protected override Task OnDisappearedAsync()

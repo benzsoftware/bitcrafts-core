@@ -38,17 +38,10 @@ public partial class MainView : BaseView, IMainView
         return MainTabControl;
     }
 
-    protected override void OnDisappeared()
-    {
-    }
 
-    public override void ShowError(string message)
+    public void ShowError(string message)
     {
         ErrorTextBox.Text = message;
-    }
-
-    protected override void OnAppeared()
-    {
     }
 
 
@@ -56,4 +49,5 @@ public partial class MainView : BaseView, IMainView
     {
         CloseEvent?.Invoke(this, EventArgs.Empty);
     }
+ 
 }

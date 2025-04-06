@@ -1,6 +1,7 @@
 ﻿using BitCrafts.Application.Abstraction.Managers;
 using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Infrastructure.Abstraction.Data;
+using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Infrastructure.Abstraction.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,14 +18,10 @@ public abstract class BasePresenter<TView> : IPresenter
     where TView : IView
 {
     protected IBackgroundThreadDispatcher BackgroundThreadDispatcher { get; }
-
+    protected IEventAggregator EventAggregator { get; private set; }
     protected IUiManager UiManager { get; }
     protected IDataValidator DataValidator { get; }
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="BasePresenter{TView}" /> class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
     public BasePresenter(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
@@ -33,6 +30,9 @@ public abstract class BasePresenter<TView> : IPresenter
         Logger = ServiceProvider.GetRequiredService<ILogger<BasePresenter<TView>>>();
         View = ServiceProvider.GetRequiredService<TView>();
         DataValidator = serviceProvider.GetRequiredService<IDataValidator>();
+        EventAggregator = serviceProvider.GetRequiredService<IEventAggregator>();
+        if (View is IViewEventAware eventAwareView) eventAwareView.SetEventAggregator(EventAggregator);
+
         View.AppearedEvent += ViewOnAppearedEvent;
         View.DisappearedEvent += ViewOnDisappearedEvent;
     }
@@ -99,6 +99,11 @@ public abstract class BasePresenter<TView> : IPresenter
     {
         Logger.LogInformation($"{GetType().Name} Appeared");
         await OnAppearedAsync();
+    }
+
+    protected virtual void OnSubscribeEvents()
+    {
+//        EventAggregator.Subscribe()
     }
 
     /// <summary>

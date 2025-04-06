@@ -12,18 +12,9 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
         InitializeComponent();
     }
 
-
-    public override void ShowError(string message)
+    public void ShowError(string message)
     {
         ErrorMessgeTextBlox.Text = message;
-    }
-
-    protected override void OnAppeared()
-    {
-    }
-
-    protected override void OnDisappeared()
-    {
     }
 
     private Authentication GetAuthentication()

@@ -11,32 +11,31 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0" Spacing="4" Orientation="Horizontal" Margin="8">
-            <!-- 
-            <Button x:Name="RefreshButton" IsVisible="True" Content="{icons:MaterialIconExt Kind=Refresh}"
-                    Click="RefreshButton_OnClick">
-                <ToolTip.Tip>
-                    <TextBlock Text="Refresh" />
-                </ToolTip.Tip>
-            </Button>
-            <Button x:Name="CreateUserButton" Content="{icons:MaterialIconExt Kind=Add}"
-                    Click="CreateUserButton_OnClick">
-                <ToolTip.Tip>
-                    <TextBlock Text="Create new user" />
-                </ToolTip.Tip>
-            </Button>
-            <Button x:Name="DeleteUserButton" IsVisible="False" Content="{icons:MaterialIconExt Kind=Delete}"
-                    Click="DeleteUserButton_OnClick">
-                <ToolTip.Tip>
-                    <TextBlock Text="Delete selected users" />
-                </ToolTip.Tip>
-            </Button>-->
-        </StackPanel>
-
+        <Border Grid.Row="0" BorderThickness="0,0,0,2" Margin="8" BorderBrush="DarkSlateGray">
+            <StackPanel Spacing="4" Orientation="Horizontal" Margin="0,0,0,8">
+                <Button x:Name="RefreshButton" IsVisible="True" Content="{icons:MaterialIconExt Kind=Refresh}"
+                        Click="RefreshButton_OnClick">
+                    <ToolTip.Tip>
+                        <TextBlock Text="Refresh" />
+                    </ToolTip.Tip>
+                </Button>
+                <Button x:Name="CreateUserButton" Content="{icons:MaterialIconExt Kind=Add}"
+                        Click="CreateUserButton_OnClick">
+                    <ToolTip.Tip>
+                        <TextBlock Text="Create new user" />
+                    </ToolTip.Tip>
+                </Button>
+                <Button x:Name="DeleteUserButton" IsVisible="False" Content="{icons:MaterialIconExt Kind=Delete}"
+                        Click="DeleteUserButton_OnClick">
+                    <ToolTip.Tip>
+                        <TextBlock Text="Delete selected users" />
+                    </ToolTip.Tip>
+                </Button>
+            </StackPanel>
+        </Border>
         <DataGrid Grid.Row="1" x:Name="UsersDataGrid" AutoGenerateColumns="False"
-
-                  BorderBrush="DarkSlateGray" BorderThickness="1" 
+                  Margin="8"
+                  BorderBrush="DarkSlateGray" BorderThickness="2"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <DataGrid.Columns>
                 <DataGridTextColumn x:DataType="entities:User" Header="Prénom" Binding="{Binding FirstName}"
@@ -49,9 +48,9 @@
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Row="0" Grid.RowSpan="2" x:Name="LoadingControl" IsVisible="False">
-            <Border Background="Black" Opacity="0.7" IsVisible="True" x:Name="LoadingOverlay">
+            <Border Background="DarkSlateGray" Opacity="0.7" IsVisible="True" x:Name="LoadingOverlay">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                    <ProgressBar IsIndeterminate="True" Width="200" Height="10" Foreground="Orange" />
+                    <ProgressBar IsIndeterminate="True" Width="200" Height="10" Foreground="BlanchedAlmond" />
                     <TextBlock x:Name="LoadingMessageTextBox" Text="Loading, please wait..." Foreground="White"
                                HorizontalAlignment="Center" />
                 </StackPanel>

@@ -1,8 +1,4 @@
-using Avalonia.Controls;
-using BitCrafts.Application.Abstraction;
 using BitCrafts.Application.Abstraction.Presenters;
-using BitCrafts.Infrastructure.Abstraction.Events;
-using BitCrafts.Module.Demo.DemoModule.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Models;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Presenters;
@@ -57,12 +53,6 @@ public sealed class DisplayUserAccountsPresenter : LoadablePresenter<IDisplayUse
     protected override async Task OnAppearedAsync()
     {
         await base.OnAppearedAsync();
-        View.DisplayData(Model);
-    }
-
-    protected override Task OnDisappearedAsync()
-    {
-        return Task.CompletedTask;
     }
 
     protected override async Task<DisplayAccountsModel> FetchDataAsync()

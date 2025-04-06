@@ -6,6 +6,7 @@ public interface ILoadableView<TModel> : IView where TModel : class, IViewModel,
 {
     void ShowLoading(string message = "Loading...");
     void HideLoading();
-
+    void ShowError(string message = "Error occured");
+    void HideError();
     void DisplayData(TModel model);
 }

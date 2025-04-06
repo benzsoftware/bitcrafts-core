@@ -1,4 +1,3 @@
-using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Infrastructure.Events;
 using Microsoft.Extensions.Logging;
 
@@ -8,227 +7,243 @@ namespace BitCrafts.Infrastructure.Tests.Events;
 [TestCategory("Events")]
 public class EventAggregatorTests
 {
-    private ILogger<EventAggregator> _loggerMock;
+    private ILogger<EventAggregator> _logger;
     private EventAggregator _eventAggregator;
+    private const string TestEventKey = "TestEvent";
 
     [TestInitialize]
     public void Initialize()
     {
-        _loggerMock = Substitute.For<ILogger<EventAggregator>>();
-        _eventAggregator = new EventAggregator(_loggerMock);
+        _logger = Substitute.For<ILogger<EventAggregator>>();
+        _eventAggregator = new EventAggregator(_logger);
     }
 
     [TestMethod]
-    public void Subscribe_ShouldReturnNewGuid()
+    public void Subscribe_ShouldReturnSubscription()
     {
-        // Arrange
-        Action<TestEvent> handler = _ => { };
-
         // Act
-        var result = _eventAggregator.Subscribe(handler);
+        var subscription = _eventAggregator.Subscribe(TestEventKey, () => { });
 
         // Assert
-        Assert.AreNotEqual(Guid.Empty, result);
+        Assert.IsNotNull(subscription);
+        Assert.IsInstanceOfType(subscription, typeof(IDisposable));
     }
 
     [TestMethod]
-    public void Subscribe_MultipleHandlers_ShouldReturnDifferentGuids()
+    public void Subscribe_MultipleHandlers_ShouldReturnDifferentSubscriptions()
     {
-        // Arrange
-        Action<TestEvent> handler1 = _ => { };
-        Action<TestEvent> handler2 = _ => { };
-
         // Act
-        var guid1 = _eventAggregator.Subscribe(handler1);
-        var guid2 = _eventAggregator.Subscribe(handler2);
+        var subscription1 = _eventAggregator.Subscribe(TestEventKey, () => { });
+        var subscription2 = _eventAggregator.Subscribe(TestEventKey, () => { });
 
         // Assert
-        Assert.AreNotEqual(guid1, guid2);
-    }
-
-    [TestMethod]
-    public void Unsubscribe_ExistingHandler_ShouldReturnTrue()
-    {
-        // Arrange
-        Action<TestEvent> handler = _ => { };
-        var handlerId = _eventAggregator.Subscribe(handler);
-
-        // Act
-        var result = _eventAggregator.Unsubscribe<TestEvent>(handlerId);
-
-        // Assert
-        Assert.IsTrue(result);
-    }
-
-    [TestMethod]
-    public void Unsubscribe_NonExistingHandler_ShouldReturnFalse()
-    {
-        // Arrange
-        var nonExistingHandlerId = Guid.NewGuid();
-
-        // Act
-        var result = _eventAggregator.Unsubscribe<TestEvent>(nonExistingHandlerId);
-
-        // Assert
-        Assert.IsFalse(result);
+        Assert.IsNotNull(subscription1);
+        Assert.IsNotNull(subscription2);
+        Assert.AreNotSame(subscription1, subscription2);
     }
 
     [TestMethod]
     public void Publish_ShouldInvokeSubscribedHandlers()
     {
         // Arrange
-        var testEvent = new TestEvent();
-        var handlerWasCalled = false;
-        Action<TestEvent> handler = _ => { handlerWasCalled = true; };
-        _eventAggregator.Subscribe(handler);
+        var handlerInvoked = false;
+        _eventAggregator.Subscribe(TestEventKey, () => handlerInvoked = true);
 
         // Act
-        _eventAggregator.Publish(testEvent);
+        _eventAggregator.Publish(TestEventKey);
 
         // Assert
-        Assert.IsTrue(handlerWasCalled);
+        Assert.IsTrue(handlerInvoked);
     }
 
     [TestMethod]
     public void Publish_ShouldInvokeMultipleSubscribedHandlers()
     {
         // Arrange
-        var testEvent = new TestEvent();
-        var handler1CallCount = 0;
-        var handler2CallCount = 0;
-
-        Action<TestEvent> handler1 = _ => { handler1CallCount++; };
-        Action<TestEvent> handler2 = _ => { handler2CallCount++; };
-
-        _eventAggregator.Subscribe(handler1);
-        _eventAggregator.Subscribe(handler2);
+        var invocationCount = 0;
+        _eventAggregator.Subscribe(TestEventKey, () => invocationCount++);
+        _eventAggregator.Subscribe(TestEventKey, () => invocationCount++);
+        _eventAggregator.Subscribe(TestEventKey, () => invocationCount++);
 
         // Act
-        _eventAggregator.Publish(testEvent);
+        _eventAggregator.Publish(TestEventKey);
 
         // Assert
-        Assert.AreEqual(1, handler1CallCount);
-        Assert.AreEqual(1, handler2CallCount);
+        Assert.AreEqual(3, invocationCount);
     }
 
     [TestMethod]
-    public void Publish_AfterUnsubscribe_ShouldNotInvokeHandler()
+    public void Publish_AfterDisposingSubscription_ShouldNotInvokeHandler()
     {
         // Arrange
-        var testEvent = new TestEvent();
-        var handlerWasCalled = false;
-        Action<TestEvent> handler = _ => { handlerWasCalled = true; };
-        var handlerId = _eventAggregator.Subscribe(handler);
-        _eventAggregator.Unsubscribe<TestEvent>(handlerId);
+        var handlerInvoked = false;
+        var subscription = _eventAggregator.Subscribe(TestEventKey, () => handlerInvoked = true);
 
         // Act
-        _eventAggregator.Publish(testEvent);
+        subscription.Dispose();
+        _eventAggregator.Publish(TestEventKey);
 
         // Assert
-        Assert.IsFalse(handlerWasCalled);
+        Assert.IsFalse(handlerInvoked);
     }
 
     [TestMethod]
     public void Publish_HandlerThrowsException_ShouldContinueToOtherHandlers()
     {
         // Arrange
-        var testEvent = new TestEvent();
-        var handler2WasCalled = false;
+        var handler1Invoked = false;
+        var handler2Invoked = false;
 
-        Action<TestEvent> handler1 = _ => { throw new Exception("Test exception"); };
-        Action<TestEvent> handler2 = _ => { handler2WasCalled = true; };
-
-        _eventAggregator.Subscribe(handler1);
-        _eventAggregator.Subscribe(handler2);
+        _eventAggregator.Subscribe(TestEventKey, () => { throw new Exception("Test exception"); });
+        _eventAggregator.Subscribe(TestEventKey, () => handler1Invoked = true);
+        _eventAggregator.Subscribe(TestEventKey, () => handler2Invoked = true);
 
         // Act
-        _eventAggregator.Publish(testEvent);
+        _eventAggregator.Publish(TestEventKey);
 
         // Assert
-        Assert.IsTrue(handler2WasCalled);
-        _loggerMock.Received().Log(
-            LogLevel.Error,
-            Arg.Any<EventId>(),
-            Arg.Any<object>(),
-            Arg.Any<Exception>(),
-            Arg.Any<Func<object, Exception, string>>());
+        Assert.IsTrue(handler1Invoked);
+        Assert.IsTrue(handler2Invoked);
     }
 
     [TestMethod]
+    [ExpectedException(typeof(ObjectDisposedException))]
     public void Dispose_ShouldPreventFurtherPublications()
     {
         // Arrange
-        var testEvent = new TestEvent();
-        var handlerWasCalled = false;
-        Action<TestEvent> handler = _ => { handlerWasCalled = true; };
-        _eventAggregator.Subscribe(handler);
+        var handlerInvoked = false;
+        _eventAggregator.Subscribe(TestEventKey, () => handlerInvoked = true);
 
         // Act
         _eventAggregator.Dispose();
-        _eventAggregator.Publish(testEvent);
+        _eventAggregator.Publish(TestEventKey);
 
         // Assert
-        Assert.IsFalse(handlerWasCalled);
-        _loggerMock.Received().Log(
-            LogLevel.Warning,
-            Arg.Any<EventId>(),
-            Arg.Any<object>(),
-            Arg.Is<Exception>(ex => ex == null),
-            Arg.Any<Func<object, Exception, string>>());
+        Assert.IsFalse(handlerInvoked);
     }
 
     [TestMethod]
-    public void BaseEvent_ShouldHaveDefaultTimestamp()
-    {
-        // Arrange & Act
-        var testEvent = new TestEvent();
-
-        // Assert
-        Assert.IsTrue((DateTimeOffset.Now - testEvent.Timestamp).TotalSeconds < 1);
-        // Vérifie que le timestamp a été défini dans la dernière seconde
-    }
-
-    [TestMethod]
-    public void BaseEvent_WithCustomTimestamp_ShouldUseProvidedTimestamp()
+    public void PublishWithPayload_ShouldDeliverPayloadToHandler()
     {
         // Arrange
-        var customTimestamp = DateTimeOffset.Now.AddDays(-1);
+        var receivedPayload = string.Empty;
+        var expectedPayload = "TestPayload";
+
+        _eventAggregator.Subscribe<string>(TestEventKey, payload => receivedPayload = payload);
 
         // Act
-        var testEvent = new TestEventWithCustomTimestamp(customTimestamp);
+        _eventAggregator.Publish(TestEventKey, expectedPayload);
 
         // Assert
-        Assert.AreEqual(customTimestamp, testEvent.Timestamp);
+        Assert.AreEqual(expectedPayload, receivedPayload);
     }
 
     [TestMethod]
-    public void Publish_ShouldPreserveEventTimestamp()
+    public void PublishWithPayload_AfterDisposingSubscription_ShouldNotInvokeHandler()
     {
         // Arrange
-        var customTimestamp = DateTimeOffset.Now.AddHours(-2);
-        var testEvent = new TestEventWithCustomTimestamp(customTimestamp);
-        var receivedTimestamp = DateTimeOffset.MinValue;
-
-        Action<TestEventWithCustomTimestamp> handler = evt => { receivedTimestamp = evt.Timestamp; };
-
-        _eventAggregator.Subscribe(handler);
+        var handlerInvoked = false;
+        var subscription = _eventAggregator.Subscribe<string>(TestEventKey, _ => handlerInvoked = true);
 
         // Act
-        _eventAggregator.Publish(testEvent);
+        subscription.Dispose();
+        _eventAggregator.Publish(TestEventKey, "TestPayload");
 
         // Assert
-        Assert.AreEqual(customTimestamp, receivedTimestamp);
+        Assert.IsFalse(handlerInvoked);
     }
 
-    private class TestEvent : BaseEvent
+    [TestMethod]
+    public void PublishWithPayload_HandlerThrowsException_ShouldContinueToOtherHandlers()
     {
+        // Arrange
+        var handler1Invoked = false;
+        var handler2Invoked = false;
+
+        _eventAggregator.Subscribe<string>(TestEventKey, _ => { throw new Exception("Test exception"); });
+        _eventAggregator.Subscribe<string>(TestEventKey, _ => handler1Invoked = true);
+        _eventAggregator.Subscribe<string>(TestEventKey, _ => handler2Invoked = true);
+
+        // Act
+        _eventAggregator.Publish(TestEventKey, "TestPayload");
+
+        // Assert
+        Assert.IsTrue(handler1Invoked);
+        Assert.IsTrue(handler2Invoked);
     }
 
-    private class TestEventWithCustomTimestamp : BaseEvent
+    [TestMethod]
+    public void SubscribeAndPublish_DifferentEventKeys_ShouldNotTriggerOtherHandlers()
     {
-        public TestEventWithCustomTimestamp(DateTimeOffset timestamp)
-        {
-            Timestamp = timestamp;
-        }
+        // Arrange
+        var handler1Invoked = false;
+        var handler2Invoked = false;
+
+        _eventAggregator.Subscribe("EventKey1", () => handler1Invoked = true);
+        _eventAggregator.Subscribe("EventKey2", () => handler2Invoked = true);
+
+        // Act
+        _eventAggregator.Publish("EventKey1");
+
+        // Assert
+        Assert.IsTrue(handler1Invoked);
+        Assert.IsFalse(handler2Invoked);
+    }
+
+    [TestMethod]
+    public void MultipleSubscriptions_ShouldAllBeDisposedIndependently()
+    {
+        // Arrange
+        var handler1Invoked = false;
+        var handler2Invoked = false;
+        var handler3Invoked = false;
+
+        _eventAggregator.Subscribe(TestEventKey, () => handler1Invoked = true);
+        var subscription2 = _eventAggregator.Subscribe(TestEventKey, () => handler2Invoked = true);
+        _eventAggregator.Subscribe(TestEventKey, () => handler3Invoked = true);
+
+        // Act - dispose only subscription2
+        subscription2.Dispose();
+        _eventAggregator.Publish(TestEventKey);
+
+        // Assert
+        Assert.IsTrue(handler1Invoked);
+        Assert.IsFalse(handler2Invoked);
+        Assert.IsTrue(handler3Invoked);
+    }
+
+    [TestMethod]
+    public void Subscribe_WithNullEventKey_ShouldThrowArgumentException()
+    {
+        // Assert
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Subscribe(null, () => { }));
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Subscribe(string.Empty, () => { }));
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Subscribe("   ", () => { }));
+    }
+
+    [TestMethod]
+    public void Subscribe_WithNullHandler_ShouldThrowArgumentNullException()
+    {
+        // Assert
+        Assert.ThrowsException<ArgumentNullException>(() => _eventAggregator.Subscribe(TestEventKey, null));
+        Assert.ThrowsException<ArgumentNullException>(() => _eventAggregator.Subscribe<string>(TestEventKey, null));
+    }
+
+    [TestMethod]
+    public void Publish_WithNullEventKey_ShouldThrowArgumentException()
+    {
+        // Assert
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Publish(null));
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Publish(string.Empty));
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Publish("   "));
+    }
+
+    [TestMethod]
+    public void PublishWithPayload_WithNullEventKey_ShouldThrowArgumentException()
+    {
+        // Assert
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Publish(null, "payload"));
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Publish(string.Empty, "payload"));
+        Assert.ThrowsException<ArgumentException>(() => _eventAggregator.Publish("   ", "payload"));
     }
 }

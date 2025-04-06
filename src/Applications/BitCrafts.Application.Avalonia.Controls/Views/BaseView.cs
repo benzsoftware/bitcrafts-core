@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BitCrafts.Application.Abstraction.Views;
+using BitCrafts.Infrastructure.Abstraction.Events;
 
 namespace BitCrafts.Application.Avalonia.Controls.Views;
 
@@ -8,11 +9,11 @@ public abstract class BaseView : UserControl, IView
 {
     private bool _isDisposed;
     public string Title { get; set; }
+
+    private IEventAggregator _eventAggregator;
+    protected IEventAggregator EventAggregator => _eventAggregator;
     public event EventHandler DisappearedEvent;
     public event EventHandler AppearedEvent;
-
-    public abstract void ShowError(string message);
-
 
     protected BaseView()
     {
@@ -21,8 +22,13 @@ public abstract class BaseView : UserControl, IView
         Title = "UnTitled Control";
     }
 
-    protected abstract void OnAppeared();
-    protected abstract void OnDisappeared();
+    protected virtual void OnAppeared()
+    {
+    }
+
+    protected virtual void OnDisappeared()
+    {
+    }
 
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -42,7 +48,6 @@ public abstract class BaseView : UserControl, IView
         if (!disposing) return;
         Loaded -= OnLoaded;
         Unloaded -= OnUnloaded;
-        _isDisposed = true;
     }
 
     public void Dispose()
@@ -51,5 +56,11 @@ public abstract class BaseView : UserControl, IView
             return;
         Dispose(true);
         GC.SuppressFinalize(this);
+        _isDisposed = true;
+    }
+
+    public void SetEventAggregator(IEventAggregator eventAggregator)
+    {
+        _eventAggregator = eventAggregator;
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Models;
@@ -84,4 +85,18 @@ public partial class DisplayUserAccountsView : LoadableView<DisplayAccountsModel
     {
         Refresh?.Invoke(this, EventArgs.Empty);
     }*/
+    private void DeleteUserButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void CreateUserButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }

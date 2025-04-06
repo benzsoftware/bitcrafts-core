@@ -8,8 +8,8 @@ public abstract class LoadableView<TModel> : BaseView, ILoadableView<TModel>
     where TModel : class, IViewModel, new()
 {
     protected abstract Control LoadingIndicator { get; }
-    protected TModel Model { get; set; }
     protected abstract TextBlock ErrorTextBlock { get; }
+    protected TModel Model { get; set; }
 
     public virtual void ShowLoading(string message = "Loading in progress...")
     {
@@ -29,17 +29,10 @@ public abstract class LoadableView<TModel> : BaseView, ILoadableView<TModel>
     public virtual void DisplayData(TModel model)
     {
         Model = model;
-
-        // La logique spécifique d'affichage doit être implémentée dans les classes dérivées
         OnDataDisplayed(model);
     }
 
-    /// <summary>
-    /// Méthode appelée après la mise à jour du modèle dans la vue
-    /// </summary>
-    protected abstract void OnDataDisplayed(TModel model);
-
-    public override void ShowError(string message = "Error occured")
+    public void ShowError(string message = "Error occured")
     {
         if (ErrorTextBlock != null)
         {
@@ -50,7 +43,8 @@ public abstract class LoadableView<TModel> : BaseView, ILoadableView<TModel>
 
     public virtual void HideError()
     {
-        if (ErrorTextBlock != null) ErrorTextBlock.IsVisible = false;
+        if (ErrorTextBlock != null)
+            ErrorTextBlock.IsVisible = false;
     }
 
     protected override void OnAppeared()
@@ -58,13 +52,13 @@ public abstract class LoadableView<TModel> : BaseView, ILoadableView<TModel>
         HideError();
     }
 
-    protected override void OnDisappeared()
-    {
-    }
+
+    protected abstract void OnDataDisplayed(TModel model);
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing) Model = default;
+        if (disposing)
+            Model = default;
 
         base.Dispose(disposing);
     }
