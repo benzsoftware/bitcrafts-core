@@ -51,9 +51,10 @@ public static class ServiceCollectionExtension
     private static IServiceCollection AddManagers(this IServiceCollection services)
     {
         services.TryAddSingleton<IBackgroundThreadDispatcher, BackgroundThreadDispatcher>();
-        services.TryAddTransient<IEventAggregator, EventAggregator>();
         services.TryAddSingleton<IHashingService, HashingService>();
         services.TryAddSingleton<IDataValidator, DataValidator>();
+        services.TryAddSingleton<IEnvironmentConfigurationService, EnvironmentConfigurationService>();
+        services.TryAddTransient<IEventAggregator, EventAggregator>();
         return services;
     }
 

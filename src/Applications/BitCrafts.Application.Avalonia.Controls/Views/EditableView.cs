@@ -11,11 +11,13 @@ public abstract class EditableView<TModel> : LoadableView<TModel>, IEditableView
 
     protected virtual void RequestSave(TModel modelToSave)
     {
-        SaveRequested?.Invoke(this, modelToSave);
+        EventAggregator.Publish("SaveRequestedEventName", modelToSave);
+        //SaveRequested?.Invoke(this, modelToSave);
     }
 
     protected virtual void RequestCancel()
     {
-        CancelRequested?.Invoke(this, EventArgs.Empty);
+        EventAggregator.Publish("CancelRequestedEventName");
+        //CancelRequested?.Invoke(this, EventArgs.Empty);
     }
 }

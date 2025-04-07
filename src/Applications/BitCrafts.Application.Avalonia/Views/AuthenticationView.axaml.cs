@@ -1,33 +1,31 @@
+using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Application.Avalonia.Controls.Views;
-using BitCrafts.Infrastructure.Abstraction.Data;
 
 namespace BitCrafts.Application.Avalonia.Views;
 
-public partial class AuthenticationView : BaseView, IAuthenticationView
+public partial class AuthenticationView : LoadableView<AuthenticationViewModel>, IAuthenticationView
 {
     public AuthenticationView()
     {
         InitializeComponent();
     }
 
-    public void ShowError(string message)
+
+    protected override void OnDataDisplayed(AuthenticationViewModel model)
     {
-        ErrorMessgeTextBlox.Text = message;
     }
 
-    private Authentication GetAuthentication()
-    {
-        return new Authentication(
-            LoginTextBox.Text?.Trim(),
-            PasswordTextBox.Text?.Trim(),
-            PasswordTextBox.Text?.Trim()
-        );
-    }
+    protected override Control LoadingIndicator => null;
 
-    public event EventHandler Cancel;
-    public event EventHandler<Authentication> Authenticate;
+    protected override TextBlock ErrorTextBlock => null;
+
+    protected override void SetModel()
+    {
+        Model = new AuthenticationViewModel(LoginTextBox?.Text?.Trim(), PasswordTextBox?.Text?.Trim(), null);
+    }
 
     public void SetAuthenticationError(string errorMessage)
     {
@@ -36,12 +34,13 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
 
     private void AuthenticateButton_OnClick(object sender, RoutedEventArgs e)
     {
-        Authenticate?.Invoke(this, GetAuthentication());
+        SetModel();
+        EventAggregator.Publish<AuthenticationViewModel>(IAuthenticationView.AuthenticateEventName, Model);
     }
 
     private void CancelButton_OnClick(object sender, RoutedEventArgs e)
     {
-        Cancel?.Invoke(this, EventArgs.Empty);
+        EventAggregator.Publish(IAuthenticationView.CancelEventName);
     }
 
     public void DisplayProgressBar()
@@ -56,5 +55,10 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
         AuthenticatingProgressBar.IsVisible = false;
         AuthenticateButton.IsEnabled = true;
         CancelButton.IsEnabled = true;
+    }
+
+    private void EnvironmentButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        EventAggregator.Publish(IAuthenticationView.ShowEnvironmentEventName);
     }
 }

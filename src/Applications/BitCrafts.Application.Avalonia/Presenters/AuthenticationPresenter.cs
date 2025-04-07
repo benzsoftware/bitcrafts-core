@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using BitCrafts.Application.Abstraction;
+using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Presenters;
 using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Infrastructure.Abstraction.Data;
@@ -8,31 +9,49 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BitCrafts.Application.Avalonia.Presenters;
 
-public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuthenticationPresenter
+public class AuthenticationPresenter : LoadablePresenter<IAuthenticationView, AuthenticationViewModel>,
+    IAuthenticationPresenter
 {
     public AuthenticationPresenter(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         View.Title = "Authentication";
     }
 
-    protected override Task OnAppearedAsync()
+    protected override void OnSubscribeEventsCore()
     {
-        View.Authenticate += ViewOnAuthenticate;
-        View.Cancel += ViewOnCancel;
-        return Task.CompletedTask;
+        EventAggregator.Subscribe<AuthenticationViewModel>(IAuthenticationView.AuthenticateEventName,
+            ViewOnAuthenticate);
+        EventAggregator.Subscribe(IAuthenticationView.CancelEventName, ViewOnCancel);
+        EventAggregator.Subscribe(IAuthenticationView.ShowEnvironmentEventName, ViewOnShowEnvironment);
     }
 
-    private void ViewOnCancel(object sender, EventArgs e)
+    private void ViewOnShowEnvironment()
+    {
+        UiManager.ShowWindowAsync<IEnvironmentConfigurationPresenter>(new Dictionary<string, object>()
+        {
+            { Constants.WindowWidthParameterName, "800" },
+            { Constants.WindowHeightParameterName, "600" }
+        });
+    }
+
+    protected override Task<AuthenticationViewModel> FetchDataAsync()
+    {
+        return Task.FromResult(new AuthenticationViewModel());
+    }
+
+    private void ViewOnCancel()
     {
         UiManager.CloseWindow<IAuthenticationPresenter>();
     }
 
-    private async void ViewOnAuthenticate(object sender, Authentication e)
+    private async void ViewOnAuthenticate(AuthenticationViewModel viewModel)
     {
         try
         {
             View.DisplayProgressBar();
-            var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>().ExecuteAsync(e);
+            var auth = new Authentication(viewModel.Login, viewModel.Password, viewModel.Password);
+            var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>()
+                .ExecuteAsync(auth);
             if (isAunthenticated)
             {
                 await UiManager.ShowWindowAsync<IMainPresenter>(
@@ -61,13 +80,5 @@ public class AuthenticationPresenter : BasePresenter<IAuthenticationView>, IAuth
         {
             View.HideProgressBar();
         }
-    }
-
-    protected override Task OnDisappearedAsync()
-    {
-        View.Authenticate -= ViewOnAuthenticate;
-        View.Cancel -= ViewOnCancel;
-
-        return Task.CompletedTask;
     }
 }

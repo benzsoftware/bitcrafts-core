@@ -31,10 +31,11 @@ public abstract class BasePresenter<TView> : IPresenter
         View = ServiceProvider.GetRequiredService<TView>();
         DataValidator = serviceProvider.GetRequiredService<IDataValidator>();
         EventAggregator = serviceProvider.GetRequiredService<IEventAggregator>();
-        if (View is IViewEventAware eventAwareView) eventAwareView.SetEventAggregator(EventAggregator);
-
-        View.AppearedEvent += ViewOnAppearedEvent;
-        View.DisappearedEvent += ViewOnDisappearedEvent;
+        if (View is IViewEventAware eventAwareView)
+        {
+            eventAwareView.SetEventAggregator(EventAggregator);
+            OnSubscribeEvents();
+        }
     }
 
     protected IServiceProvider ServiceProvider { get; }
@@ -60,34 +61,20 @@ public abstract class BasePresenter<TView> : IPresenter
     /// </summary>
     protected ILogger<BasePresenter<TView>> Logger { get; }
 
-    /// <summary>
-    ///     Gets the view associated with the presenter.
-    /// </summary>
-    /// <returns>The view instance.</returns>
     public IView GetView()
     {
         return View;
     }
 
-    /// <summary>
-    ///     Sets the parameters for the presenter.
-    ///     Parameters can be used to pass data to the presenter when it is created.
-    /// </summary>
-    /// <param name="parameters">A dictionary containing the parameters.</param>
     public void SetParameters(Dictionary<string, object> parameters)
     {
         Parameters = parameters;
     }
 
-    /// <summary>
-    ///     Handles the Disappeared event of the view.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-    private async void ViewOnDisappearedEvent(object sender, EventArgs e)
+    private void ViewOnDisappearedEvent()
     {
         Logger.LogInformation($"{GetType().Name} Disappeared");
-        await OnDisappearedAsync();
+        _ = OnDisappearedAsync();
     }
 
     /// <summary>
@@ -95,15 +82,21 @@ public abstract class BasePresenter<TView> : IPresenter
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-    private async void ViewOnAppearedEvent(object sender, EventArgs e)
+    private void ViewOnAppearedEvent()
     {
         Logger.LogInformation($"{GetType().Name} Appeared");
-        await OnAppearedAsync();
+        _ = OnAppearedAsync();
     }
 
-    protected virtual void OnSubscribeEvents()
+    private void OnSubscribeEvents()
     {
-//        EventAggregator.Subscribe()
+        EventAggregator.Subscribe(IView.AppearedEventName, ViewOnAppearedEvent);
+        EventAggregator.Subscribe(IView.DisappearedEventName, ViewOnDisappearedEvent);
+        OnSubscribeEventsCore();
+    }
+
+    protected virtual void OnSubscribeEventsCore()
+    {
     }
 
     /// <summary>
@@ -113,6 +106,7 @@ public abstract class BasePresenter<TView> : IPresenter
     /// <returns>A Task that represents the asynchronous operation.</returns>
     protected virtual Task OnAppearedAsync()
     {
+        OnSubscribeEvents();
         return Task.CompletedTask;
     }
 
@@ -136,8 +130,7 @@ public abstract class BasePresenter<TView> : IPresenter
     {
         if (disposing)
         {
-            View.AppearedEvent -= ViewOnAppearedEvent;
-            View.DisappearedEvent -= ViewOnDisappearedEvent;
+            EventAggregator.Dispose();
             View.Dispose();
             Logger.LogInformation($"{GetType().Name} Disposed.");
         }

@@ -12,8 +12,6 @@ public abstract class BaseView : UserControl, IView
 
     private IEventAggregator _eventAggregator;
     protected IEventAggregator EventAggregator => _eventAggregator;
-    public event EventHandler DisappearedEvent;
-    public event EventHandler AppearedEvent;
 
     protected BaseView()
     {
@@ -34,13 +32,13 @@ public abstract class BaseView : UserControl, IView
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         OnDisappeared();
-        DisappearedEvent?.Invoke(this, EventArgs.Empty);
+        EventAggregator?.Publish(IView.DisappearedEventName);
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         OnAppeared();
-        AppearedEvent?.Invoke(this, EventArgs.Empty);
+        EventAggregator?.Publish(IView.AppearedEventName);
     }
 
     protected virtual void Dispose(bool disposing)

@@ -24,6 +24,7 @@ public static class ServiceCollectionExtension
     {
         services.TryAddTransient<IMainPresenter, MainPresenter>();
         services.TryAddTransient<IAuthenticationPresenter, AuthenticationPresenter>();
+        services.TryAddTransient<IEnvironmentConfigurationPresenter, EnvironmentConfigurationPresenter>();
         return services;
     }
 
@@ -32,6 +33,7 @@ public static class ServiceCollectionExtension
     {
         services.TryAddTransient<IMainView, MainView>();
         services.TryAddTransient<IAuthenticationView, AuthenticationView>();
+        services.TryAddTransient<IEnvironmentConfigurationView, EnvironmentConfigurationView>();
         return services;
     }
 

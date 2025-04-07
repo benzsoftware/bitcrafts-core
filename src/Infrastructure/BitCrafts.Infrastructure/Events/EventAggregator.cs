@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BitCrafts.Infrastructure.Events;
 
-public sealed class EventAggregator : IEventAggregator, IDisposable
+public sealed class EventAggregator : IEventAggregator
 {
     private readonly ConcurrentDictionary<string, ConcurrentDictionary<Guid, Delegate>> _handlers = new();
     private readonly ILogger<EventAggregator> _logger;
@@ -34,7 +34,7 @@ public sealed class EventAggregator : IEventAggregator, IDisposable
         var handlers = _handlers.GetOrAdd(eventKey, _ => new ConcurrentDictionary<Guid, Delegate>());
         handlers[subscriptionId] = handler;
 
-        _logger.LogDebug("Handler for event '{EventKey}' subscribed with ID {SubscriptionId}",
+        _logger.LogInformation("Handler for event '{EventKey}' subscribed with ID {SubscriptionId}",
             eventKey, subscriptionId);
 
         var subscription = new Subscription(this, eventKey, subscriptionId);
@@ -76,7 +76,7 @@ public sealed class EventAggregator : IEventAggregator, IDisposable
 
         var currentHandlers = handlers.ToArray();
 
-        _logger.LogDebug("Publishing event '{EventKey}' to {HandlerCount} handlers",
+        _logger.LogInformation("Publishing event '{EventKey}' to {HandlerCount} handlers",
             eventKey, currentHandlers.Length);
 
         foreach (var handler in currentHandlers)
@@ -106,7 +106,7 @@ public sealed class EventAggregator : IEventAggregator, IDisposable
 
         var currentHandlers = handlers.ToArray();
 
-        _logger.LogDebug("Publishing event '{EventKey}' with payload to {HandlerCount} handlers",
+        _logger.LogInformation("Publishing event '{EventKey}' with payload to {HandlerCount} handlers",
             eventKey, currentHandlers.Length);
 
         foreach (var handler in currentHandlers)

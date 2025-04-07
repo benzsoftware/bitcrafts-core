@@ -21,6 +21,11 @@ public abstract class LoadableView<TModel> : BaseView, ILoadableView<TModel>
         }
     }
 
+    protected virtual void SetModel()
+    {
+        Model = new TModel();
+    }
+
     public virtual void HideLoading()
     {
         if (LoadingIndicator != null) LoadingIndicator.IsVisible = false;
