@@ -21,10 +21,10 @@ public partial class DisplayUserAccountsView : LoadableView<DisplayAccountsModel
     }
 
 
-    protected override void OnDataDisplayed(DisplayAccountsModel model)
+    protected override void OnDataDisplayed()
     {
         _users.Clear();
-        foreach (var user in model.Users)
+        foreach (var user in Model.Users)
             _users.Add(user);
     }
 

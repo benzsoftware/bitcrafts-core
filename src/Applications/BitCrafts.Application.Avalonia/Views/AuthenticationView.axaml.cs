@@ -1,30 +1,19 @@
+using System.ComponentModel.DataAnnotations;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Application.Avalonia.Controls.Views;
+using BitCrafts.Infrastructure.Abstraction.Extensions;
+using BitCrafts.Infrastructure.Abstraction.Services;
 
 namespace BitCrafts.Application.Avalonia.Views;
 
-public partial class AuthenticationView : LoadableView<AuthenticationViewModel>, IAuthenticationView
+public partial class AuthenticationView : BaseView, IAuthenticationView
 {
     public AuthenticationView()
     {
         InitializeComponent();
-    }
-
-
-    protected override void OnDataDisplayed(AuthenticationViewModel model)
-    {
-    }
-
-    protected override Control LoadingIndicator => null;
-
-    protected override TextBlock ErrorTextBlock => null;
-
-    protected override void SetModel()
-    {
-        Model = new AuthenticationViewModel(LoginTextBox?.Text?.Trim(), PasswordTextBox?.Text?.Trim(), null);
     }
 
     public void SetAuthenticationError(string errorMessage)
@@ -34,8 +23,9 @@ public partial class AuthenticationView : LoadableView<AuthenticationViewModel>,
 
     private void AuthenticateButton_OnClick(object sender, RoutedEventArgs e)
     {
-        SetModel();
-        EventAggregator.Publish<AuthenticationViewModel>(IAuthenticationView.AuthenticateEventName, Model);
+        UpdateModelFromInputsCore();
+        EventAggregator.Publish<AuthenticationModel>(IAuthenticationView.AuthenticateEventName,
+            (AuthenticationModel)Model);
     }
 
     private void CancelButton_OnClick(object sender, RoutedEventArgs e)
@@ -61,4 +51,21 @@ public partial class AuthenticationView : LoadableView<AuthenticationViewModel>,
     {
         EventAggregator.Publish(IAuthenticationView.ShowEnvironmentEventName);
     }
+
+    protected override IModel UpdateModelFromInputsCore()
+    {
+        return new AuthenticationModel(LoginTextBox.Text.TrimOrEmpty(), PasswordTextBox.Text.TrimOrEmpty(),
+            EnvironmentComboBox.SelectedItem as EnvironmentConfiguration);
+    }
+
+    protected override void ClearCore()
+    {
+    }
+
+    protected override bool ValidateModelCore(out List<ValidationResult> validationResults)
+    {
+        validationResults = new List<ValidationResult>();
+        return true;
+    }
+ 
 }

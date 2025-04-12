@@ -1,16 +1,20 @@
+using System.ComponentModel.DataAnnotations;
+using BitCrafts.Application.Abstraction.Models;
+using BitCrafts.Infrastructure.Abstraction.Data;
+
 namespace BitCrafts.Application.Abstraction.Views;
 
-/// <summary>
-///     Defines an interface for views.
-///     Views are responsible for displaying data to the user and handling user input.
-/// </summary>
-public interface IView : IViewEventAware, IDisposable
+public interface IView : IEventAware, IDisposable
 {
-    /// <summary>
-    ///     Gets or sets the title of the view.
-    /// </summary>
+    bool IsVisible { get; }
+    bool IsBusy { get; }
     string Title { get; set; }
-
-    static string DisappearedEventName = "DisappearedEvent";
-    static string AppearedEventName = "AppearedEvent";
+    IModel Model { get; }
+    IDataValidator DataValidator { get; }
+    bool SetModel(IModel model);
+    void UpdateModelFromInputs();
+    void Clear();
+    void SetVisible(bool visible);
+    void SetBusy(bool busy);
+    bool ValidateModel(out List<ValidationResult> validationResults);
 }

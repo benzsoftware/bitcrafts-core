@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Avalonia.Controls.Views;
 
 namespace BitCrafts.Application.Avalonia.Views;
@@ -49,5 +50,9 @@ public partial class MainView : BaseView, IMainView
     {
         CloseEvent?.Invoke(this, EventArgs.Empty);
     }
- 
+
+    protected override IModel UpdateModelFromInputsCore()
+    {
+        return Model;
+    }
 }

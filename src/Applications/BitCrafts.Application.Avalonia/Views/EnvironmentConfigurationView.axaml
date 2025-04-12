@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:data="clr-namespace:BitCrafts.Infrastructure.Abstraction.Services;assembly=BitCrafts.Infrastructure.Abstraction"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="BitCrafts.Application.Avalonia.Views.EnvironmentConfigurationView">
     <Border Padding="24">
@@ -15,8 +16,16 @@
             <StackPanel Grid.Row="0" Margin="0,0,0,10">
                 <TextBlock Text="Environnements disponibles" FontWeight="Bold" Margin="0,0,0,5" />
                 <ComboBox x:Name="EnvironmentsComboBox"
+                          SelectionChanged="EnvironmentsComboBox_OnSelectionChanged"
                           Margin="0,0,0,10"
-                          HorizontalAlignment="Stretch" />
+                          HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock x:DataType="data:EnvironmentConfiguration"
+                                       Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Button x:Name="UseSelectedEnvironmentButton"
                         Content="Utiliser cet environnement"
                         Margin="0,0,0,10" Padding="10,5"
@@ -65,7 +74,13 @@
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Type de base de données:"
                                    VerticalAlignment="Center" />
                         <ComboBox Grid.Row="3" Grid.Column="1" x:Name="DatabaseTypeComboBox" Margin="0,5"
-                                  HorizontalAlignment="Stretch" />
+                                  HorizontalAlignment="Stretch">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding .}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Chaîne de connexion:" VerticalAlignment="Center" />
                         <Grid Grid.Row="4" Grid.Column="1" Margin="0,5">
@@ -81,16 +96,16 @@
                                   Content="Définir comme environnement par défaut" Margin="0,10,0,5" />
 
                         <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Margin="0,10,0,0">
-                            <Button x:Name="NewEnvironmentButton" Content="Nouveau" Margin="0,0,5,0" Padding="10,5" />
-                            <Button x:Name="SaveEnvironmentButton" Content="Enregistrer" Margin="5,0" Padding="10,5" />
-                            <Button x:Name="DeleteEnvironmentButton" Content="Supprimer" Margin="5,0,0,0"
+                            <Button x:Name="NewEnvironmentButton" Content="Nouveau"
+                                    Click="NewEnvironmentButton_OnClick"
+                                    Margin="0,0,5,0"
                                     Padding="10,5" />
                         </StackPanel>
                     </Grid>
                 </Grid>
             </Border>
 
-            <Button Grid.Row="2" x:Name="CloseButton" Content="Fermer"
+            <Button Grid.Row="2" x:Name="CloseButton" Content="Fermer" Click="CloseButton_OnClick"
                     HorizontalAlignment="Right" Margin="0,10,0,0" Padding="20,5" />
 
             <Grid Grid.Row="0" Grid.RowSpan="3" Margin="-24" x:Name="LoadingControl" IsVisible="False">

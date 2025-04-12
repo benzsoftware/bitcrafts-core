@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BitCrafts.Application.Avalonia.Controls.Loading.LoadingControl">
+    <StackPanel x:Name="LoadingControl" VerticalAlignment="Center" IsVisible="True">
+        <TextBlock x:Name="LoadingText" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <ProgressBar Width="400" Margin="24" IsIndeterminate="True" />
+        <TextBlock x:Name="ErrorTextBox" VerticalAlignment="Center" HorizontalAlignment="Center" />
+    </StackPanel>
+</UserControl>

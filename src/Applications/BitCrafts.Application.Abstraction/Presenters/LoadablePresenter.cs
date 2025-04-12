@@ -4,58 +4,37 @@ using Microsoft.Extensions.Logging;
 
 namespace BitCrafts.Application.Abstraction.Presenters;
 
-public abstract class LoadablePresenter<TView, TModel> : BasePresenter<TView>
-    where TView : class, ILoadableView<TModel>
-    where TModel : class, IViewModel, new()
+public abstract class LoadablePresenter : BasePresenter, ILoadablePresenter
 {
+    private ILoadableView LoadableView => View as ILoadableView;
+
     protected LoadablePresenter(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        Model = new TModel();
-    }
-
-    protected TModel Model { get; private set; }
-
-    // ReSharper disable once UnusedAutoPropertyAccessor.Global
-    protected bool IsLoading { get; private set; }
-
-    protected void UpdateModel(TModel updatedModel)
-    {
-        if (updatedModel is null)
-            throw new ArgumentNullException(nameof(updatedModel));
-
-        Model = updatedModel;
-        if (Model is BaseViewModel baseModel)
-            baseModel.ResetDirtyState();
-
-        View.DisplayData(Model);
     }
 
     protected override async Task OnAppearedAsync()
     {
         await LoadDataAsync();
-        View.DisplayData(Model);
     }
 
     protected async Task LoadDataAsync()
     {
         try
         {
-            IsLoading = true;
-            View.ShowLoading();
-            Model = await FetchDataAsync();
-            if (Model != null) View.DisplayData(Model);
+            LoadableView.SetBusy(true);
+            var model = await LoadDataCoreAsync();
+            if (model != null) View.SetModel(model);
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Erreur lors du chargement des données");
-            View.ShowError(ex.Message);
+            LoadableView.ShowLoadingMessage(ex.Message);
         }
         finally
         {
-            IsLoading = false;
-            View.HideLoading();
+            LoadableView.SetBusy(false);
         }
     }
 
-    protected abstract Task<TModel> FetchDataAsync();
+    protected abstract Task<IModel> LoadDataCoreAsync();
 }

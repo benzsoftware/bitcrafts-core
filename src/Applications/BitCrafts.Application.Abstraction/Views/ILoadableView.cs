@@ -1,12 +1,9 @@
 using BitCrafts.Application.Abstraction.Models;
+using BitCrafts.Application.Abstraction.Presenters;
 
 namespace BitCrafts.Application.Abstraction.Views;
 
-public interface ILoadableView<TModel> : IView where TModel : class, IViewModel, new()
+public interface ILoadableView : IView
 {
-    void ShowLoading(string message = "Loading...");
-    void HideLoading();
-    void ShowError(string message = "Error occured");
-    void HideError();
-    void DisplayData(TModel model);
+    void ShowLoadingMessage(string message);
 }

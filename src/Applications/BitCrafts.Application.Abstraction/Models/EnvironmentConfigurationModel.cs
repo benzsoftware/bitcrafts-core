@@ -1,20 +1,21 @@
+using System.Collections.ObjectModel;
 using BitCrafts.Infrastructure.Abstraction.Services;
 
 namespace BitCrafts.Application.Abstraction.Models;
 
-public class EnvironmentConfigurationViewModel : BaseViewModel
+public class EnvironmentConfigurationModel : BaseModel
 {
-    public List<EnvironmentConfiguration> Environments { get; private set; } = new();
+    public ObservableCollection<EnvironmentConfiguration> Environments { get; private set; } = new();
     public EnvironmentConfiguration SelectedEnvironment { get; private set; } = null;
     public EnvironmentConfiguration EditingEnvironment { get; private set; } = new();
 
-    public EnvironmentConfigurationViewModel()
+    public EnvironmentConfigurationModel()
     {
     }
 
-    public EnvironmentConfigurationViewModel(List<EnvironmentConfiguration> environments)
+    public EnvironmentConfigurationModel(List<EnvironmentConfiguration> environments)
     {
-        Environments = environments;
+        Environments = new ObservableCollection<EnvironmentConfiguration>(environments);
     }
 
     public void SetEnvironments(List<EnvironmentConfiguration> environments)
@@ -24,7 +25,7 @@ public class EnvironmentConfigurationViewModel : BaseViewModel
         if (environments.Count == 0)
             return;
         Environments.Clear();
-        Environments.AddRange(environments);
+        Environments = new ObservableCollection<EnvironmentConfiguration>(environments);
     }
 
     public void SetSelectedEnvironment(EnvironmentConfiguration environment)
@@ -33,5 +34,12 @@ public class EnvironmentConfigurationViewModel : BaseViewModel
             throw new ArgumentNullException(nameof(environment));
 
         SelectedEnvironment = environment;
+    }
+
+    public void SetEditingEnvironment(EnvironmentConfiguration editingEnvironment)
+    {
+        if (editingEnvironment == null)
+            throw new ArgumentNullException(nameof(editingEnvironment));
+        EditingEnvironment = editingEnvironment;
     }
 }

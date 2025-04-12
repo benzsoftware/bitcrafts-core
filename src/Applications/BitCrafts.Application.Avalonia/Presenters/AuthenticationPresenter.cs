@@ -3,23 +3,28 @@ using BitCrafts.Application.Abstraction;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Presenters;
 using BitCrafts.Application.Abstraction.Views;
+using BitCrafts.Application.Avalonia.Controls.Views;
+using BitCrafts.Application.Avalonia.Views;
 using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.UseCases;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BitCrafts.Application.Avalonia.Presenters;
 
-public class AuthenticationPresenter : LoadablePresenter<IAuthenticationView, AuthenticationViewModel>,
+public class AuthenticationPresenter : BasePresenter,
     IAuthenticationPresenter
 {
+    private IAuthenticationView AuthView => (IAuthenticationView)View;
+
     public AuthenticationPresenter(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        View.Title = "Authentication";
+        SetView(serviceProvider.GetRequiredService<IAuthenticationView>());
+        AuthView.Title = "Authentication";
     }
 
     protected override void OnSubscribeEventsCore()
     {
-        EventAggregator.Subscribe<AuthenticationViewModel>(IAuthenticationView.AuthenticateEventName,
+        EventAggregator.Subscribe<AuthenticationModel>(IAuthenticationView.AuthenticateEventName,
             ViewOnAuthenticate);
         EventAggregator.Subscribe(IAuthenticationView.CancelEventName, ViewOnCancel);
         EventAggregator.Subscribe(IAuthenticationView.ShowEnvironmentEventName, ViewOnShowEnvironment);
@@ -34,22 +39,22 @@ public class AuthenticationPresenter : LoadablePresenter<IAuthenticationView, Au
         });
     }
 
-    protected override Task<AuthenticationViewModel> FetchDataAsync()
-    {
-        return Task.FromResult(new AuthenticationViewModel());
-    }
+    /*  protected override Task<AuthenticationModel> FetchDataAsync()
+      {
+          return Task.FromResult(new AuthenticationModel());
+      }*/
 
     private void ViewOnCancel()
     {
         UiManager.CloseWindow<IAuthenticationPresenter>();
     }
 
-    private async void ViewOnAuthenticate(AuthenticationViewModel viewModel)
+    private async void ViewOnAuthenticate(AuthenticationModel model)
     {
         try
         {
-            View.DisplayProgressBar();
-            var auth = new Authentication(viewModel.Login, viewModel.Password, viewModel.Password);
+            AuthView.DisplayProgressBar();
+            var auth = new Authentication(model.Login, model.Password, model.Password);
             var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>()
                 .ExecuteAsync(auth);
             if (isAunthenticated)
@@ -69,16 +74,16 @@ public class AuthenticationPresenter : LoadablePresenter<IAuthenticationView, Au
 
             else
             {
-                View.SetAuthenticationError("Login or password is incorrect.");
+                AuthView.SetAuthenticationError("Login or password is incorrect.");
             }
         }
         catch (Exception exception)
         {
-            View.SetAuthenticationError(exception.Message);
+            AuthView.SetAuthenticationError(exception.Message);
         }
         finally
         {
-            View.HideProgressBar();
+            AuthView.HideProgressBar();
         }
     }
 }

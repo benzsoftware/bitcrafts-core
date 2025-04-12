@@ -2,9 +2,7 @@ using BitCrafts.Application.Abstraction.Models;
 
 namespace BitCrafts.Application.Abstraction.Views;
 
-public interface IEditableView<TModel> : ILoadableView<TModel> where TModel : class, IViewModel, new()
+public interface IEditableView : ILoadableView
 {
-    event EventHandler<TModel> SaveRequested;
 
-    event EventHandler CancelRequested;
 }

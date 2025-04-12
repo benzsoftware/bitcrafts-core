@@ -4,37 +4,40 @@ using BitCrafts.Application.Abstraction.Views;
 using Microsoft.Extensions.Logging;
 
 namespace BitCrafts.Application.Abstraction.Presenters;
-
+/*
 public abstract class EditablePresenter<TView, TModel> : LoadablePresenter<TView, TModel>
     where TView : class, IEditableView<TModel>
-    where TModel : class, IViewModel, new()
+    where TModel : class, IModel, new()
 {
     private CancellationTokenSource _cts = new();
 
-    protected EditablePresenter(IServiceProvider serviceProvider) : base(serviceProvider)
+    protected EditablePresenter(IServiceProvider serviceProvider)
+        : base(serviceProvider)
     {
     }
 
-    protected override async Task OnAppearedAsync()
+    protected override void OnSubscribeEventsCore()
     {
-        View.SaveRequested += OnSaveRequested;
-        View.CancelRequested += OnCancelRequested;
-        await Task.CompletedTask;
+        base.OnSubscribeEventsCore();
+        EventAggregator.Subscribe(IEditableView<TModel>.CancelEventName, OnCancelRequested);
+        EventAggregator.Subscribe<TModel>(IEditableView<TModel>.SaveEventName, OnSaveRequested);
     }
 
-    protected override async Task OnDisappearedAsync()
+    protected abstract Task<bool> SaveDataCoreAsync(TModel model, CancellationToken cancellationToken = default);
+    protected abstract Task CancelCoreAsync();
+
+
+    private void OnCancelRequested()
     {
-        View.SaveRequested -= OnSaveRequested;
-        View.CancelRequested -= OnCancelRequested;
-        await Task.CompletedTask;
+        CancelCoreAsync();
     }
 
-    private void OnSaveRequested(object sender, TModel model)
+    private void OnSaveRequested()
     {
-        _ = HandleSaveRequestAsync(model);
+        _ = HandleSaveRequestAsync();
     }
 
-    private async Task HandleSaveRequestAsync(TModel model)
+    private async Task HandleSaveRequestAsync()
     {
         _cts.Cancel();
         _cts.Dispose();
@@ -43,10 +46,10 @@ public abstract class EditablePresenter<TView, TModel> : LoadablePresenter<TView
 
         try
         {
-            if (DataValidator.TryValidate(model, false, out var list))
+            if (DataValidator.TryValidate(View.Model, false, out var list))
             {
                 View.ShowLoading("Saving in progress ...");
-                var success = await SaveDataCoreAsync(model, cancellationToken);
+                var success = await SaveDataCoreAsync(View.Model, cancellationToken);
 
                 if (success)
                     UpdateModel(model);
@@ -76,11 +79,4 @@ public abstract class EditablePresenter<TView, TModel> : LoadablePresenter<TView
             View.HideLoading();
         }
     }
-
-    private void OnCancelRequested(object sender, EventArgs e)
-    {
-        if (Model != null) View.DisplayData(Model);
-    }
-
-    protected abstract Task<bool> SaveDataCoreAsync(TModel model, CancellationToken cancellationToken = default);
-}
+}*/

@@ -89,7 +89,7 @@ public sealed class AvaloniaUiManager : IUiManager
 
         var presenter = GetPresenterFromType(presenterType);
         presenter.SetParameters(parameters);
-        var view = presenter.GetView();
+        var view = presenter.View;
         if (view is not UserControl)
             throw new InvalidOperationException("The view associated with the presenter is not a UserControl.");
         var tabItem = CreateTabItem(presenter);
@@ -99,8 +99,8 @@ public sealed class AvaloniaUiManager : IUiManager
 
     private TabItem CreateTabItem(IPresenter presenter)
     {
-        var userControl = presenter.GetView() as UserControl;
-        var view = presenter.GetView();
+        var userControl = presenter.View as UserControl;
+        var view = presenter.View;
         var tabItem = new TabItem();
         var headerGrid = new Grid
         {
@@ -182,7 +182,7 @@ public sealed class AvaloniaUiManager : IUiManager
         if (presenter != null)
         {
             presenter.SetParameters(parameters);
-            var view = presenter.GetView();
+            var view = presenter.View;
             if (view is not UserControl)
                 throw new InvalidOperationException("The view associated with the presenter is not a UserControl.");
             var window = CreateWindow(presenter, parameters);
@@ -234,7 +234,7 @@ public sealed class AvaloniaUiManager : IUiManager
         if (presenter == null) return;
 
         presenter.SetParameters(parameters);
-        var view = presenter.GetView();
+        var view = presenter.View;
         if (view is not UserControl)
             throw new InvalidOperationException("The view associated with the presenter is not a UserControl.");
 
@@ -302,7 +302,7 @@ public sealed class AvaloniaUiManager : IUiManager
 
     private Window CreateDialog(IPresenter presenter, Dictionary<string, object> parameters = null)
     {
-        var view = presenter.GetView();
+        var view = presenter.View;
         var userControl = view as UserControl;
         var window = new DefaultDialog();
         window.SetContent(userControl);
@@ -313,7 +313,7 @@ public sealed class AvaloniaUiManager : IUiManager
 
     private Window CreateWindow(IPresenter presenter, Dictionary<string, object> parameters = null)
     {
-        var view = presenter.GetView();
+        var view = presenter.View;
         var userControl = view as UserControl;
         var window = new DefaultWindow();
         window.SetContent(userControl);

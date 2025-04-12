@@ -24,7 +24,7 @@ public static class ServiceCollectionExtension
     {
         services.TryAddTransient<IMainPresenter, MainPresenter>();
         services.TryAddTransient<IAuthenticationPresenter, AuthenticationPresenter>();
-        services.TryAddTransient<IEnvironmentConfigurationPresenter, EnvironmentConfigurationPresenter>();
+        // services.TryAddTransient<IEnvironmentConfigurationPresenter, EnvironmentConfigurationPresenter>();
         return services;
     }
 

@@ -22,7 +22,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Infrastructure\BitCrafts.Infrastructure\BitCrafts.Infrastructure.csproj"/>
         <ProjectReference Include="..\BitCrafts.Application.Abstraction\BitCrafts.Application.Abstraction.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Loading\LoadingControl.axaml.cs">
+            <DependentUpon>LoadingControl.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 </Project>

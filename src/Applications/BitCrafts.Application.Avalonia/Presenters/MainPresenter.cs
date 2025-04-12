@@ -9,29 +9,30 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BitCrafts.Application.Avalonia.Presenters;
 
-public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
+public sealed class MainPresenter : BasePresenter, IMainPresenter
 {
     private readonly IBackgroundThreadDispatcher _backgroundThreadDispatcher;
     private readonly AvaloniaUiManager _uiManager;
     private IReadOnlyList<IModule> _modules;
+    private IMainView MainView => View as MainView;
 
     public MainPresenter(IServiceProvider serviceProvider)
         : base(serviceProvider)
     {
         _uiManager = (AvaloniaUiManager)serviceProvider.GetRequiredService<IUiManager>();
-
+        SetView(ServiceProvider.GetRequiredService<IMainView>());
         _backgroundThreadDispatcher = serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
         var title = serviceProvider.GetService<IConfiguration>()["ApplicationSettings:Name"] ??
                     "No Name Application";
-        View.Title = title;
+        MainView.Title = title;
     }
 
     protected override async Task OnAppearedAsync()
     {
-        View.CloseEvent += ViewOnCloseEvent;
+        MainView.CloseEvent += ViewOnCloseEvent;
         var menuManager = (AvaloniaMenuManager)ServiceProvider.GetRequiredService<IMenuManager>();
-        menuManager.SetMenuControl(View.GetMenuControl());
-        _uiManager.SetTabControl(View.GetTabControl());
+        menuManager.SetMenuControl(MainView.GetMenuControl());
+        _uiManager.SetTabControl(MainView.GetTabControl());
         _modules = ServiceProvider.GetServices<IModule>().ToList().AsReadOnly();
         foreach (var module in _modules) module.InitializeMenus(ServiceProvider); // should be run on ui thread
 
@@ -40,9 +41,9 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
 
     private async Task InitializeModulesAsync()
     {
-        View.SetBusy("Initializing Modules in background.");
+        MainView.SetBusy("Initializing Modules in background.");
         await _backgroundThreadDispatcher.InvokeAsync(InitModules);
-        View.UnsetBusy();
+        MainView.UnsetBusy();
     }
 
     private void InitModules()
@@ -57,7 +58,7 @@ public sealed class MainPresenter : BasePresenter<IMainView>, IMainPresenter
 
     protected override async Task OnDisappearedAsync()
     {
-        View.CloseEvent -= ViewOnCloseEvent;
+        MainView.CloseEvent -= ViewOnCloseEvent;
         await ServiceProvider.GetRequiredService<IUiManager>().ShutdownAsync();
     }
 }
