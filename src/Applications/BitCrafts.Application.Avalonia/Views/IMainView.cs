@@ -8,6 +8,4 @@ public interface IMainView : IView
     event EventHandler CloseEvent;
     Menu GetMenuControl();
     TabControl GetTabControl();
-    void SetBusy(string message);
-    void UnsetBusy();
 }

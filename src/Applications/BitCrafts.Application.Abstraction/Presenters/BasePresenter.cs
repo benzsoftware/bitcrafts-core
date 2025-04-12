@@ -1,5 +1,6 @@
 ﻿using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Managers;
+using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.Events;
@@ -35,9 +36,9 @@ public abstract class BasePresenter : IPresenter
         }
     }
 
-    public void SetView(IView view)
+    public void SetView(Type viewType)
     {
-        _view = (IView)ServiceProvider.GetRequiredService(view.GetType());
+        _view = (IView)ServiceProvider.GetRequiredService(viewType);
     }
 
     protected IServiceProvider ServiceProvider { get; }
@@ -79,15 +80,45 @@ public abstract class BasePresenter : IPresenter
     {
     }
 
-    protected virtual Task OnAppearedAsync()
+    protected virtual async Task OnAppearedAsync()
     {
         OnSubscribeEvents();
-        return Task.CompletedTask;
+        await LoadDataAsync();
     }
 
-    protected virtual Task OnDisappearedAsync()
+    protected virtual async Task OnDisappearedAsync()
     {
-        return Task.CompletedTask;
+        await SaveChangesAsync();
+    }
+
+    private async Task SaveChangesAsync()
+    {
+        try
+        {
+            View.SetBusy(true);
+            if (View.Model.IsDirty)
+            {
+                if (View.DataValidator.TryValidate(View.Model, false, out var list))
+                {
+                    await SaveChangesCoreAsync(View.Model);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error saving changes");
+            await UiManager.ShowErrorMessageAsync("Error saving changes", ex.Message)
+                .ConfigureAwait(false);
+        }
+        finally
+        {
+            View.SetBusy(false);
+        }
+    }
+
+    protected virtual async Task SaveChangesCoreAsync(IModel model)
+    {
+        await Task.CompletedTask;
     }
 
     protected virtual void Dispose(bool disposing)
@@ -98,6 +129,32 @@ public abstract class BasePresenter : IPresenter
             View.Dispose();
             Logger.LogInformation($"{GetType().Name} Disposed.");
         }
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            View.SetBusy(true);
+            var model = await LoadDataCoreAsync();
+            if (model != null)
+                View.SetModel(model);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading data");
+            await UiManager.ShowErrorMessageAsync("Error loading data", ex.Message)
+                .ConfigureAwait(false);
+        }
+        finally
+        {
+            View.SetBusy(false);
+        }
+    }
+
+    protected virtual Task<IModel> LoadDataCoreAsync()
+    {
+        return Task.FromResult(default(IModel));
     }
 
     public void Dispose()

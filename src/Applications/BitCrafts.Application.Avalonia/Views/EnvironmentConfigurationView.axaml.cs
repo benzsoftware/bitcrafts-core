@@ -3,16 +3,15 @@ using Avalonia.Interactivity;
 using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
+using BitCrafts.Application.Avalonia.Controls.Loading;
 using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Infrastructure.Abstraction.Extensions;
 using BitCrafts.Infrastructure.Abstraction.Services;
 
 namespace BitCrafts.Application.Avalonia.Views;
 
-public partial class EnvironmentConfigurationView : LoadableView, IEnvironmentConfigurationView
+public partial class EnvironmentConfigurationView : BaseView, IEnvironmentConfigurationView
 {
-    private Control _loadingIndicator;
-    private TextBlock _messageTextBlock;
     private EnvironmentConfigurationModel ViewModel => Model as EnvironmentConfigurationModel;
 
     public EnvironmentConfigurationView()
@@ -84,7 +83,5 @@ public partial class EnvironmentConfigurationView : LoadableView, IEnvironmentCo
         return ViewModel;
     }
 
-    protected override Control LoadingIndicator => _loadingIndicator;
-
-    protected override TextBlock MessageTextBlock => _messageTextBlock;
+    protected override LoadingControl LoadingIndicator => BusyControl;
 }

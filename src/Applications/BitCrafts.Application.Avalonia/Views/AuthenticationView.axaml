@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:loading="clr-namespace:BitCrafts.Application.Avalonia.Controls.Loading;assembly=BitCrafts.Application.Avalonia.Controls"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
              Width="500" Height="300"
              x:Class="BitCrafts.Application.Avalonia.Views.AuthenticationView">
@@ -28,37 +29,45 @@
             </StackPanel>
         </Grid>
     </Border>-->
-    <Border BorderThickness="2" BorderBrush="DarkSlateGray">
-        <DockPanel Margin="15">
-            <TextBlock DockPanel.Dock="Top" Text="Authentication" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" />
+    <Grid>
 
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
-                <Button x:Name="EnvironmentButton" Content="Environnement" Margin="5,0"
-                        Click="EnvironmentButton_OnClick" Width="140" />
-                <Button x:Name="AuthenticateButton" Content="Connexion" Margin="5,0"
-                        Click="AuthenticateButton_OnClick" Width="110" />
-                <Button x:Name="CancelButton" Content="Cancel" Margin="5,0"
-                        Click="CancelButton_OnClick" Width="80" />
-            </StackPanel>
+        <Border Grid.Row="0" BorderThickness="2" BorderBrush="DarkSlateGray">
+            <DockPanel Margin="15">
+                <TextBlock DockPanel.Dock="Top" Text="Authentication" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" />
 
-            <ProgressBar DockPanel.Dock="Bottom" x:Name="AuthenticatingProgressBar"
-                         IsIndeterminate="True" Foreground="DarkOrange"
-                         IsVisible="False" Height="4" Margin="0,10" />
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right"
+                            Margin="0,15,0,0">
+                    <Button x:Name="EnvironmentButton" Content="Environnement" Margin="5,0"
+                            Click="EnvironmentButton_OnClick" Width="140" />
+                    <Button x:Name="AuthenticateButton" Content="Connexion" Margin="5,0"
+                            Click="AuthenticateButton_OnClick" Width="110" />
+                    <Button x:Name="CancelButton" Content="Cancel" Margin="5,0"
+                            Click="CancelButton_OnClick" Width="80" />
+                </StackPanel>
 
-            <TextBlock DockPanel.Dock="Bottom" x:Name="ErrorMessgeTextBlox"
-                       Foreground="Orange" Text="" Margin="0,5" />
+                <ProgressBar DockPanel.Dock="Bottom" x:Name="AuthenticatingProgressBar"
+                             IsIndeterminate="True" Foreground="DarkOrange"
+                             IsVisible="False" Height="4" Margin="0,10" />
 
-            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="120,*" Margin="0,10">
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Login:" Margin="5" VerticalAlignment="Center" />
-                <TextBox Grid.Row="0" Grid.Column="1" x:Name="LoginTextBox" Margin="5" />
+                <TextBlock DockPanel.Dock="Bottom" x:Name="ErrorMessgeTextBlox"
+                           Foreground="Orange" Text="" Margin="0,5" />
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Password:" Margin="5" VerticalAlignment="Center" />
-                <TextBox Grid.Row="1" Grid.Column="1" x:Name="PasswordTextBox" Margin="5" PasswordChar="*" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Environment" Margin="5" VerticalAlignment="Center" />
-                <ComboBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                          x:Name="EnvironmentComboBox"
-                          Margin="5" />
-            </Grid>
-        </DockPanel>
-    </Border>
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="120,*" Margin="0,10">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Login:" Margin="5" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="LoginTextBox" Margin="5" />
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Password:" Margin="5" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="PasswordTextBox" Margin="5" PasswordChar="*" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Environment" Margin="5" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Left"
+                              x:Name="EnvironmentComboBox"
+                              Margin="5" />
+                </Grid>
+            </DockPanel>
+        </Border>
+        <Grid Grid.Row="0" Margin="-24" x:Name="LoadingControl" IsVisible="False">
+            <loading:LoadingControl x:Name="BusyControl" />
+        </Grid>
+    </Grid>
 </UserControl>

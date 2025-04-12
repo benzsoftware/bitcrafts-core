@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BitCrafts.Application.Abstraction.Models;
+using BitCrafts.Application.Avalonia.Controls.Loading;
 using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Models;
@@ -8,35 +10,39 @@ using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
 
 namespace BitCrafts.Module.Demo.DemoModule.Views;
 
-public partial class DisplayUserAccountsView : LoadableView<DisplayAccountsModel>, IDisplayUserAccountsView
+public partial class DisplayUserAccountsView : BaseView, IDisplayUserAccountsView
 {
     private readonly ObservableCollection<User> _users = new();
-    protected override Control LoadingIndicator => LoadingControl;
 
-    protected override TextBlock ErrorTextBlock => LoadingMessageTextBox;
+    protected override IModel UpdateModelFromInputsCore()
+    {
+        return Model;
+    }
+
+    protected override LoadingControl LoadingIndicator => null;
+ 
 
     public DisplayUserAccountsView()
     {
         InitializeComponent();
     }
 
-
-    protected override void OnDataDisplayed()
+    /*protected override void OnDataDisplayed()
     {
         _users.Clear();
         foreach (var user in Model.Users)
             _users.Add(user);
-    }
+    }*/
 
-    protected override void OnAppeared()
-    {
-        UsersDataGrid.ItemsSource = _users;
-    }
+    /* protected override void OnAppeared()
+     {
+         UsersDataGrid.ItemsSource = _users;
+     }
 
-    protected override void OnDisappeared()
-    {
-        _users.Clear();
-    }
+     protected override void OnDisappeared()
+     {
+         _users.Clear();
+     }*/
 
     /*
     private void CreateUserButton_OnClick(object sender, RoutedEventArgs e)

@@ -20,7 +20,7 @@ public sealed class MainPresenter : BasePresenter, IMainPresenter
         : base(serviceProvider)
     {
         _uiManager = (AvaloniaUiManager)serviceProvider.GetRequiredService<IUiManager>();
-        SetView(ServiceProvider.GetRequiredService<IMainView>());
+        SetView(typeof(IMainView));
         _backgroundThreadDispatcher = serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
         var title = serviceProvider.GetService<IConfiguration>()["ApplicationSettings:Name"] ??
                     "No Name Application";
@@ -41,9 +41,9 @@ public sealed class MainPresenter : BasePresenter, IMainPresenter
 
     private async Task InitializeModulesAsync()
     {
-        MainView.SetBusy("Initializing Modules in background.");
+        MainView.SetBusy(true, "Initializing Modules in background.");
         await _backgroundThreadDispatcher.InvokeAsync(InitModules);
-        MainView.UnsetBusy();
+        MainView.SetBusy(false, "");
     }
 
     private void InitModules()

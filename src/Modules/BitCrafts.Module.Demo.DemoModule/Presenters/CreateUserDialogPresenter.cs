@@ -4,39 +4,38 @@ using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Presenters;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.UseCases;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace BitCrafts.Module.Demo.DemoModule.Presenters;
 
-public sealed class CreateUserDialogPresenter : BasePresenter<ICreateUserDialogView>, ICreateUserDialogPresenter
+public sealed class CreateUserDialogPresenter : BasePresenter, ICreateUserDialogPresenter
 {
     private readonly ICreateUserUseCase _createUserUseCase;
-    private readonly IEventAggregator _eventAggregator;
 
-    public CreateUserDialogPresenter(IServiceProvider serviceProvider, ICreateUserUseCase createUserUseCase,
-        ILogger<BasePresenter<ICreateUserDialogView>> logger, IEventAggregator eventAggregator)
+    private ICreateUserDialogView CreateView => View as ICreateUserDialogView;
+
+    public CreateUserDialogPresenter(IServiceProvider serviceProvider)
         : base(serviceProvider)
     {
-        _createUserUseCase = createUserUseCase;
-        _eventAggregator = eventAggregator;
-        View.Title = "Create User";
+        _createUserUseCase = serviceProvider.GetRequiredService<ICreateUserUseCase>();
+        CreateView.Title = "Create User";
     }
 
     protected override Task OnAppearedAsync()
     {
-        View.UserCreated += ViewOnUserCreated;
+        CreateView.UserCreated += ViewOnUserCreated;
         return Task.CompletedTask;
     }
 
     private async void ViewOnUserCreated(object sender, User e)
     {
         await _createUserUseCase.ExecuteAsync(e);
-        //_eventAggregator.Publish(new CreateUserEvent(e));
     }
 
     protected override Task OnDisappearedAsync()
     {
-        View.UserCreated -= ViewOnUserCreated;
+        CreateView.UserCreated -= ViewOnUserCreated;
         return Task.CompletedTask;
     }
 }

@@ -8,4 +8,10 @@ public partial class LoadingControl : UserControl
     {
         InitializeComponent();
     }
+
+    public void SetLoading(bool isLoading, string message = "")
+    {
+        LoadingOverlay.IsVisible = isLoading;
+        LoadingMessageTextBox.Text = message;
+    }
 }

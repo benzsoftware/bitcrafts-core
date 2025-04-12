@@ -1,3 +1,4 @@
+using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Presenters;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Models;
@@ -8,15 +9,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BitCrafts.Module.Demo.DemoModule.Presenters;
 
-public sealed class DisplayUserAccountsPresenter : LoadablePresenter<IDisplayUserAccountsView, DisplayAccountsModel>,
-    IDisplayUserAccountsPresenter
+public sealed class DisplayUserAccountsPresenter : BasePresenter, IDisplayUserAccountsPresenter
 {
     private readonly IDisplayUsersUseCase _displayUsersUseCase;
+    private IDisplayUserAccountsView DisplayView => View as IDisplayUserAccountsView;
 
     public DisplayUserAccountsPresenter(IServiceProvider serviceProvider)
         : base(serviceProvider)
     {
-        View.Title = "User Accounts";
+        DisplayView.Title = "User Accounts";
         _displayUsersUseCase = serviceProvider.GetRequiredService<IDisplayUsersUseCase>();
     }
 
@@ -50,12 +51,14 @@ public sealed class DisplayUserAccountsPresenter : LoadablePresenter<IDisplayUse
             { Constants.WindowSystemDecorationParameterName, SystemDecorations.Full }
         });
     }*/
-    protected override async Task OnAppearedAsync()
+/*
+    protected override async Task<DisplayAccountsModel> LoadDataCoreAsync()
     {
-        await base.OnAppearedAsync();
-    }
 
-    protected override async Task<DisplayAccountsModel> FetchDataAsync()
+    }
+    */
+
+    protected override async Task<IModel> LoadDataCoreAsync()
     {
         var model = new DisplayAccountsModel();
         var result = await _displayUsersUseCase.ExecuteAsync();

@@ -5,6 +5,6 @@ namespace BitCrafts.Application.Abstraction.Presenters;
 public interface IPresenter : IDisposable
 {
     IView View { get; }
-    void SetView(IView view);
+    void SetView(Type viewType);
     void SetParameters(Dictionary<string, object> parameters);
 }

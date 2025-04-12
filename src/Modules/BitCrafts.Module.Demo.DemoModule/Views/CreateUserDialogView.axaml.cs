@@ -1,4 +1,6 @@
 using Avalonia.Interactivity;
+using BitCrafts.Application.Abstraction.Models;
+using BitCrafts.Application.Avalonia.Controls.Loading;
 using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Data;
 using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
@@ -13,20 +15,6 @@ public partial class CreateUserDialogView : BaseView, ICreateUserDialogView
     }
 
     public event EventHandler<User> UserCreated;
-
-
-    public void ShowError(string message)
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void OnAppeared()
-    {
-    }
-
-    protected override void OnDisappeared()
-    {
-    }
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
@@ -68,4 +56,11 @@ public partial class CreateUserDialogView : BaseView, ICreateUserDialogView
         };
         return newUser;
     }
+
+    protected override IModel UpdateModelFromInputsCore()
+    {
+        return Model;
+    }
+
+    protected override LoadingControl LoadingIndicator => null;
 }

@@ -18,8 +18,8 @@ public class AuthenticationPresenter : BasePresenter,
 
     public AuthenticationPresenter(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        SetView(serviceProvider.GetRequiredService<IAuthenticationView>());
-        AuthView.Title = "Authentication";
+        SetView(typeof(IAuthenticationView));
+        View.Title = "Authentication";
     }
 
     protected override void OnSubscribeEventsCore()

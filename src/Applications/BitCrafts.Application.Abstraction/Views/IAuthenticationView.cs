@@ -3,7 +3,7 @@ using BitCrafts.Infrastructure.Abstraction.Data;
 
 namespace BitCrafts.Application.Abstraction.Views;
 
-public interface IAuthenticationView : ILoadableView
+public interface IAuthenticationView : IView
 {
     static string CancelEventName = "Authentication.Cancel";
     static string AuthenticateEventName = "Authentication.Authenticate";

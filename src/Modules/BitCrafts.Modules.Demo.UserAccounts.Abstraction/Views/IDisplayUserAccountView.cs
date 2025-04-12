@@ -3,7 +3,7 @@ using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Models;
 
 namespace BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
 
-public interface IDisplayUserAccountsView : ILoadableView
+public interface IDisplayUserAccountsView : IView
 {
     /* void RefreshUsers(IEnumerable<User> users);
      void AppendUser(User user);*/

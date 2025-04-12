@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BitCrafts.Application.Avalonia.Controls.Loading.LoadingControl">
-    <StackPanel x:Name="LoadingControl" VerticalAlignment="Center" IsVisible="True">
-        <TextBlock x:Name="LoadingText" VerticalAlignment="Center" HorizontalAlignment="Center" />
-        <ProgressBar Width="400" Margin="24" IsIndeterminate="True" />
-        <TextBlock x:Name="ErrorTextBox" VerticalAlignment="Center" HorizontalAlignment="Center" />
-    </StackPanel>
+    <Border Background="DarkSlateGray" Opacity="0.7" IsVisible="True" x:Name="LoadingOverlay">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+            <ProgressBar IsIndeterminate="True" Width="200" Height="10" Foreground="BlanchedAlmond" />
+            <TextBlock x:Name="LoadingMessageTextBox" Text="Loading, please wait..." Foreground="White"
+                       HorizontalAlignment="Center" />
+        </StackPanel>
+    </Border>
 </UserControl>

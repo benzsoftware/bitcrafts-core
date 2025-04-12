@@ -5,6 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" Padding="0"
              Margin="0"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:loading="clr-namespace:BitCrafts.Application.Avalonia.Controls.Loading;assembly=BitCrafts.Application.Avalonia.Controls"
              x:Class="BitCrafts.Application.Avalonia.Views.MainView">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <DockPanel x:Name="RootDockPanel" Margin="0" IsVisible="False">
@@ -20,10 +21,6 @@
             </Grid>
             <TabControl BorderBrush="DarkSlateGray" BorderThickness="0" x:Name="MainTabControl" />
         </DockPanel>
-        <StackPanel x:Name="LoadingControl" VerticalAlignment="Center" IsVisible="True">
-            <TextBlock x:Name="LoadingText" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <ProgressBar Width="400" Margin="24" IsIndeterminate="True" />
-            <TextBlock x:Name="ErrorTextBox" VerticalAlignment="Center" HorizontalAlignment="Center" />
-        </StackPanel>
+        <loading:LoadingControl x:Name="BusyControl" />
     </Grid>
 </UserControl>

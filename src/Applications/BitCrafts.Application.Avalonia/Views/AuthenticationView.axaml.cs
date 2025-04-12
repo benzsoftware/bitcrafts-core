@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
+using BitCrafts.Application.Avalonia.Controls.Loading;
 using BitCrafts.Application.Avalonia.Controls.Views;
 using BitCrafts.Infrastructure.Abstraction.Extensions;
 using BitCrafts.Infrastructure.Abstraction.Services;
@@ -62,10 +63,5 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
     {
     }
 
-    protected override bool ValidateModelCore(out List<ValidationResult> validationResults)
-    {
-        validationResults = new List<ValidationResult>();
-        return true;
-    }
- 
+    protected override LoadingControl LoadingIndicator => BusyControl;
 }

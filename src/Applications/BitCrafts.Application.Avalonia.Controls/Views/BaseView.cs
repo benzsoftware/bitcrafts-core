@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
+using BitCrafts.Application.Avalonia.Controls.Loading;
 using BitCrafts.Infrastructure.Abstraction.Data;
 using BitCrafts.Infrastructure.Abstraction.Events;
 using BitCrafts.Infrastructure.Data;
@@ -26,6 +27,7 @@ public abstract class BaseView : UserControl, IView
     public IModel Model => _model;
 
     public IDataValidator DataValidator { get; } = new DataValidator();
+
 
     public bool SetModel(IModel model)
     {
@@ -59,9 +61,13 @@ public abstract class BaseView : UserControl, IView
         IsVisible = true;
     }
 
-    public virtual void SetBusy(bool busy)
+    public virtual void SetBusy(bool busy, string message = "")
     {
         _isBusy = busy;
+        if (LoadingIndicator != null)
+        {
+            LoadingIndicator.SetLoading(_isBusy, message);
+        }
     }
 
     public virtual bool ValidateModel(out List<ValidationResult> validationResults)
@@ -121,4 +127,6 @@ public abstract class BaseView : UserControl, IView
     {
         _eventAggregator = eventAggregator;
     }
+
+    protected abstract LoadingControl LoadingIndicator { get; }
 }

@@ -15,6 +15,6 @@ public interface IView : IEventAware, IDisposable
     void UpdateModelFromInputs();
     void Clear();
     void SetVisible(bool visible);
-    void SetBusy(bool busy);
+    void SetBusy(bool busy, string message = "");
     bool ValidateModel(out List<ValidationResult> validationResults);
 }
