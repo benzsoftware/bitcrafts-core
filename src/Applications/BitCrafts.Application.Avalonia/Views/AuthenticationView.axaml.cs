@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Application.Avalonia.Controls.Loading;
@@ -24,14 +25,13 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
 
     private void AuthenticateButton_OnClick(object sender, RoutedEventArgs e)
     {
-        UpdateModelFromInputsCore();
-        EventAggregator.Publish<AuthenticationModel>(IAuthenticationView.AuthenticateEventName,
-            (AuthenticationModel)Model);
+        UpdateModelFromInputs();
+        EventAggregator.Publish(ViewEvents.Authentication.AuthenticateEventName, (AuthenticationModel)Model);
     }
 
     private void CancelButton_OnClick(object sender, RoutedEventArgs e)
     {
-        EventAggregator.Publish(IAuthenticationView.CancelEventName);
+        EventAggregator.Publish(ViewEvents.Base.CloseWindowEventName);
     }
 
     public void DisplayProgressBar()
@@ -50,7 +50,7 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
 
     private void EnvironmentButton_OnClick(object sender, RoutedEventArgs e)
     {
-        EventAggregator.Publish(IAuthenticationView.ShowEnvironmentEventName);
+        EventAggregator.Publish(ViewEvents.Authentication.ShowEnvironmentsEventName);
     }
 
     protected override IModel UpdateModelFromInputsCore()

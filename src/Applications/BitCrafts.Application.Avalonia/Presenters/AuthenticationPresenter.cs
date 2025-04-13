@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using BitCrafts.Application.Abstraction;
+using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Presenters;
 using BitCrafts.Application.Abstraction.Views;
@@ -24,10 +25,10 @@ public class AuthenticationPresenter : BasePresenter,
 
     protected override void OnSubscribeEventsCore()
     {
-        EventAggregator.Subscribe<AuthenticationModel>(IAuthenticationView.AuthenticateEventName,
-            ViewOnAuthenticate);
-        EventAggregator.Subscribe(IAuthenticationView.CancelEventName, ViewOnCancel);
-        EventAggregator.Subscribe(IAuthenticationView.ShowEnvironmentEventName, ViewOnShowEnvironment);
+        /* EventAggregator.Subscribe<AuthenticationModel>(IAuthenticationView.AuthenticateEventName,
+             ViewOnAuthenticate);*/
+        EventAggregator.Subscribe(ViewEvents.Base.CloseWindowEventName, ViewOnCancel);
+        //EventAggregator.Subscribe(IAuthenticationView.ShowEnvironmentEventName, ViewOnShowEnvironment);
     }
 
     private void ViewOnShowEnvironment()
@@ -38,12 +39,7 @@ public class AuthenticationPresenter : BasePresenter,
             { Constants.WindowHeightParameterName, "600" }
         });
     }
-
-    /*  protected override Task<AuthenticationModel> FetchDataAsync()
-      {
-          return Task.FromResult(new AuthenticationModel());
-      }*/
-
+ 
     private void ViewOnCancel()
     {
         UiManager.CloseWindow<IAuthenticationPresenter>();

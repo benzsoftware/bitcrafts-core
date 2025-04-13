@@ -29,16 +29,17 @@ public abstract class BasePresenter : IPresenter
         Logger = ServiceProvider.GetRequiredService<ILogger<BasePresenter>>();
         DataValidator = serviceProvider.GetRequiredService<IDataValidator>();
         EventAggregator = serviceProvider.GetRequiredService<IEventAggregator>();
-        if (View is IEventAware eventAwareView)
-        {
-            eventAwareView.SetEventAggregator(EventAggregator);
-            OnSubscribeEvents();
-        }
+       
     }
 
     public void SetView(Type viewType)
     {
         _view = (IView)ServiceProvider.GetRequiredService(viewType);
+        if (_view is IEventAware eventAwareView)
+        {
+            eventAwareView.SetEventAggregator(EventAggregator);
+            OnSubscribeEvents();
+        }
     }
 
     protected IServiceProvider ServiceProvider { get; }

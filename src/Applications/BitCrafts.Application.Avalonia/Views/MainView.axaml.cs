@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Avalonia.Controls.Loading;
 using BitCrafts.Application.Avalonia.Controls.Views;
@@ -12,10 +13,7 @@ public partial class MainView : BaseView, IMainView
     {
         InitializeComponent();
     }
-
-    public event EventHandler CloseEvent;
-
-
+ 
     public Menu GetMenuControl()
     {
         return MainMenu;
@@ -25,11 +23,10 @@ public partial class MainView : BaseView, IMainView
     {
         return MainTabControl;
     }
-
-
+    
     private void QuitMenuItem_OnClick(object sender, RoutedEventArgs e)
     {
-        CloseEvent?.Invoke(this, EventArgs.Empty);
+        EventAggregator.Publish(ViewEvents.Base.CloseWindowEventName);
     }
 
     protected override IModel UpdateModelFromInputsCore()

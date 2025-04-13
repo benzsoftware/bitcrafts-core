@@ -29,7 +29,8 @@ public sealed class MainPresenter : BasePresenter, IMainPresenter
 
     protected override async Task OnAppearedAsync()
     {
-        MainView.CloseEvent += ViewOnCloseEvent;
+        //MainView.CloseEvent += ViewOnCloseEvent;
+        await base.OnAppearedAsync();
         var menuManager = (AvaloniaMenuManager)ServiceProvider.GetRequiredService<IMenuManager>();
         menuManager.SetMenuControl(MainView.GetMenuControl());
         _uiManager.SetTabControl(MainView.GetTabControl());
@@ -58,7 +59,7 @@ public sealed class MainPresenter : BasePresenter, IMainPresenter
 
     protected override async Task OnDisappearedAsync()
     {
-        MainView.CloseEvent -= ViewOnCloseEvent;
-        await ServiceProvider.GetRequiredService<IUiManager>().ShutdownAsync();
+        await base.OnDisappearedAsync();
+        await _uiManager.ShutdownAsync();
     }
 }
