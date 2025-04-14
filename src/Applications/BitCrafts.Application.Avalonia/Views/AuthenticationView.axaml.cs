@@ -26,7 +26,7 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
     private void AuthenticateButton_OnClick(object sender, RoutedEventArgs e)
     {
         UpdateModelFromInputs();
-        EventAggregator.Publish(ViewEvents.Authentication.AuthenticateEventName, (AuthenticationModel)Model);
+        EventAggregator.Publish(ViewEvents.Authentication.AuthenticateEventName);
     }
 
     private void CancelButton_OnClick(object sender, RoutedEventArgs e)
@@ -34,19 +34,25 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
         EventAggregator.Publish(ViewEvents.Base.CloseWindowEventName);
     }
 
-    public void DisplayProgressBar()
+    public override void SetBusy(bool busy, string message = "")
     {
-        AuthenticatingProgressBar.IsVisible = true;
-        AuthenticateButton.IsEnabled = false;
-        CancelButton.IsEnabled = false;
+        base.SetBusy(busy, message);
     }
 
+    /* public void DisplayProgressBar()
+     {
+         AuthenticatingProgressBar.IsVisible = true;
+         AuthenticateButton.IsEnabled = false;
+         CancelButton.IsEnabled = false;
+     } */
+/*
     public void HideProgressBar()
     {
         AuthenticatingProgressBar.IsVisible = false;
         AuthenticateButton.IsEnabled = true;
         CancelButton.IsEnabled = true;
     }
+    */
 
     private void EnvironmentButton_OnClick(object sender, RoutedEventArgs e)
     {

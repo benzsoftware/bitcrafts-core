@@ -33,9 +33,9 @@ public sealed class CreateUserDialogPresenter : BasePresenter, ICreateUserDialog
         await _createUserUseCase.ExecuteAsync(e);
     }
 
-    protected override Task OnDisappearedAsync()
+    protected override async Task OnDisappearedAsync()
     {
         CreateView.UserCreated -= ViewOnUserCreated;
-        return Task.CompletedTask;
+        await base.OnDisappearedAsync();
     }
 }

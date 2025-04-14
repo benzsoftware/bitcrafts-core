@@ -6,8 +6,4 @@ namespace BitCrafts.Application.Abstraction.Views;
 public interface IAuthenticationView : IView
 {
     void SetAuthenticationError(string errorMessage);
-
-    void DisplayProgressBar();
-
-    void HideProgressBar();
 }

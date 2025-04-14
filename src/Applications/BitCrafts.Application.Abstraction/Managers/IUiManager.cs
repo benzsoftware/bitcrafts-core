@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using BitCrafts.Application.Abstraction.Presenters;
 
 namespace BitCrafts.Application.Abstraction.Managers;
@@ -82,4 +83,6 @@ public interface IUiManager : IDisposable
     /// <param name="exception">The exception to display details for.</param>
     /// <returns>A Task representing the asynchronous operation. The task completes when the dialog is closed.</returns>
     Task ShowErrorMessageAsync(string title, Exception exception);
+
+    Task ShowModelValidationErrorAsync(List<ValidationResult> validationResults);
 }

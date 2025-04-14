@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -61,6 +62,20 @@ public sealed class AvaloniaUiManager : IUiManager
 
         var dialog = new ErrorMessageDialog();
         dialog.SetMessage(title, exception.Message);
+        await dialog.ShowDialog(_activeWindow);
+    }
+
+    public async Task ShowModelValidationErrorAsync(List<ValidationResult> validationResults)
+    {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            await Dispatcher.UIThread.InvokeAsync(async void () =>
+                await ShowModelValidationErrorAsync(validationResults));
+            return;
+        }
+
+        var dialog = new ModelValidationErrorDialog();
+        dialog.SetValidationErrors(validationResults);
         await dialog.ShowDialog(_activeWindow);
     }
 

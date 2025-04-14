@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Width="500"
+        Height="300"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        x:Class="BitCrafts.Application.Avalonia.Dialogs.ModelValidationErrorDialog"
+        Title="Model Validation Error">
+    <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="24">
+        <StackPanel>
+            <TextBlock Text="Validation errors:"
+                       Margin="0,0,0,10"
+                       FontWeight="Bold" />
+            <ScrollViewer MaxHeight="200">
+                <ItemsControl x:Name="ValidationErrorsList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,0,0,5" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </StackPanel>
+    </Border>
+
+</Window>

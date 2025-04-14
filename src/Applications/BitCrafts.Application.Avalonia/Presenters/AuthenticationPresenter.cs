@@ -22,12 +22,14 @@ public class AuthenticationPresenter : BasePresenter,
         SetView(typeof(IAuthenticationView));
         View.Title = "Authentication";
     }
+ 
 
     protected override void OnSubscribeEventsCore()
     {
         /* EventAggregator.Subscribe<AuthenticationModel>(IAuthenticationView.AuthenticateEventName,
              ViewOnAuthenticate);*/
         EventAggregator.Subscribe(ViewEvents.Base.CloseWindowEventName, ViewOnCancel);
+        EventAggregator.Subscribe(ViewEvents.Authentication.AuthenticateEventName, ViewOnAuthenticate);
         //EventAggregator.Subscribe(IAuthenticationView.ShowEnvironmentEventName, ViewOnShowEnvironment);
     }
 
@@ -39,17 +41,20 @@ public class AuthenticationPresenter : BasePresenter,
             { Constants.WindowHeightParameterName, "600" }
         });
     }
- 
+
     private void ViewOnCancel()
     {
         UiManager.CloseWindow<IAuthenticationPresenter>();
     }
 
-    private async void ViewOnAuthenticate(AuthenticationModel model)
+    private async void ViewOnAuthenticate()
     {
         try
         {
-            AuthView.DisplayProgressBar();
+            AuthView.SetBusy(true, "Authenticating...");
+            var model = View.Model as AuthenticationModel;
+            if (model == null)
+                return;
             var auth = new Authentication(model.Login, model.Password, model.Password);
             var isAunthenticated = await ServiceProvider.GetRequiredService<IAuthenticationUseCase>()
                 .ExecuteAsync(auth);
@@ -79,7 +84,7 @@ public class AuthenticationPresenter : BasePresenter,
         }
         finally
         {
-            AuthView.HideProgressBar();
+            AuthView.SetBusy(false);
         }
     }
 }

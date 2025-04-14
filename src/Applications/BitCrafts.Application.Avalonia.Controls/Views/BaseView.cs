@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
 using BitCrafts.Application.Avalonia.Controls.Loading;
@@ -12,8 +13,6 @@ namespace BitCrafts.Application.Avalonia.Controls.Views;
 
 public abstract class BaseView : UserControl, IView
 {
-    public const string AppearedEventName = "BaseView.Appeared";
-    public const string DisappearedEventName = "BaseView.Disappeared";
     private bool _isDisposed;
     private IEventAggregator _eventAggregator;
     private IModel _model;
@@ -29,9 +28,9 @@ public abstract class BaseView : UserControl, IView
     public IDataValidator DataValidator { get; } = new DataValidator();
 
 
-    public bool SetModel(IModel model)
+    public bool SetModel(IModel model, out List<ValidationResult> validationResults)
     {
-        if (DataValidator.TryValidate(model, false, out _))
+        if (DataValidator.TryValidate(model, false, out validationResults))
         {
             _model = model;
             return true;
@@ -42,7 +41,12 @@ public abstract class BaseView : UserControl, IView
 
     public void UpdateModelFromInputs()
     {
-        SetModel(UpdateModelFromInputsCore());
+        List<ValidationResult> validationResults = null;
+        var isUpdated = SetModel(UpdateModelFromInputsCore(), out validationResults);
+        if (!isUpdated)
+        {
+            EventAggregator.Publish(ViewEvents.Base.ErrorUpdateModelEventName, validationResults);
+        }
     }
 
     protected abstract IModel UpdateModelFromInputsCore();
@@ -95,14 +99,14 @@ public abstract class BaseView : UserControl, IView
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        EventAggregator?.Publish(ViewEvents.Base.DisappearedEventName);
         OnDisappeared();
-        EventAggregator?.Publish(DisappearedEventName);
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        EventAggregator?.Publish(ViewEvents.Base.AppearedEventName);
         OnAppeared();
-        EventAggregator?.Publish(AppearedEventName);
     }
 
     protected virtual void Dispose(bool disposing)

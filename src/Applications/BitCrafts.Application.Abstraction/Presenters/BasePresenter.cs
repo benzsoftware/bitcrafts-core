@@ -1,4 +1,5 @@
-﻿using BitCrafts.Application.Abstraction.Events;
+﻿using System.ComponentModel.DataAnnotations;
+using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Managers;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Views;
@@ -17,6 +18,7 @@ public abstract class BasePresenter : IPresenter
     protected IEventAggregator EventAggregator { get; private set; }
     protected IUiManager UiManager { get; }
     protected IDataValidator DataValidator { get; }
+    protected bool CanSaveOnDisappear { get; set; } = false;
 
     private IView _view;
     public IView View => _view;
@@ -29,7 +31,6 @@ public abstract class BasePresenter : IPresenter
         Logger = ServiceProvider.GetRequiredService<ILogger<BasePresenter>>();
         DataValidator = serviceProvider.GetRequiredService<IDataValidator>();
         EventAggregator = serviceProvider.GetRequiredService<IEventAggregator>();
-       
     }
 
     public void SetView(Type viewType)
@@ -58,23 +59,34 @@ public abstract class BasePresenter : IPresenter
         Parameters = parameters;
     }
 
-    private void ViewOnDisappearedEvent()
+    private async void ViewOnDisappearedEvent()
     {
         Logger.LogInformation($"{GetType().Name} Disappeared");
-        _ = OnDisappearedAsync();
+        await OnDisappearedAsync();
     }
 
-    private void ViewOnAppearedEvent()
+    private async void ViewOnAppearedEvent()
     {
         Logger.LogInformation($"{GetType().Name} Appeared");
-        _ = OnAppearedAsync();
+        await OnAppearedAsync();
     }
 
     private void OnSubscribeEvents()
     {
         EventAggregator.Subscribe(ViewEvents.Base.AppearedEventName, ViewOnAppearedEvent);
         EventAggregator.Subscribe(ViewEvents.Base.DisappearedEventName, ViewOnDisappearedEvent);
+        EventAggregator.Subscribe<List<ValidationResult>>(ViewEvents.Base.ErrorUpdateModelEventName,
+            OnModelValidationError);
+
         OnSubscribeEventsCore();
+    }
+
+    private void OnModelValidationError(List<ValidationResult> validationResults)
+    {
+        if (validationResults != null && validationResults.Count > 0)
+        {
+            UiManager.ShowModelValidationErrorAsync(validationResults);
+        }
     }
 
     protected virtual void OnSubscribeEventsCore()
@@ -83,13 +95,16 @@ public abstract class BasePresenter : IPresenter
 
     protected virtual async Task OnAppearedAsync()
     {
-        OnSubscribeEvents();
         await LoadDataAsync();
     }
 
     protected virtual async Task OnDisappearedAsync()
     {
-        await SaveChangesAsync();
+        if (CanSaveOnDisappear)
+        {
+            View.UpdateModelFromInputs();
+            await SaveChangesAsync();
+        }
     }
 
     private async Task SaveChangesAsync()
@@ -132,14 +147,24 @@ public abstract class BasePresenter : IPresenter
         }
     }
 
+    protected async Task UpdateModel(IModel model)
+    {
+        if (model != null)
+        {
+            if (!View.SetModel(model, out var validationResults))
+            {
+                await UiManager.ShowModelValidationErrorAsync(validationResults).ConfigureAwait(false);
+            }
+        }
+    }
+
     private async Task LoadDataAsync()
     {
         try
         {
             View.SetBusy(true);
-            var model = await LoadDataCoreAsync();
-            if (model != null)
-                View.SetModel(model);
+            var model = await LoadDataCoreAsync().ConfigureAwait(false);
+            await UpdateModel(model).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

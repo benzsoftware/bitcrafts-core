@@ -7,6 +7,7 @@ public static partial class ViewEvents
         public const string AppearedEventName = "Base.Appeared";
         public const string DisappearedEventName = "Base.Disappeared";
         public const string CloseWindowEventName = "Base.Window.Close";
+        public const string ErrorUpdateModelEventName = "Base.Errors.UpdateModel";
     }
 
 
