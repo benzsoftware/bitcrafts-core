@@ -29,10 +29,5 @@ public partial class MainView : BaseView, IMainView
         EventAggregator.Publish(ViewEvents.Base.CloseWindowEventName);
     }
 
-    protected override IModel UpdateModelFromInputsCore()
-    {
-        return Model;
-    }
-
     protected override LoadingControl LoadingIndicator => BusyControl;
 }

@@ -15,7 +15,7 @@ public sealed class DisplayUserAccountsPresenter : BasePresenter, IDisplayUserAc
     private IDisplayUserAccountsView DisplayView => View as IDisplayUserAccountsView;
 
     public DisplayUserAccountsPresenter(IServiceProvider serviceProvider)
-        : base(serviceProvider)
+        : base(serviceProvider, typeof(DisplayUserAccountsPresenter))
     {
         DisplayView.Title = "User Accounts";
         _displayUsersUseCase = serviceProvider.GetRequiredService<IDisplayUsersUseCase>();

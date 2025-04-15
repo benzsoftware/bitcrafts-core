@@ -9,10 +9,9 @@ public interface IView : IEventAware, IDisposable
     bool IsVisible { get; }
     bool IsBusy { get; }
     string Title { get; set; }
-    IModel Model { get; }
     IDataValidator DataValidator { get; }
-    bool SetModel(IModel model, out List<ValidationResult> validationResults);
-    void UpdateModelFromInputs();
+    void SetModel(IModel model);
+    (bool isValid, IModel model, IReadOnlyList<ValidationResult> validationResults) GetModel();
     void Clear();
     void SetVisible(bool visible);
     void SetBusy(bool busy, string message = "");

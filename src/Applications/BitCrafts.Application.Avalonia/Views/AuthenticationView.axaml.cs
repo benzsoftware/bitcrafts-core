@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Models;
@@ -25,7 +23,6 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
 
     private void AuthenticateButton_OnClick(object sender, RoutedEventArgs e)
     {
-        UpdateModelFromInputs();
         EventAggregator.Publish(ViewEvents.Authentication.AuthenticateEventName);
     }
 
@@ -33,26 +30,6 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
     {
         EventAggregator.Publish(ViewEvents.Base.CloseWindowEventName);
     }
-
-    public override void SetBusy(bool busy, string message = "")
-    {
-        base.SetBusy(busy, message);
-    }
-
-    /* public void DisplayProgressBar()
-     {
-         AuthenticatingProgressBar.IsVisible = true;
-         AuthenticateButton.IsEnabled = false;
-         CancelButton.IsEnabled = false;
-     } */
-/*
-    public void HideProgressBar()
-    {
-        AuthenticatingProgressBar.IsVisible = false;
-        AuthenticateButton.IsEnabled = true;
-        CancelButton.IsEnabled = true;
-    }
-    */
 
     private void EnvironmentButton_OnClick(object sender, RoutedEventArgs e)
     {
@@ -67,6 +44,9 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
 
     protected override void ClearCore()
     {
+        LoginTextBox.Text = string.Empty;
+        PasswordTextBox.Text = string.Empty;
+        EnvironmentComboBox.SelectedIndex = -1;
     }
 
     protected override LoadingControl LoadingIndicator => BusyControl;

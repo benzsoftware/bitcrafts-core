@@ -23,7 +23,7 @@ public abstract class BasePresenter : IPresenter
     private IView _view;
     public IView View => _view;
 
-    public BasePresenter(IServiceProvider serviceProvider)
+    public BasePresenter(IServiceProvider serviceProvider, Type viewType)
     {
         ServiceProvider = serviceProvider;
         BackgroundThreadDispatcher = serviceProvider.GetService<IBackgroundThreadDispatcher>();
@@ -31,9 +31,10 @@ public abstract class BasePresenter : IPresenter
         Logger = ServiceProvider.GetRequiredService<ILogger<BasePresenter>>();
         DataValidator = serviceProvider.GetRequiredService<IDataValidator>();
         EventAggregator = serviceProvider.GetRequiredService<IEventAggregator>();
+        SetView(viewType);
     }
 
-    public void SetView(Type viewType)
+    private void SetView(Type viewType)
     {
         _view = (IView)ServiceProvider.GetRequiredService(viewType);
         if (_view is IEventAware eventAwareView)
@@ -81,11 +82,11 @@ public abstract class BasePresenter : IPresenter
         OnSubscribeEventsCore();
     }
 
-    private void OnModelValidationError(List<ValidationResult> validationResults)
+    private async void OnModelValidationError(List<ValidationResult> validationResults)
     {
         if (validationResults != null && validationResults.Count > 0)
         {
-            UiManager.ShowModelValidationErrorAsync(validationResults);
+            await UiManager.ShowModelValidationErrorAsync(validationResults);
         }
     }
 
@@ -102,7 +103,6 @@ public abstract class BasePresenter : IPresenter
     {
         if (CanSaveOnDisappear)
         {
-            View.UpdateModelFromInputs();
             await SaveChangesAsync();
         }
     }
@@ -112,12 +112,15 @@ public abstract class BasePresenter : IPresenter
         try
         {
             View.SetBusy(true);
-            if (View.Model.IsDirty)
+            var result = View.GetModel();
+            if (!result.isValid)
             {
-                if (View.DataValidator.TryValidate(View.Model, false, out var list))
-                {
-                    await SaveChangesCoreAsync(View.Model);
-                }
+                return;
+            }
+
+            if (result.model != null && result.model.IsDirty)
+            {
+                await SaveChangesCoreAsync(result.model).ConfigureAwait(false);
             }
         }
         catch (Exception ex)
@@ -147,24 +150,13 @@ public abstract class BasePresenter : IPresenter
         }
     }
 
-    protected async Task UpdateModel(IModel model)
-    {
-        if (model != null)
-        {
-            if (!View.SetModel(model, out var validationResults))
-            {
-                await UiManager.ShowModelValidationErrorAsync(validationResults).ConfigureAwait(false);
-            }
-        }
-    }
-
     private async Task LoadDataAsync()
     {
         try
         {
             View.SetBusy(true);
             var model = await LoadDataCoreAsync().ConfigureAwait(false);
-            await UpdateModel(model).ConfigureAwait(false);
+            View.SetModel(model);
         }
         catch (Exception ex)
         {

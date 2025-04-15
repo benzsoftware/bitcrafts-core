@@ -13,7 +13,7 @@ public partial class ModelValidationErrorDialog : Window
         InitializeComponent();
     }
 
-    public void SetValidationErrors(List<ValidationResult> validationResults)
+    public void SetValidationErrors(IReadOnlyList<ValidationResult> validationResults)
     {
         if (validationResults != null && validationResults.Count > 0)
         {

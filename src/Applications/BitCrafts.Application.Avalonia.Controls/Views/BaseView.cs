@@ -15,7 +15,7 @@ public abstract class BaseView : UserControl, IView
 {
     private bool _isDisposed;
     private IEventAggregator _eventAggregator;
-    private IModel _model;
+    protected IModel Model { get; private set; }
     private bool _isBusy;
     public bool IsBusy => _isBusy;
 
@@ -23,33 +23,32 @@ public abstract class BaseView : UserControl, IView
 
     protected IEventAggregator EventAggregator => _eventAggregator;
 
-    public IModel Model => _model;
-
     public IDataValidator DataValidator { get; } = new DataValidator();
 
 
-    public bool SetModel(IModel model, out List<ValidationResult> validationResults)
+    public void SetModel(IModel model)
     {
-        if (DataValidator.TryValidate(model, false, out validationResults))
-        {
-            _model = model;
-            return true;
-        }
-
-        return false;
+        Model = model;
     }
 
-    public void UpdateModelFromInputs()
+    public (bool isValid, IModel model, IReadOnlyList<ValidationResult> validationResults) GetModel()
     {
-        List<ValidationResult> validationResults = null;
-        var isUpdated = SetModel(UpdateModelFromInputsCore(), out validationResults);
-        if (!isUpdated)
+        List<ValidationResult> validationResults;
+        bool isValid = ValidateModel(out validationResults);
+        if (!isValid)
         {
             EventAggregator.Publish(ViewEvents.Base.ErrorUpdateModelEventName, validationResults);
         }
+
+        SetModel(UpdateModelFromInputsCore());
+
+        return (isValid, Model, validationResults);
     }
 
-    protected abstract IModel UpdateModelFromInputsCore();
+    protected virtual IModel UpdateModelFromInputsCore()
+    {
+        return Model as IModel;
+    }
 
     public void Clear()
     {
@@ -74,10 +73,13 @@ public abstract class BaseView : UserControl, IView
         }
     }
 
-    public virtual bool ValidateModel(out List<ValidationResult> validationResults)
+    public bool ValidateModel(out List<ValidationResult> validationResults)
     {
         validationResults = new List<ValidationResult>();
-        return true;
+
+        var isValid = DataValidator.TryValidate(Model, false, out validationResults);
+
+        return isValid;
     }
 
 

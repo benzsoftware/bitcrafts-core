@@ -17,10 +17,9 @@ public sealed class MainPresenter : BasePresenter, IMainPresenter
     private IMainView MainView => View as MainView;
 
     public MainPresenter(IServiceProvider serviceProvider)
-        : base(serviceProvider)
+        : base(serviceProvider,typeof(IMainView))
     {
         _uiManager = (AvaloniaUiManager)serviceProvider.GetRequiredService<IUiManager>();
-        SetView(typeof(IMainView));
         _backgroundThreadDispatcher = serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
         var title = serviceProvider.GetService<IConfiguration>()["ApplicationSettings:Name"] ??
                     "No Name Application";

@@ -65,7 +65,7 @@ public sealed class AvaloniaUiManager : IUiManager
         await dialog.ShowDialog(_activeWindow);
     }
 
-    public async Task ShowModelValidationErrorAsync(List<ValidationResult> validationResults)
+    public async Task ShowModelValidationErrorAsync(IReadOnlyList<ValidationResult> validationResults)
     {
         if (!Dispatcher.UIThread.CheckAccess())
         {

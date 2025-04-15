@@ -16,7 +16,7 @@ public sealed class CreateUserDialogPresenter : BasePresenter, ICreateUserDialog
     private ICreateUserDialogView CreateView => View as ICreateUserDialogView;
 
     public CreateUserDialogPresenter(IServiceProvider serviceProvider)
-        : base(serviceProvider)
+        : base(serviceProvider, typeof(CreateUserDialogPresenter))
     {
         _createUserUseCase = serviceProvider.GetRequiredService<ICreateUserUseCase>();
         CreateView.Title = "Create User";

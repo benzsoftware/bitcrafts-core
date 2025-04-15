@@ -4,9 +4,8 @@ using BitCrafts.Application.Abstraction.Events;
 using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Presenters;
 using BitCrafts.Application.Abstraction.Views;
-using BitCrafts.Application.Avalonia.Controls.Views;
-using BitCrafts.Application.Avalonia.Views;
 using BitCrafts.Infrastructure.Abstraction.Data;
+using BitCrafts.Infrastructure.Abstraction.Services;
 using BitCrafts.Infrastructure.Abstraction.UseCases;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,21 +15,27 @@ public class AuthenticationPresenter : BasePresenter,
     IAuthenticationPresenter
 {
     private IAuthenticationView AuthView => (IAuthenticationView)View;
+    private readonly IEnvironmentConfigurationService _environmentConfigurationService;
 
-    public AuthenticationPresenter(IServiceProvider serviceProvider) : base(serviceProvider)
+    public AuthenticationPresenter(IServiceProvider serviceProvider)
+        : base(serviceProvider, typeof(IAuthenticationView))
     {
-        SetView(typeof(IAuthenticationView));
+        _environmentConfigurationService = serviceProvider.GetRequiredService<IEnvironmentConfigurationService>();
         View.Title = "Authentication";
     }
- 
+
 
     protected override void OnSubscribeEventsCore()
     {
-        /* EventAggregator.Subscribe<AuthenticationModel>(IAuthenticationView.AuthenticateEventName,
-             ViewOnAuthenticate);*/
         EventAggregator.Subscribe(ViewEvents.Base.CloseWindowEventName, ViewOnCancel);
         EventAggregator.Subscribe(ViewEvents.Authentication.AuthenticateEventName, ViewOnAuthenticate);
-        //EventAggregator.Subscribe(IAuthenticationView.ShowEnvironmentEventName, ViewOnShowEnvironment);
+        EventAggregator.Subscribe(ViewEvents.Authentication.ShowEnvironmentsEventName, ViewOnShowEnvironment);
+    }
+
+    protected override async Task<IModel> LoadDataCoreAsync()
+    {
+        var environments = await _environmentConfigurationService.GetEnvironmentsAsync();
+        return new AuthenticationModel(string.Empty, string.Empty, environments.FirstOrDefault());
     }
 
     private void ViewOnShowEnvironment()
@@ -52,7 +57,7 @@ public class AuthenticationPresenter : BasePresenter,
         try
         {
             AuthView.SetBusy(true, "Authenticating...");
-            var model = View.Model as AuthenticationModel;
+            var model = View.GetModel().model as AuthenticationModel;
             if (model == null)
                 return;
             var auth = new Authentication(model.Login, model.Password, model.Password);

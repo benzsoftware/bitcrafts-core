@@ -5,38 +5,31 @@ using BitCrafts.Infrastructure.Abstraction.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BitCrafts.Application.Avalonia.Presenters;
-/*
+
 public sealed class EnvironmentConfigurationPresenter :
-    EditablePresenter<IEnvironmentConfigurationView, EnvironmentConfigurationModel>,
+    BasePresenter,
     IEnvironmentConfigurationPresenter
 {
     private readonly IEnvironmentConfigurationService _environmentConfigurationService;
     private List<EnvironmentConfiguration> _environmentConfigurations;
 
     public EnvironmentConfigurationPresenter(IServiceProvider serviceProvider)
-        : base(serviceProvider)
+        : base(serviceProvider, typeof(IEnvironmentConfigurationView))
     {
         _environmentConfigurationService = ServiceProvider.GetRequiredService<IEnvironmentConfigurationService>();
         View.Title = "Environment Configuration";
     }
 
-    protected override async Task<EnvironmentConfigurationModel> FetchDataAsync()
+    protected override async Task<IModel> LoadDataCoreAsync()
     {
         _environmentConfigurations = await _environmentConfigurationService.GetEnvironmentsAsync();
         var model = new EnvironmentConfigurationModel(_environmentConfigurations);
         return model;
     }
 
-    protected override async Task<bool> SaveDataCoreAsync(CancellationToken cancellationToken = default)
+    protected override async Task SaveChangesCoreAsync(IModel model)
     {
-        var saved = await _environmentConfigurationService.SaveEnvironmentsAsync(_environmentConfigurations)
+        await _environmentConfigurationService.SaveEnvironmentsAsync(_environmentConfigurations)
             .ConfigureAwait(false);
-        return saved;
     }
-
-    protected override Task CancelCoreAsync()
-    {
-        UiManager.CloseWindow<IEnvironmentConfigurationPresenter>();
-        return Task.CompletedTask;
-    }
-}*/
+}

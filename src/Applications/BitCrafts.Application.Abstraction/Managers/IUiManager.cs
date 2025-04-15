@@ -84,5 +84,5 @@ public interface IUiManager : IDisposable
     /// <returns>A Task representing the asynchronous operation. The task completes when the dialog is closed.</returns>
     Task ShowErrorMessageAsync(string title, Exception exception);
 
-    Task ShowModelValidationErrorAsync(List<ValidationResult> validationResults);
+    Task ShowModelValidationErrorAsync(IReadOnlyList<ValidationResult> validationResults);
 }
