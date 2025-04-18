@@ -9,13 +9,14 @@ namespace BitCrafts.Application.Avalonia.Presenters;
 public sealed class EnvironmentConfigurationPresenter :
     BasePresenter,
     IEnvironmentConfigurationPresenter
-{
+{ 
     private readonly IEnvironmentConfigurationService _environmentConfigurationService;
     private List<EnvironmentConfiguration> _environmentConfigurations;
 
     public EnvironmentConfigurationPresenter(IServiceProvider serviceProvider)
         : base(serviceProvider, typeof(IEnvironmentConfigurationView))
     {
+        CanSaveOnDisappear = true;
         _environmentConfigurationService = ServiceProvider.GetRequiredService<IEnvironmentConfigurationService>();
         View.Title = "Environment Configuration";
     }

@@ -15,54 +15,28 @@ public abstract class BaseView : UserControl, IView
 {
     private bool _isDisposed;
     private IEventAggregator _eventAggregator;
-    protected IModel Model { get; private set; }
+    private IModel _model;
     private bool _isBusy;
     public bool IsBusy => _isBusy;
-
     public string Title { get; set; }
-
     protected IEventAggregator EventAggregator => _eventAggregator;
 
     public IDataValidator DataValidator { get; } = new DataValidator();
 
-
     public void SetModel(IModel model)
     {
-        Model = model;
+        _model = model;
+        DisplayModel();
     }
 
-    public (bool isValid, IModel model, IReadOnlyList<ValidationResult> validationResults) GetModel()
+    protected abstract void DisplayModel();
+
+    public IModel GetModel()
     {
-        List<ValidationResult> validationResults;
-        bool isValid = ValidateModel(out validationResults);
-        if (!isValid)
-        {
-            EventAggregator.Publish(ViewEvents.Base.ErrorUpdateModelEventName, validationResults);
-        }
-
-        SetModel(UpdateModelFromInputsCore());
-
-        return (isValid, Model, validationResults);
+        return _model;
     }
 
-    protected virtual IModel UpdateModelFromInputsCore()
-    {
-        return Model as IModel;
-    }
-
-    public void Clear()
-    {
-        ClearCore();
-    }
-
-    protected virtual void ClearCore()
-    {
-    }
-
-    public virtual void SetVisible(bool visible)
-    {
-        IsVisible = true;
-    }
+    public abstract void UpdateModel();
 
     public virtual void SetBusy(bool busy, string message = "")
     {
@@ -77,7 +51,11 @@ public abstract class BaseView : UserControl, IView
     {
         validationResults = new List<ValidationResult>();
 
-        var isValid = DataValidator.TryValidate(Model, false, out validationResults);
+        var isValid = DataValidator.TryValidate(_model, false, out validationResults);
+        if (!isValid)
+        {
+            EventAggregator.Publish(ViewEvents.Base.ErrorUpdateModelEventName, validationResults);
+        }
 
         return isValid;
     }
@@ -90,25 +68,14 @@ public abstract class BaseView : UserControl, IView
         Title = "UnTitled Control";
     }
 
-    protected virtual void OnAppeared()
-    {
-    }
-
-    protected virtual void OnDisappeared()
-    {
-    }
-
-
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         EventAggregator?.Publish(ViewEvents.Base.DisappearedEventName);
-        OnDisappeared();
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         EventAggregator?.Publish(ViewEvents.Base.AppearedEventName);
-        OnAppeared();
     }
 
     protected virtual void Dispose(bool disposing)

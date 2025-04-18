@@ -12,7 +12,7 @@ namespace BitCrafts.Application.Avalonia.Views;
 
 public partial class EnvironmentConfigurationView : BaseView, IEnvironmentConfigurationView
 {
-    private EnvironmentConfigurationModel ViewModel => Model as EnvironmentConfigurationModel;
+    private EnvironmentConfigurationModel ViewModel => GetModel() as EnvironmentConfigurationModel;
 
     public EnvironmentConfigurationView()
     {
@@ -20,29 +20,11 @@ public partial class EnvironmentConfigurationView : BaseView, IEnvironmentConfig
     }
 
 
-    protected void OnDataDisplayed()
-    {
-        EnvironmentsComboBox.ItemsSource = ViewModel.Environments;
-        DatabaseTypeComboBox.ItemsSource = Enum.GetNames(typeof(DatabaseProviderType));
-        EnvironmentTypeComboBox.ItemsSource = Enum.GetNames(typeof(EnvironmentType));
-    }
-
     private void CloseButton_OnClick(object sender, RoutedEventArgs e)
     {
         EventAggregator.Publish(ViewEvents.Base.CloseWindowEventName);
     }
 
-    private EnvironmentConfiguration GetConfigurationFromUserInput()
-    {
-        return new EnvironmentConfiguration()
-        {
-            ConnectionString = ConnectionStringTextBox.Text.TrimOrEmpty(),
-            Description = DescriptionTextBox.Text.TrimOrEmpty(),
-            Name = NameTextBox.Text.TrimOrEmpty(),
-            Type = Enum.Parse<EnvironmentType>(EnvironmentTypeComboBox.SelectedItem.ToString()),
-            DatabaseProvider = Enum.Parse<DatabaseProviderType>(DatabaseTypeComboBox.SelectedItem.ToString())
-        };
-    }
 
     private void DisplayConfiguration(EnvironmentConfiguration environmentConfiguration)
     {
@@ -63,8 +45,9 @@ public partial class EnvironmentConfigurationView : BaseView, IEnvironmentConfig
 
     private void NewEnvironmentButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ViewModel.SetEditingEnvironment(GetConfigurationFromUserInput());
+        UpdateModel();
         ViewModel.Environments.Add(ViewModel.EditingEnvironment);
+        ViewModel.SetEditingEnvironment(new EnvironmentConfiguration());
     }
 
     private void EnvironmentsComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -74,13 +57,30 @@ public partial class EnvironmentConfigurationView : BaseView, IEnvironmentConfig
         {
             ViewModel.SetSelectedEnvironment(selectedItem);
             ViewModel.SetEditingEnvironment(selectedItem);
-            DisplayConfiguration(ViewModel.EditingEnvironment);
+            DisplayModel();
         }
     }
 
-    protected override IModel UpdateModelFromInputsCore()
+
+    protected override void DisplayModel()
     {
-        return ViewModel;
+        EnvironmentsComboBox.ItemsSource = ViewModel.Environments;
+        DatabaseTypeComboBox.ItemsSource = Enum.GetNames(typeof(DatabaseProviderType));
+        EnvironmentTypeComboBox.ItemsSource = Enum.GetNames(typeof(EnvironmentType));
+        DisplayConfiguration(ViewModel.EditingEnvironment);
+    }
+
+    public override void UpdateModel()
+    {
+        var environmentConfig = new EnvironmentConfiguration()
+        {
+            ConnectionString = ConnectionStringTextBox.Text.TrimOrEmpty(),
+            Description = DescriptionTextBox.Text.TrimOrEmpty(),
+            Name = NameTextBox.Text.TrimOrEmpty(),
+            Type = Enum.Parse<EnvironmentType>(EnvironmentTypeComboBox.SelectedItem.ToString()),
+            DatabaseProvider = Enum.Parse<DatabaseProviderType>(DatabaseTypeComboBox.SelectedItem.ToString())
+        };
+        ViewModel.SetEditingEnvironment(environmentConfig);
     }
 
     protected override LoadingControl LoadingIndicator => BusyControl;

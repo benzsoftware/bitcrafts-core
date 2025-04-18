@@ -1,4 +1,5 @@
 ﻿using BitCrafts.Application.Abstraction.Managers;
+using BitCrafts.Application.Abstraction.Models;
 using BitCrafts.Application.Abstraction.Presenters;
 using BitCrafts.Application.Avalonia.Managers;
 using BitCrafts.Application.Avalonia.Views;
@@ -17,7 +18,7 @@ public sealed class MainPresenter : BasePresenter, IMainPresenter
     private IMainView MainView => View as MainView;
 
     public MainPresenter(IServiceProvider serviceProvider)
-        : base(serviceProvider,typeof(IMainView))
+        : base(serviceProvider, typeof(IMainView))
     {
         _uiManager = (AvaloniaUiManager)serviceProvider.GetRequiredService<IUiManager>();
         _backgroundThreadDispatcher = serviceProvider.GetRequiredService<IBackgroundThreadDispatcher>();
@@ -26,25 +27,6 @@ public sealed class MainPresenter : BasePresenter, IMainPresenter
         MainView.Title = title;
     }
 
-    protected override async Task OnAppearedAsync()
-    {
-        //MainView.CloseEvent += ViewOnCloseEvent;
-        await base.OnAppearedAsync();
-        var menuManager = (AvaloniaMenuManager)ServiceProvider.GetRequiredService<IMenuManager>();
-        menuManager.SetMenuControl(MainView.GetMenuControl());
-        _uiManager.SetTabControl(MainView.GetTabControl());
-        _modules = ServiceProvider.GetServices<IModule>().ToList().AsReadOnly();
-        foreach (var module in _modules) module.InitializeMenus(ServiceProvider); // should be run on ui thread
-
-        await InitializeModulesAsync();
-    }
-
-    private async Task InitializeModulesAsync()
-    {
-        MainView.SetBusy(true, "Initializing Modules in background.");
-        await _backgroundThreadDispatcher.InvokeAsync(InitModules);
-        MainView.SetBusy(false, "");
-    }
 
     private void InitModules()
     {
@@ -56,9 +38,25 @@ public sealed class MainPresenter : BasePresenter, IMainPresenter
         _uiManager.CloseWindow<IMainPresenter>();
     }
 
-    protected override async Task OnDisappearedAsync()
+    protected override async Task<IModel> LoadDataCoreAsync()
     {
-        await base.OnDisappearedAsync();
+        var model = await base.LoadDataCoreAsync();
+        var menuManager = (AvaloniaMenuManager)ServiceProvider.GetRequiredService<IMenuManager>();
+        menuManager.SetMenuControl(MainView.GetMenuControl());
+        _uiManager.SetTabControl(MainView.GetTabControl());
+        _modules = ServiceProvider.GetServices<IModule>().ToList().AsReadOnly();
+        foreach (var module in _modules) module.InitializeMenus(ServiceProvider); // should be run on ui thread
+
+        MainView.SetBusy(true, "Initializing Modules in background.");
+        await _backgroundThreadDispatcher.InvokeAsync(InitModules);
+        MainView.SetBusy(false, "");
+        return model;
+    }
+
+    protected override async Task SaveChangesCoreAsync(IModel model)
+    {
+        await base.SaveChangesCoreAsync(model);
+
         await _uiManager.ShutdownAsync();
     }
 }

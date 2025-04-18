@@ -13,7 +13,7 @@ public partial class MainView : BaseView, IMainView
     {
         InitializeComponent();
     }
- 
+
     public Menu GetMenuControl()
     {
         return MainMenu;
@@ -23,10 +23,19 @@ public partial class MainView : BaseView, IMainView
     {
         return MainTabControl;
     }
-    
+
     private void QuitMenuItem_OnClick(object sender, RoutedEventArgs e)
     {
         EventAggregator.Publish(ViewEvents.Base.CloseWindowEventName);
+    }
+
+
+    protected override void DisplayModel()
+    {
+    }
+
+    public override void UpdateModel()
+    {
     }
 
     protected override LoadingControl LoadingIndicator => BusyControl;

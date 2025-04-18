@@ -57,7 +57,7 @@ public class AuthenticationPresenter : BasePresenter,
         try
         {
             AuthView.SetBusy(true, "Authenticating...");
-            var model = View.GetModel().model as AuthenticationModel;
+            var model = View.GetModel() as AuthenticationModel;
             if (model == null)
                 return;
             var auth = new Authentication(model.Login, model.Password, model.Password);

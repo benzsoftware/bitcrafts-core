@@ -31,14 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Views\CreateUserDialogView.axaml.cs">
-            <DependentUpon>CreateUserDialogView.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Views\DisplayUserAccountsView.axaml.cs">
-            <DependentUpon>DisplayUserAccountsView.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
+      <Folder Include="Views\" />
     </ItemGroup>
 
 </Project>

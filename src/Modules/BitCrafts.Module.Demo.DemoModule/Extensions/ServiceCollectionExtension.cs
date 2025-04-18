@@ -1,11 +1,7 @@
 using BitCrafts.Infrastructure.Abstraction.UseCases;
 using BitCrafts.Module.Demo.DemoModule.Data;
-using BitCrafts.Module.Demo.DemoModule.Presenters;
-using BitCrafts.Module.Demo.DemoModule.UseCases;
-using BitCrafts.Module.Demo.DemoModule.Views;
-using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Presenters;
-using BitCrafts.Modules.Demo.UserAccounts.Abstraction.UseCases;
-using BitCrafts.Modules.Demo.UserAccounts.Abstraction.Views;
+using BitCrafts.Module.Demo.DemoModule.UseCases; 
+using BitCrafts.Modules.Demo.UserAccounts.Abstraction.UseCases; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,11 +12,6 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddUserAccountsModule(this IServiceCollection services)
     {
-        services.AddTransient<IDisplayUserAccountsPresenter, DisplayUserAccountsPresenter>();
-        services.AddTransient<IDisplayUserAccountsView, DisplayUserAccountsView>();
-
-        services.AddTransient<ICreateUserDialogPresenter, CreateUserDialogPresenter>();
-        services.AddTransient<ICreateUserDialogView, CreateUserDialogView>();
         services.AddTransient<IDisplayUsersUseCase, DisplayUsersUseCase>();
         services.AddTransient<ICreateUserUseCase, CreateUserUseCase>();
         services.AddTransient<IDeleteUserUseCase, DeleteUserUseCase>();

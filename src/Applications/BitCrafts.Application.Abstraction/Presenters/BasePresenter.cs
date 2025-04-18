@@ -12,13 +12,12 @@ using Microsoft.Extensions.Logging;
 namespace BitCrafts.Application.Abstraction.Presenters;
 
 public abstract class BasePresenter : IPresenter
-
 {
     protected IBackgroundThreadDispatcher BackgroundThreadDispatcher { get; }
     protected IEventAggregator EventAggregator { get; private set; }
     protected IUiManager UiManager { get; }
     protected IDataValidator DataValidator { get; }
-    protected bool CanSaveOnDisappear { get; set; } = false;
+    protected bool CanSaveOnDisappear { get; set; }
 
     private IView _view;
     public IView View => _view;
@@ -62,14 +61,18 @@ public abstract class BasePresenter : IPresenter
 
     private async void ViewOnDisappearedEvent()
     {
+        if (CanSaveOnDisappear)
+        {
+            await SaveChangesAsync();
+        }
+
         Logger.LogInformation($"{GetType().Name} Disappeared");
-        await OnDisappearedAsync();
     }
 
     private async void ViewOnAppearedEvent()
     {
         Logger.LogInformation($"{GetType().Name} Appeared");
-        await OnAppearedAsync();
+        await LoadDataAsync();
     }
 
     private void OnSubscribeEvents()
@@ -94,33 +97,17 @@ public abstract class BasePresenter : IPresenter
     {
     }
 
-    protected virtual async Task OnAppearedAsync()
-    {
-        await LoadDataAsync();
-    }
-
-    protected virtual async Task OnDisappearedAsync()
-    {
-        if (CanSaveOnDisappear)
-        {
-            await SaveChangesAsync();
-        }
-    }
 
     private async Task SaveChangesAsync()
     {
         try
         {
+            View.UpdateModel();
+            var model = View.GetModel();
             View.SetBusy(true);
-            var result = View.GetModel();
-            if (!result.isValid)
+            if (View.ValidateModel(out _))
             {
-                return;
-            }
-
-            if (result.model != null && result.model.IsDirty)
-            {
-                await SaveChangesCoreAsync(result.model).ConfigureAwait(false);
+                await SaveChangesCoreAsync(model).ConfigureAwait(false);
             }
         }
         catch (Exception ex)

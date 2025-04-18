@@ -11,9 +11,8 @@ public interface IView : IEventAware, IDisposable
     string Title { get; set; }
     IDataValidator DataValidator { get; }
     void SetModel(IModel model);
-    (bool isValid, IModel model, IReadOnlyList<ValidationResult> validationResults) GetModel();
-    void Clear();
-    void SetVisible(bool visible);
+    void UpdateModel();
+    IModel GetModel();
     void SetBusy(bool busy, string message = "");
     bool ValidateModel(out List<ValidationResult> validationResults);
 }

@@ -36,17 +36,16 @@ public partial class AuthenticationView : BaseView, IAuthenticationView
         EventAggregator.Publish(ViewEvents.Authentication.ShowEnvironmentsEventName);
     }
 
-    protected override IModel UpdateModelFromInputsCore()
+    protected override void DisplayModel()
     {
-        return new AuthenticationModel(LoginTextBox.Text.TrimOrEmpty(), PasswordTextBox.Text.TrimOrEmpty(),
-            EnvironmentComboBox.SelectedItem as EnvironmentConfiguration);
+        //nothing to display for now
     }
 
-    protected override void ClearCore()
+    public override void UpdateModel()
     {
-        LoginTextBox.Text = string.Empty;
-        PasswordTextBox.Text = string.Empty;
-        EnvironmentComboBox.SelectedIndex = -1;
+        var model = new AuthenticationModel(LoginTextBox.Text.TrimOrEmpty(), PasswordTextBox.Text.TrimOrEmpty(),
+            EnvironmentComboBox.SelectedItem as EnvironmentConfiguration);
+        SetModel(model);
     }
 
     protected override LoadingControl LoadingIndicator => BusyControl;
